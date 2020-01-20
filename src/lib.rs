@@ -54,6 +54,9 @@ impl MediaInfo {
     }
 }
 
+fn opt_to_string(s: &str) -> Option<String> {
+    Some(s.to_string())
+}
 pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
     let (stdout, _) = cmd::run_command(process::Command::new("you-get")
         .arg(orig_url)
@@ -67,13 +70,11 @@ pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
         None => return Err(err_msg("Failed to parse stdout as url")),
     };
     // referrer = json_output['extra']['referer']
-    let referrer = panic::catch_unwind(|| {
-        match json_stdout["extra"]["referer"] {
-            Value::String(ref s) => Some(s.clone()),
-            _ => Some(json_stdout["url"].as_str()?.to_string()),
-        }
-    }).unwrap_or(None);
+    let referrer = json_stdout.get("extra")
+        .and_then(|v| { v.get("referer") })
+        .and_then(|v| { v.as_str().and_then(opt_to_string) })
+        .or(json_stdout["url"].as_str().and_then(opt_to_string));
     // title = json_output['title']
-    let title = json_stdout["title"].as_str().and_then(|s| { Some(s.to_string()) });
+    let title = json_stdout["title"].as_str().and_then(opt_to_string);
     Ok(MediaInfo { url, referrer, title })
 }
