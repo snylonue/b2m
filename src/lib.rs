@@ -2,11 +2,9 @@ pub mod extractors;
 pub mod cmd;
 
 use serde_json;
-use serde_json::Value;
 use failure::err_msg;
 use failure::Error;
 use std::process;
-use std::panic;
 use extractors::parse_url;
 use extractors::Url;
 
@@ -54,6 +52,7 @@ impl MediaInfo {
     }
 }
 
+#[inline]
 fn opt_to_string(s: &str) -> Option<String> {
     Some(s.to_string())
 }
@@ -73,7 +72,7 @@ pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
     let referrer = json_stdout.get("extra")
         .and_then(|v| { v.get("referer") })
         .and_then(|v| { v.as_str().and_then(opt_to_string) })
-        .or(json_stdout["url"].as_str().and_then(opt_to_string));
+        .or_else(|| { json_stdout["url"].as_str().and_then(opt_to_string) });
     // title = json_output['title']
     let title = json_stdout["title"].as_str().and_then(opt_to_string);
     Ok(MediaInfo { url, referrer, title })
