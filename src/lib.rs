@@ -17,27 +17,22 @@ pub struct MediaInfo {
 }
 
 impl MediaInfo {
-    pub fn play(&self, vo: bool, ao: bool) -> Res<()> {
+    pub fn play(&self) -> Res<()> {
         let Url { videos, audios } = &self.url;
         let mut cmd = process::Command::new("mpv");
-        if vo && videos.len() > 0 {
+        if videos.len() > 0 {
             for i in videos {
                 cmd.arg(i);
             }
-            if ao {
-                for i in audios {
-                    cmd.arg(format!("--audio-file={}", i));
-                }
+            for i in audios {
+                cmd.arg(format!("--audio-file={}", i));
             }
-        } else if ao && audios.len() > 0 {
+        } else if audios.len() > 0 {
             for i in audios {
                 cmd.arg(i);
             }
         } else {
-            return Err(err_msg(format!("No urls to play, no-video: {}, no-audio: {}",
-                if vo { "no" } else { "yes" },
-                if ao { "no" } else { "yes" }
-            )))
+            return Err(err_msg(format!("No urls to play")));
         }
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));

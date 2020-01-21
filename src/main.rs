@@ -26,13 +26,6 @@ fn main() -> Result<(), Error> {
             .long("check")
             .multiple(true)
     )
-        .arg(Arg::with_name("no-video")
-            // mpv will not be controlled by rust and there will not be a gui if --no-video is used
-            .help("play without video output (not work property)")
-            .long("no-video")
-            .multiple(true)
-            .conflicts_with("no-audio")
-    )
         .arg(Arg::with_name("no-audio")
             .help("play without audio output")
             .long("no-audio")
@@ -41,24 +34,30 @@ fn main() -> Result<(), Error> {
     )
         .get_matches();
     if matches.is_present("check") {
-        if check::check_you_get() {
-            println!("\nyou-get checking succeeded");
-        } else {
-            println!("\nyou-get checking failed");
-        }
-        println!();
-        if check::check_mpv() {
-          println!("\nmpv checking succeeded");
-        } else {
-          println!("\nmpv checking failed");
-        }
+        check();
         process::exit(0);
     }
-    let url = match matches.value_of("url") {
-        Some(url) => String::from(url),
-        None => panic!("Invaild input"),
-    };
-    let vo = !matches.is_present("no-video");
-    let ao = !matches.is_present("no-audio");
-    get_url(&url)?.play(vo, ao)
+    //let url = match matches.value_of("url") {
+    //    Some(url) => String::from(url),
+    //    None => panic!("Invaild input"),
+    //};
+    let url = matches.value_of("url").expect("Invaild input");
+    let mut media = get_url(&url.into())?;
+    if matches.is_present("no-audio") {
+        media.url.audios = vec![];
+    }
+    media.play()
+}
+fn check() {
+    if check::check_you_get() {
+        println!("\nyou-get checking succeeded");
+    } else {
+        println!("\nyou-get checking failed");
+    }
+    println!();
+    if check::check_mpv() {
+      println!("\nmpv checking succeeded");
+    } else {
+      println!("\nmpv checking failed");
+    }
 }
