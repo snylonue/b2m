@@ -8,7 +8,7 @@ use std::process;
 use b2m::*;
 
 const NAME: &str = "mpv-bilibili";
-const VERSION: &str = "0.10.1";
+const VERSION: &str = "0.10.2";
 const DESCRIPTION: &str = "play bilibili video with mpv";
 
 fn main() -> Result<(), Error> {
@@ -28,23 +28,29 @@ fn main() -> Result<(), Error> {
     )
         .arg(Arg::with_name("no-audio")
             .help("play without audio output")
-            .long("no-audio")
+            .long("an")
             .multiple(true)
             .conflicts_with("no-video")
+    )
+        .arg(Arg::with_name("url-only")
+            .help("print url only")
+            .long("url")
+            .short("u")
+            .multiple(true)
     )
         .get_matches();
     if matches.is_present("check") {
         check();
         process::exit(0);
     }
-    //let url = match matches.value_of("url") {
-    //    Some(url) => String::from(url),
-    //    None => panic!("Invaild input"),
-    //};
     let url = matches.value_of("url").expect("Invaild input");
     let mut media = get_url(&url.into())?;
     if matches.is_present("no-audio") {
         media.url.audios = vec![];
+    }
+    if matches.is_present("url-only") {
+        print_info(media, matches.is_present("json"));
+        process::exit(0);
     }
     media.play()
 }
@@ -60,4 +66,16 @@ fn check() {
     } else {
       println!("\nmpv checking failed");
     }
+}
+fn print_info(media: MediaInfo, json: bool) {
+    let MediaInfo { url: extractors::Url { videos, audios }, title, referrer } = media;
+    if json {
+        // pass
+    } else {
+        println!("video: {:#?}", videos);
+        println!("audio: {:#?}", audios);
+        println!("title: {}", title.unwrap_or(String::new()));
+        println!("referrer: {}", referrer.unwrap_or(String::new()));
+    }
+
 }
