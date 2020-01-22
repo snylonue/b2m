@@ -8,7 +8,7 @@ use std::process;
 use b2m::*;
 
 const NAME: &str = "mpv-bilibili";
-const VERSION: &str = "0.10.0";
+const VERSION: &str = "0.10.1";
 const DESCRIPTION: &str = "play bilibili video with mpv";
 
 fn main() -> Result<(), Error> {

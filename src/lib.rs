@@ -63,7 +63,7 @@ pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
         Some(el) => el,
         None => return Err(err_msg("Failed to parse stdout as url")),
     };
-    // referrer = json_output['extra']['referer']
+    // referrer = json_output['extra']['referer'] || json_output['url']
     let referrer = json_stdout.get("extra")
         .and_then(|v| { v.get("referer") })
         .and_then(|v| { v.as_str().and_then(opt_to_string) })
