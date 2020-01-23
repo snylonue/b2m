@@ -14,21 +14,22 @@ cargo build --release
 
 ### 用法
 ```
-mpv-bilibili 0.10.1
-play bilibili video with mpv
+mpv-bilibili 0.10.3
+Play bilibili video with mpv
 
 USAGE:
-    b2m [FLAGS] <url>
+    b2m.exe [FLAGS] <url>
 
 FLAGS:
-    -c, --check       check if all dependencies are installed
-    -h, --help        Prints help information
-        --no-audio    play without audio output
-        --no-video    play without video output (not work property)
-    -V, --version     Prints version information
+    -c, --check      Check if all dependencies are installed
+    -h, --help       Prints help information
+    -j, --json       Print stdout in json
+        --an         Play without audio output
+    -u, --url        Print url only
+    -V, --version    Prints version information
 
 ARGS:
-    <url>    video url
+    <url>    Video url
 
 ```
 
