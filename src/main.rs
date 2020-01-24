@@ -63,6 +63,8 @@ fn main() -> Result<(), Error> {
     media.play()
 }
 fn check() {
+    println!("running checking");
+    println!("b2m version: {}\n", VERSION);
     if check::check_you_get() {
         println!("\nyou-get checking succeeded");
     } else {
@@ -91,5 +93,4 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("title: {}", title.unwrap_or(String::new()));
         println!("referrer: {}", referrer.unwrap_or(String::new()));
     }
-
 }
