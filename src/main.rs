@@ -52,7 +52,10 @@ fn main() -> Result<(), Error> {
         process::exit(0);
     }
     let url = matches.value_of("url").expect("Invaild input");
-    let mut media = get_url(&url.into())?;
+    let (stdout, _) = cmd::run_command(process::Command::new("you-get")
+        .arg(url)
+        .arg("--json"))?;
+    let mut media = get_origin_url(&stdout)?;
     if matches.is_present("no-audio") {
         media.url.audios = vec![];
     }

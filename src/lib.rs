@@ -44,14 +44,11 @@ impl MediaInfo {
 }
 
 #[inline]
-fn opt_to_string(s: &str) -> Option<String> {
+fn to_option_string(s: &str) -> Option<String> {
     Some(s.to_string())
 }
-pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
-    let (stdout, _) = cmd::run_command(process::Command::new("you-get")
-        .arg(orig_url)
-        .arg("--json"))?;
-    let json_stdout = match serde_json::from_str(&*stdout) {
+pub fn get_origin_url(json: &str) -> Res<MediaInfo> {
+    let json_stdout = match serde_json::from_str(json) {
             Ok(j) => j,
             Err(e) => return Err(err_msg(format!("Failed to deserialize stdout: {}", e))),
     };
@@ -62,9 +59,9 @@ pub fn get_url(orig_url: &String) -> Res<MediaInfo> {
     // referrer = json_output['extra']['referer'] || json_output['url']
     let referrer = json_stdout.get("extra")
         .and_then(|v| { v.get("referer") })
-        .and_then(|v| { v.as_str().and_then(opt_to_string) })
-        .or_else(|| { json_stdout["url"].as_str().and_then(opt_to_string) });
+        .and_then(|v| { v.as_str().and_then(to_option_string) })
+        .or_else(|| { json_stdout["url"].as_str().and_then(to_option_string) });
     // title = json_output['title']
-    let title = json_stdout["title"].as_str().and_then(opt_to_string);
+    let title = json_stdout["title"].as_str().and_then(to_option_string);
     Ok(MediaInfo { url, referrer, title })
 }
