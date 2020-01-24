@@ -10,3 +10,6 @@ edition = "2018"
 clap = "2.33"
 serde_json = "1.0"
 failure = "0.1.5"
+
+[profile.release]
+lto = true

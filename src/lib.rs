@@ -58,9 +58,9 @@ pub fn get_origin_url(json: &str) -> Res<MediaInfo> {
     };
     // referrer = json_output['extra']['referer'] || json_output['url']
     let referrer = json_stdout.get("extra")
-        .and_then(|v| { v.get("referer") })
-        .and_then(|v| { v.as_str().and_then(to_option_string) })
-        .or_else(|| { json_stdout["url"].as_str().and_then(to_option_string) });
+        .and_then(|v| v.get("referer"))
+        .and_then(|v| v.as_str().and_then(to_option_string))
+        .or_else(|| json_stdout["url"].as_str().and_then(to_option_string));
     // title = json_output['title']
     let title = json_stdout["title"].as_str().and_then(to_option_string);
     Ok(MediaInfo { url, referrer, title })

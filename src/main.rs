@@ -54,7 +54,9 @@ fn main() -> Result<(), Error> {
     let url = matches.value_of("url").expect("Invaild input");
     let (stdout, _) = cmd::run_command(process::Command::new("you-get")
         .arg(url)
-        .arg("--json"))?;
+        .arg("--json")
+        .stderr(process::Stdio::null())
+    )?;
     let mut media = get_origin_url(&stdout)?;
     if matches.is_present("no-audio") {
         media.url.audios = vec![];
@@ -93,7 +95,7 @@ fn print_info(media: MediaInfo, json: bool) {
     } else {
         println!("video: {:#?}", videos);
         println!("audio: {:#?}", audios);
-        println!("title: {}", title.unwrap_or(String::new()));
-        println!("referrer: {}", referrer.unwrap_or(String::new()));
+        println!("title: {}", title.unwrap_or_else(|| String::new()));
+        println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
     }
 }

@@ -12,7 +12,7 @@ pub fn parse(value: &Value) -> Option<Url> {
         let video_url = stream["src"]
             .as_array()?
             .iter()
-            .filter_map(|x| { x.as_str().and_then(to_option_string) })
+            .filter_map(|x| x.as_str().and_then(to_option_string))
             .collect();
         Some(Url::new(video_url, vec![]))
     } else {
