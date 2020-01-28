@@ -5,7 +5,7 @@ use super::super::to_option_string;
 
 const DISPLAYS: [&str; 6] = ["TD_H265", "TD", "HD_H265", "HD", "SD", "LD"];
 
-pub fn parse(value: &Value) -> Option<Url> {
+pub fn parse_you_get(value: &Value) -> Option<Url> {
     let (_, stream) = search_displays(&value["streams"], &DISPLAYS)?;
     let video_url = stream["src"]
         .as_array()?

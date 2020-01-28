@@ -31,13 +31,13 @@ pub fn search_displays<'a>(object: &'a Value, displays: &[&str]) -> Option<(&'a 
         None => Some(object.iter().next()?)
     }
 }
-pub fn parse_url(value: &Value) -> Option<Url> {
+pub fn parse_you_get_url(value: &Value) -> Option<Url> {
     match value["site"].as_str()? {
         "Bilibili" => {
-            bilibili::parse(value)
+            bilibili::parse_you_get(value)
         },
         "爱奇艺 (Iqiyi)" => {
-            iqiyi::parse(value)
+            iqiyi::parse_you_get(value)
         },
         _ => None,
     }

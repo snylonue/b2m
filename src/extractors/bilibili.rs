@@ -5,7 +5,7 @@ use super::super::to_option_string;
 
 const DISPLAYS: [&str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
 
-pub fn parse(value: &Value) -> Option<Url> {
+pub fn parse_you_get(value: &Value) -> Option<Url> {
     //json['streams'] is ordered with BTreeMap
     let (dp, stream) = search_displays(&value["streams"], &DISPLAYS)?;
     if dp.matches("dash").next().is_none() {

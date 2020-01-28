@@ -26,7 +26,6 @@ pub fn b2m() -> App<'static, 'static> {
             .help("Play without audio output")
             .long("an")
             .multiple(true)
-            .conflicts_with("no-video")
     )
         .arg(Arg::with_name("url-only")
             .help("Print url only")

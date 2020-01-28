@@ -14,12 +14,8 @@ fn main() -> Result<(), Error> {
         process::exit(0);
     }
     let url = matches.value_of("url").expect("Invaild input");
-    let (stdout, _) = cmd::run_command(process::Command::new("you-get")
-        .arg(url)
-        .arg("--json")
-        .stderr(process::Stdio::null())
-    )?;
-    let mut media = get_origin_url(&stdout)?;
+    let parser = Parser::YouGet;
+    let mut media = parser.parse(&url)?;
     if matches.is_present("no-audio") {
         media.url.audios = vec![];
     }
