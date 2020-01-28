@@ -8,7 +8,7 @@ use std::process;
 use b2m::*;
 
 fn main() -> Result<(), Error> {
-    let matches = cli::b2m().get_matches_safe()?;
+    let matches = cli::b2m().get_matches();
     if matches.is_present("check") {
         check();
         process::exit(0);
