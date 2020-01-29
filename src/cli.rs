@@ -27,10 +27,10 @@ pub fn b2m() -> App<'static, 'static> {
             .long("an")
             .multiple(true)
     )
-        .arg(Arg::with_name("url-only")
-            .help("Print url only")
-            .long("url")
-            .short("u")
+        .arg(Arg::with_name("info-only")
+            .help("Print information only")
+            .long("info")
+            .short("i")
             .multiple(true)
     )
         .arg(Arg::with_name("json")
@@ -38,7 +38,7 @@ pub fn b2m() -> App<'static, 'static> {
             .long("json")
             .short("j")
             .multiple(true)
-            .requires("url-only")
+            .requires("info-only")
     )
 }
 #[inline]

@@ -19,14 +19,14 @@ fn main() -> Result<(), Error> {
     if matches.is_present("no-audio") {
         media.url.audios = vec![];
     }
-    if matches.is_present("url-only") {
+    if matches.is_present("info-only") {
         print_info(media, matches.is_present("json"));
         process::exit(0);
     }
     media.play()
 }
 fn check() {
-    println!("running checking");
+    println!("Running checking");
     println!("b2m version: {}\n", cli::VERSION);
     if check::check_you_get() {
         println!("\nyou-get checking succeeded");
