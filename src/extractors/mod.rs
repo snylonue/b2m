@@ -42,3 +42,11 @@ pub fn parse_you_get_url(value: &Value) -> Option<Url> {
         _ => None,
     }
 }
+pub fn parse_annie_url(value: &Value) -> Option<Url> {
+    match value["site"].as_str()? {
+        "哔哩哔哩 bilibili.com" => {
+            bilibili::parse_annie(value)
+        }
+        _ => None,
+    }
+}
