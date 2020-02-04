@@ -15,9 +15,12 @@ fn main() -> Result<(), Error> {
     }
     let url = matches.value_of("url").expect("Invaild input");
     let parser = Parser::Annie;
-    let mut media = parser.parse(&url)?;
+    let mut media = parser.parse(url)?;
     if matches.is_present("no-audio") {
-        media.url.audios = vec![];
+        media.url.audios = Vec::new();
+    }
+    if matches.is_present("no-video") {
+        media.url.videos = Vec::new();
     }
     if matches.is_present("info-only") {
         print_info(media, matches.is_present("json"));

@@ -7,11 +7,18 @@ use failure::err_msg;
 use std::process;
 use extractors::Url;
 
-macro_rules! value_to_option_string {
+#[macro_export]
+macro_rules! value_to_string {
     ($v: expr) => {
         match $v {
             serde_json::Value::String(ref s) => Some(s.clone()),
             _ => None,
+        }
+    };
+    ($v: expr, $or: expr) => {
+        match $v {
+            serde_json::Value::String(ref s) => Some(s.clone()),
+            _ => value_to_string!($or),
         }
     };
 }
@@ -19,7 +26,7 @@ macro_rules! parse_json {
     ($s: expr) => {
         match serde_json::from_str($s) {
             Ok(v) => v,
-            Err(e) => return Err(err_msg(format!("Failed to deserialize stdout: {}", e))),
+            Err(e) => return Err(err_msg(format!("Failed to deserialize: {}", e))),
         }
     };
     ($s: expr, $err_msg: expr) => {
@@ -51,10 +58,7 @@ impl Parser {
                     .arg("--json")
                     .stderr(process::Stdio::null())
                 )?;
-                let json_stdout = match serde_json::from_str(&stdout) {
-                    Ok(j) => j,
-                    Err(e) => return Err(err_msg(format!("Failed to deserialize stdout: {}", e))),
-                };
+                let json_stdout = parse_json!(&stdout);
                 Self::you_get(&json_stdout)
             },
             Parser::Annie => {
@@ -62,9 +66,8 @@ impl Parser {
                     .arg("-j")
                     .arg(url)
                 )?;
-                //println!("{}", stdout);
-                let json_output = parse_json!(&stdout);
-                Self::annie(&json_output)
+                let json_stdout = parse_json!(&stdout);
+                Self::annie(&json_stdout)
             }
         }
     }
@@ -74,12 +77,9 @@ impl Parser {
             None => return Err(err_msg("Failed to parse stdout as url")),
         };
         // referrer = json['extra']['referer'] || json_output['url']
-        let referrer = json.get("extra")
-            .and_then(|v| v.get("referer"))
-            .and_then(|v| v.as_str().and_then(to_option_string))
-            .or_else(|| json["url"].as_str().and_then(to_option_string));
+        let referrer = value_to_string!(json["extra"]["referer"], json["url"]);
         // title = json['title']
-        let title = json["title"].as_str().and_then(to_option_string);
+        let title = value_to_string!(json["title"]);
         Ok(MediaInfo { url, referrer, title })
     }
     fn annie(json: &Value) -> Res<MediaInfo> {
@@ -87,8 +87,8 @@ impl Parser {
             Some(el) => el,
             None => return Err(err_msg("Failed to parse stdout as url")),
         };
-        let referrer = value_to_option_string!(json["url"]);
-        let title = value_to_option_string!(json["title"]);
+        let referrer = value_to_string!(json["url"]);
+        let title = value_to_string!(json["title"]);
         Ok(MediaInfo { url, referrer, title })
     }
 }
@@ -122,9 +122,4 @@ impl MediaInfo {
             .output()?;
         Ok(())
     }
-}
-
-#[inline]
-fn to_option_string(s: &str) -> Option<String> {
-    Some(s.to_string())
 }
