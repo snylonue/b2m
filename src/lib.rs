@@ -103,6 +103,11 @@ impl MediaInfo {
             for i in audios {
                 cmd.arg(format!("--audio-file={}", i));
             }
+        } else if audios.len() > 0 {
+            for i in audios {
+                cmd.arg(i);
+                cmd.arg("--force-window");
+            }
         } else {
             return Err(err_msg(format!("No urls to play")));
         }
