@@ -103,6 +103,9 @@ impl MediaInfo {
             for i in audios {
                 cmd.arg(format!("--audio-file={}", i));
             }
+            if videos.len() > 1 {
+                cmd.arg("--merge-files");
+            }
         } else if audios.len() > 0 {
             for i in audios {
                 cmd.arg(i);
@@ -117,8 +120,7 @@ impl MediaInfo {
         if let Some(title) = &self.title {
             cmd.arg(format!("--title={}", title));
         }
-        cmd.arg("--merge-files")
-            .arg("--no-ytdl")
+        cmd.arg("--no-ytdl")
             .output()?;
         Ok(())
     }

@@ -14,7 +14,7 @@ fn main() -> Result<(), Error> {
         process::exit(0);
     }
     let url = matches.value_of("url").expect("Invaild input");
-    let parser = Parser::Annie;
+    let parser = Parser::YouGet;
     let mut media = parser.parse(url)?;
     if matches.is_present("no-audio") {
         media.url.audios = Vec::new();
