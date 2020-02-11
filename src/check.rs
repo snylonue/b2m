@@ -31,6 +31,34 @@ pub fn check_you_get() -> bool {
             }
         }
 }
+pub fn check_annie() -> bool {
+    println!("Checking for annie");
+    println!("Running annie -v");
+    match process::Command::new("annie")
+        .arg("-v")
+        .output() {
+            Ok(r) => {
+                let (stdout, stderr) = match parse_output(r) {
+                    Ok(r) => r,
+                    Err(e) => {
+                        eprintln!("Failed to check for annie: unable to parse stdout and stderr:\n{:?}", e);
+                        return false;
+                    },
+                };
+                let stdout = stdout.trim();
+                let splits = stdout.split(' ').collect::<Vec<_>>();
+                let version = splits.get(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
+                println!("annie version: {}\n", version);
+                println!("{}", format!("Stdout:\n{}", stdout).trim());
+                println!("{}", format!("Stderr:\n{}", stderr).trim());
+                true
+            },
+            Err(e) => {
+                eprintln!("Failed to check for annie: unable to run annie:\n{:?}", e);
+                false
+            }
+        }
+}
 pub fn check_mpv() -> bool {
     println!("Checking for mpv");
     println!("Running mpv -V");

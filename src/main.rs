@@ -36,6 +36,12 @@ fn check() {
         println!("\nyou-get checking failed");
     }
     println!();
+    if check::check_annie() {
+        println!("\nannie checking succeeded");
+    } else {
+        println!("\nannie checking failed");
+    }
+    println!();
     if check::check_mpv() {
       println!("\nmpv checking succeeded");
     } else {

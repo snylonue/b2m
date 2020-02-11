@@ -67,7 +67,7 @@ impl Parser for Annie {
         )
     }
     fn parse(url: &str) -> super::ResultInfo {
-        let infos = super::run_you_get(url)?;
+        let infos = super::run_annie(url)?;
         let url = match Self::real_url(&infos) {
             Some(url) => url,
             None => return Err(failure::err_msg("Failed to parse stdout as url")),
