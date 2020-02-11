@@ -65,6 +65,7 @@ pub trait Parser {
     fn is_support(url: &str)  -> bool;
     fn parse(url: &str) -> ResultInfo;
 }
+
 impl Url {
     pub fn new(videos: Vec<String>, audios: Vec<String>) -> Self {
         Url { videos, audios }
@@ -88,22 +89,31 @@ pub fn search_displays<'a>(object: &'a Value, displays: &[&str]) -> Option<(&'a 
         None => Some(object.iter().next()?)
     }
 }
-pub fn parse_you_get_url(value: &Value) -> Option<Url> {
-    match value["site"].as_str()? {
-        "Bilibili" => {
-            bilibili::parse_you_get(value)
-        },
-        "爱奇艺 (Iqiyi)" => {
-            iqiyi::parse_you_get(value)
-        },
-        _ => None,
-    }
+
+pub fn run_you_get(url: &str) -> Res<Value> {
+    let (stdout, _) = super::cmd::run_command(process::Command::new("you-get")
+        .arg(url)
+        .arg("--json")
+        .stderr(process::Stdio::null())
+    )?;
+    Ok(parse_json!(&stdout))
 }
-pub fn parse_annie_url(value: &Value) -> Option<Url> {
-    match value["site"].as_str()? {
-        "哔哩哔哩 bilibili.com" => {
-            bilibili::parse_annie(value)
-        }
-        _ => None,
-    }
+pub fn run_annie(url: &str) -> Res<Value> {
+    let (stdout, _) = super::cmd::run_command(process::Command::new("annie")
+        .arg("-j")
+        .arg(url)
+        .stderr(process::Stdio::null())
+    )?;
+    Ok(parse_json!(&stdout))
+}
+pub fn you_get_infos(info: &Value) -> (Option<String>, Option<String>) {
+    // referrer = json['extra']['referer'] || json_output['url']
+    let referrer = value_to_string!(info["extra"]["referer"], info["url"]);
+    let title = value_to_string!(info["title"]);
+    (referrer, title)
+}
+pub fn annie_infos(info: &Value) -> (Option<String>, Option<String>) {
+    let referrer = value_to_string!(info["url"]);
+    let title = value_to_string!(info["title"]);
+    (referrer, title)
 }

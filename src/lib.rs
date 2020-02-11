@@ -55,3 +55,11 @@ impl MediaInfo {
         Ok(())
     }
 }
+
+pub fn parse(url: &str) -> Res<MediaInfo> {
+    find_parser!(url, bilibili, Annie);
+    find_parser!(url, bilibili, YouGet);
+    find_parser!(url, iqiyi, Annie);
+    find_parser!(url, iqiyi, YouGet);
+    Err(err_msg("Unsupport url"))
+}
