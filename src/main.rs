@@ -60,8 +60,8 @@ fn print_info(media: MediaInfo, json: bool) {
         });
         println!("{}", j.to_string());
     } else {
-        println!("video: {:#?}", videos);
-        println!("audio: {:#?}", audios);
+        println!("video: {}", serde_json::to_string(&videos).unwrap());
+        println!("audio: {:#?}", serde_json::to_string(&audios).unwrap());
         println!("title: {}", title.unwrap_or_else(|| String::new()));
         println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
     }

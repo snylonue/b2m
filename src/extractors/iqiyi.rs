@@ -24,7 +24,7 @@ impl YouGet {
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
         matched!(url,
-            r"(https?://)?(www.)?iqiyi.com/.+"
+            r"(https?://)?(www.)?iqiyi.com/."
         )
     }
     #[inline]
@@ -46,7 +46,7 @@ impl Annie {
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url,
-            r"(https?://)?(www.)?iqiyi.com/.+"
+            r"(https?://)?(www.)?iqiyi.com/."
         )
     }
     #[inline]
