@@ -10,16 +10,16 @@ def main(url, hwdec, debug: bool):
 	try:
 		sp = getout.index('Real URLs:')
 	except ValueError:
-		raise OSError(f'can not get real url of {url} ')
+		raise OSError(f'can not get real url of {url}')
 	else:
 		urls = getout[sp+1:]
 	#assert urls
 	if len(urls) == 2:
 		cmd = f"""mpv{debug} "{urls[0]}" --audio-file="{urls[1]}" --referrer="https://www.bilibili.com" --no-ytdl \
---dither=fruit --hwdec={hwdec}"""
+--hwdec={hwdec}"""
 	else:
 		cmd = f"""mpv{debug} {'"' + '" "'.join(urls) + '"'} --referrer="https://www.bilibili.com" --no-ytdl --merge-files \
---dither=fruit --hwdec={hwdec}"""
+--hwdec={hwdec}"""
 	#assert cmd
 	subprocess.run(cmd, shell = True)
 

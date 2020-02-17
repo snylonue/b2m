@@ -1,7 +1,7 @@
 macro_rules! find_parser {
-    ($url: expr, $site: ident, $parser: ident) => {
-        if $crate::extractors::$site::$parser::is_support($url) {
-            return $crate::extractors::$site::$parser::parse($url);
+    ($url: expr, $site: ident, $extractor: ident) => {
+        if $crate::extractors::$site::$extractor::is_support($url) {
+            return $crate::extractors::$site::$extractor::extract($url);
         }
     };
 }
@@ -12,7 +12,7 @@ pub mod cmd;
 use failure::err_msg;
 use std::process;
 use extractors::Url;
-use extractors::Parser;
+use extractors::Extractor;
 
 type Res<T> = Result<T, failure::Error>;
 
@@ -26,21 +26,23 @@ impl MediaInfo {
     pub fn play(&self) -> Res<()> {
         let Url { videos, audios } = &self.url;
         let mut cmd = process::Command::new("mpv");
-        if videos.len() > 0 {
-            for i in videos {
+        if let Some(urls) = videos {
+            for i in urls {
                 cmd.arg(i);
             }
-            for i in audios {
-                cmd.arg(format!("--audio-file={}", i));
+            if let Some(aurls) = audios {
+                for i in aurls {
+                    cmd.arg(format!("--audio-file={}", i));
+                }
             }
-            if videos.len() > 1 {
+            if urls.len() > 1 {
                 cmd.arg("--merge-files");
             }
-        } else if audios.len() > 0 {
-            for i in audios {
+        } else if let Some(urls) = audios {
+            for i in urls {
                 cmd.arg(i);
-                cmd.arg("--force-window");
             }
+            cmd.arg("--force-window");
         } else {
             return Err(err_msg(format!("No urls to play")));
         }

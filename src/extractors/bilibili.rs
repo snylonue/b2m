@@ -2,8 +2,8 @@ use serde_json::Value;
 use regex;
 use super::search_displays;
 use super::Url;
+use super::Extractor;
 use super::Parser;
-use super::super::MediaInfo;
 
 const YOU_GET_DISPLAYS: [&str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
 const ANNIE_DISPLAYS: [&str; 4] = ["80", "64", "32", "16"];
@@ -19,18 +19,18 @@ impl YouGet {
             let dash_url = stream["src"].as_array()?;
             let video_url = vec![value_to_string!(dash_url[0][0])?];
             let audio_url = vec![value_to_string!(dash_url[1][0])?];
-            Some(Url::new(video_url, audio_url))
+            Some(Url::with_all(video_url, audio_url))
         } else {
             let video_url = stream["src"]
                 .as_array()?
                 .iter()
                 .filter_map(|x| value_to_string!(x))
                 .collect();
-            Some(Url::new(video_url, Vec::new()))
+            Some(Url::new(Some(video_url), None))
         }
     }
 }
-impl Parser for YouGet {
+impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
         matched!(url, 
             r"(https?://)?(www.)?bilibili.com/video/av\d+",
@@ -38,14 +38,9 @@ impl Parser for YouGet {
             r"https://live.bilibili.com/\d+"
         )
     }
-    fn parse(url: &str) -> super::ResultInfo {
-        let infos = super::run_you_get(url)?;
-        let url = match Self::real_url(&infos) {
-            Some(url) => url,
-            None => return Err(failure::err_msg("Failed to parse stdout as url")),
-        };
-        let (referrer, title) = super::you_get_infos(&infos);
-        Ok(MediaInfo { url, referrer, title })
+    #[inline]
+    fn extract(url: &str) -> super::ResultInfo {
+        super::YouGet::parse(url, Self::real_url)
     }
 }
 impl Annie {
@@ -56,23 +51,18 @@ impl Annie {
             .iter()
             .filter_map(|x| value_to_string!(x["url"]))
             .collect();
-        Some(Url::new(urls, Vec::new()))
+        Some(Url::new(Some(urls), None))
     }
 }
-impl Parser for Annie {
+impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url, 
             r"(https?://)?(www.)?bilibili.com/video/av\d+",
             r"(https?://)?(www.)?bilibili.com/bangumi/play/ep\+*"
         )
     }
-    fn parse(url: &str) -> super::ResultInfo {
-        let infos = super::run_annie(url)?;
-        let url = match Self::real_url(&infos) {
-            Some(url) => url,
-            None => return Err(failure::err_msg("Failed to parse stdout as url")),
-        };
-        let (referrer, title) = super::annie_infos(&infos);
-        Ok(MediaInfo { url, referrer, title })
+    #[inline]
+    fn extract(url: &str) -> super::ResultInfo {
+        super::Annie::parse(url, Self::real_url)
     }
 }
