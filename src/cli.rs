@@ -37,13 +37,13 @@ pub fn b2m() -> App<'static, 'static> {
             .long("info")
             .short("i")
             .multiple(true)
+            .default_value_if("json", None, "")
     )
         .arg(Arg::with_name("json")
             .help("Print stdout in json")
             .long("json")
             .short("j")
             .multiple(true)
-            .requires("info-only")
     )
 }
 #[inline]
