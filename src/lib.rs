@@ -24,6 +24,10 @@ pub struct MediaInfo {
 
 impl MediaInfo {
     pub fn play(&self) -> Res<()> {
+        self.as_command()?.output()?;
+        Ok(())
+    }
+    pub fn as_command(&self) -> Res<process::Command> {
         let Url { videos, audios } = &self.url;
         let mut cmd = process::Command::new("mpv");
         if let Some(urls) = videos {
@@ -42,7 +46,7 @@ impl MediaInfo {
             for i in urls {
                 cmd.arg(i);
             }
-            cmd.arg("--force-window");
+            cmd.arg("--force-window=yes");
         } else {
             return Err(err_msg(format!("No urls to play")));
         }
@@ -52,9 +56,8 @@ impl MediaInfo {
         if let Some(title) = &self.title {
             cmd.arg(format!("--title={}", title));
         }
-        cmd.arg("--no-ytdl")
-            .output()?;
-        Ok(())
+        cmd.arg("--no-ytdl");
+        Ok(cmd)
     }
 }
 

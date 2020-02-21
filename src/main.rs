@@ -14,19 +14,23 @@ fn main() -> Result<(), Error> {
         process::exit(0);
     }
     let url = matches.value_of("url").expect("Invaild input");
-    let mut media = parse(url)?;
-    // need to improve
-    if matches.is_present("no-audio") {
-        media.url.audios = None;
-    }
-    if matches.is_present("no-video") {
-        media.url.videos = None;
-    }
+    let media = parse(url)?;
     if matches.is_present("info-only") {
         print_info(media, matches.is_present("json"));
         process::exit(0);
     }
-    media.play()
+    let mut commands = media.as_command()?;
+    if matches.is_present("no-audio") {
+        commands.arg("--ao=null");
+    }
+    // --vn doesn't work well
+    if matches.is_present("no-video") {
+        commands.arg("--vo=null");
+        commands.arg("--force-window=immediate");
+    }
+    println!("{:?}", commands);
+    commands.output()?;
+    Ok(())
 }
 fn check() {
     println!("Running checking");

@@ -28,7 +28,7 @@ pub fn b2m() -> App<'static, 'static> {
             .multiple(true)
     )
         .arg(Arg::with_name("no-video")
-            .help("Play without video output (may not work properly)")
+            .help("Play without video output (It is not recommended and may not work properly)")
             .long("vn")
             .multiple(true)
     )
