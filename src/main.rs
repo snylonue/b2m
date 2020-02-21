@@ -15,17 +15,17 @@ fn main() -> Result<(), Error> {
     }
     let url = matches.value_of("url").expect("Invaild input");
     let media = parse(url)?;
-    if matches.is_present("info-only") {
+    if matches.is_present("info") {
         print_info(media, matches.is_present("json"));
         process::exit(0);
     }
     let mut commands = media.as_command()?;
     if matches.is_present("no-audio") {
         commands.arg("--ao=null");
+        commands.arg("--no-audio");
     }
-    // --vn doesn't work well
     if matches.is_present("no-video") {
-        commands.arg("--vo=null");
+        commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
     println!("{:?}", commands);
