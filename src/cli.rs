@@ -3,7 +3,7 @@ use clap::App;
 use clap::SubCommand;
 
 pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.12.0";
+pub const VERSION: &str = "0.13.0";
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
 
 #[inline]
