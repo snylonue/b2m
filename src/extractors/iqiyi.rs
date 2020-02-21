@@ -4,15 +4,13 @@ use super::Extractor;
 use super::Parser;
 use super::Url;
 
-const YOU_GET_DISPLAYS: [&str; 6] = ["TD_H265", "TD", "HD_H265", "HD", "SD", "LD"];
-const ANNIE_DISPLAYS: [&str; 4] = ["5", "4", "2", "1"];
-
 pub struct YouGet;
 pub struct Annie;
 
 impl YouGet {
+    const DISPLAYS: [&'static str; 6] = ["TD_H265", "TD", "HD_H265", "HD", "SD", "LD"];
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_displays(&value["streams"], &YOU_GET_DISPLAYS)?;
+        let (_, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
         let video_url = stream["src"]
             .as_array()?
             .iter()
@@ -33,8 +31,9 @@ impl Extractor for YouGet {
     }
 }
 impl Annie {
+    const DISPLAYS: [&'static str; 4] = ["5", "4", "2", "1"];
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = super::search_displays(value, &ANNIE_DISPLAYS)?;
+        let (_, stream) = super::search_displays(value, &Self::DISPLAYS)?;
         let video_url = stream["urls"]
             .as_array()?
             .iter()

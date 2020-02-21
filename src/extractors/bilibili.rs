@@ -5,16 +5,14 @@ use super::Url;
 use super::Extractor;
 use super::Parser;
 
-const YOU_GET_DISPLAYS: [&str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
-const ANNIE_DISPLAYS: [&str; 4] = ["80", "64", "32", "16"];
-
 pub struct YouGet;
 pub struct Annie;
 
 impl YouGet {
+    const DISPLAYS: [&'static str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
     fn real_url(value: &Value) -> Option<Url> {
         //json['streams'] is ordered with BTreeMap
-        let (dp, stream) = search_displays(&value["streams"], &YOU_GET_DISPLAYS)?;
+        let (dp, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
         if dp.matches("dash").next().is_some() {
             let dash_url = stream["src"].as_array()?;
             let video_url = vec![value_to_string!(dash_url[0][0])?];
@@ -43,8 +41,9 @@ impl Extractor for YouGet {
     }
 }
 impl Annie {
+    const DISPLAYS: [&'static str; 4] = ["80", "64", "32", "16"];
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_displays(&value["streams"], &ANNIE_DISPLAYS)?;
+        let (_, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
         let urls = stream["urls"]
             .as_array()?
             .iter()
