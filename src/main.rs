@@ -28,7 +28,6 @@ fn main() -> Result<(), Error> {
         commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
-    println!("{:?}", commands);
     commands.output()?;
     Ok(())
 }
