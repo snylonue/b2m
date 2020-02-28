@@ -53,7 +53,7 @@ fn check() {
     }
 }
 fn print_info(media: MediaInfo, json: bool) {
-    let MediaInfo { url: extractors::Url { videos, audios }, title, referrer } = media;
+    let MediaInfo { url: parsers::Url { videos, audios }, title, referrer } = media;
     if json {
         let j = json!({
             "video": videos,

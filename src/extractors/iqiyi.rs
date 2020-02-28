@@ -1,8 +1,8 @@
 use serde_json::Value;
 use super::search_displays;
 use super::Extractor;
-use super::Parser;
-use super::Url;
+use crate::parsers::Parser;
+use crate::parsers::Url;
 
 pub struct YouGet;
 pub struct Annie;
@@ -27,7 +27,7 @@ impl Extractor for YouGet {
     }
     #[inline]
     fn extract(url: &str) -> super::ResultInfo {
-        super::YouGet::parse(url, Self::real_url)
+        crate::parsers::youget::YouGet::parse(url, Self::real_url)
     }
 }
 impl Annie {
@@ -50,6 +50,6 @@ impl Extractor for Annie {
     }
     #[inline]
     fn extract(url: &str) -> super::ResultInfo {
-        super::Annie::parse(url, Self::real_url)
+        crate::parsers::annie::Annie::parse(url, Self::real_url)
     }
 }

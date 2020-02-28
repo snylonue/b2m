@@ -1,3 +1,33 @@
+#[macro_export]
+macro_rules! value_to_string {
+    ($v: expr) => {
+        match $v {
+            serde_json::Value::String(ref s) => Some(s.clone()),
+            _ => None,
+        }
+    };
+    ($v: expr, $or: expr) => {
+        match $v {
+            serde_json::Value::String(ref s) => Some(s.clone()),
+            _ => $crate::value_to_string!($or),
+        }
+    };
+}
+#[macro_export]
+macro_rules! parse_json {
+    ($s: expr) => {
+        match serde_json::from_str($s) {
+            Ok(v) => v,
+            Err(e) => return Err(failure::err_msg(format!("Failed to deserialize: {}", e))),
+        }
+    };
+    ($s: expr, $err_msg: expr) => {
+        match serde_json::from_str($s) {
+            Ok(v) => v,
+            Err(_) => return Err($err_msg),
+        }
+    };
+}
 macro_rules! find_parser {
     ($url: expr, $site: ident, $extractor: ident) => {
         if $crate::extractors::$site::$extractor::is_support($url) {
@@ -6,12 +36,13 @@ macro_rules! find_parser {
     };
 }
 
-pub mod extractors;
 pub mod cmd;
+pub mod extractors;
+pub mod parsers;
 
 use failure::err_msg;
 use std::process;
-use extractors::Url;
+use parsers::Url;
 use extractors::Extractor;
 
 type Res<T> = Result<T, failure::Error>;
