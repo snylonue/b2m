@@ -9,22 +9,22 @@ use b2m::*;
 
 fn main() -> Result<(), Error> {
     let matches = cli::b2m().get_matches();
-    if matches.is_present("check") {
+    let config = cli::Config::new(&matches);
+    if config.check {
         check();
         process::exit(0);
     }
-    let url = matches.value_of("url").expect("Invaild input");
-    let media = parse(url)?;
-    if matches.is_present("info") {
-        print_info(media, matches.is_present("json"));
+    let media = parse(config.url)?;
+    if config.info {
+        print_info(media, config.json);
         process::exit(0);
     }
     let mut commands = media.as_command()?;
-    if matches.is_present("no-audio") {
+    if config.no_audio {
         commands.arg("--ao=null");
         commands.arg("--no-audio");
     }
-    if matches.is_present("no-video") {
+    if config.no_video {
         commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
