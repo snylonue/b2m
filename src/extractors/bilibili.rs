@@ -10,6 +10,14 @@ pub struct Annie;
 
 impl YouGet {
     const DISPLAYS: [&'static str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
+}
+impl Extractor for YouGet {
+    fn is_support(url: &str) -> bool {
+        matched!(url, 
+            r"(?:https?://)?(?:www.)?bilibili.com/(?:video/av|bangumi/play/(?:ep|ss))\d",
+            r"(?:https?://)?live.bilibili.com/\d"
+        )
+    }
     fn real_url(value: &Value) -> Option<Url> {
         //json['streams'] is ordered with BTreeMap
         let (dp, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
@@ -27,14 +35,6 @@ impl YouGet {
             Some(Url::new(Some(video_url), None))
         }
     }
-}
-impl Extractor for YouGet {
-    fn is_support(url: &str) -> bool {
-        matched!(url, 
-            r"(?:https?://)?(?:www.)?bilibili.com/(?:video/av|bangumi/play/(?:ep|ss))\d",
-            r"(?:https?://)?live.bilibili.com/\d"
-        )
-    }
     #[inline]
     fn extract(url: &str) -> super::ResultInfo {
         crate::parsers::youget::YouGet::parse(url, Self::real_url)
@@ -42,6 +42,13 @@ impl Extractor for YouGet {
 }
 impl Annie {
     const DISPLAYS: [&'static str; 4] = ["80", "64", "32", "16"];
+}
+impl Extractor for Annie {
+    fn is_support(url: &str) -> bool {
+        matched!(url, 
+            r"(?:https?://)?(?:www.)?bilibili.com/(?:video/av|bangumi/play/ep)\d"
+        )
+    }
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
         let urls = stream["urls"]
@@ -50,13 +57,6 @@ impl Annie {
             .filter_map(|x| value_to_string!(x["url"]))
             .collect();
         Some(Url::new(Some(urls), None))
-    }
-}
-impl Extractor for Annie {
-    fn is_support(url: &str) -> bool {
-        matched!(url, 
-            r"(?:https?://)?(?:www.)?bilibili.com/(?:video/av|bangumi/play/ep)\d"
-        )
     }
     #[inline]
     fn extract(url: &str) -> super::ResultInfo {

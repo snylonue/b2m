@@ -21,16 +21,13 @@ pub mod bilibili;
 pub mod iqiyi;
 
 use serde_json::Value;
+use crate::parsers::Url;
 
 type ResultInfo = super::Res<super::MediaInfo>;
 
-pub struct Url {
-    pub videos: Option<Vec<String>>,
-    pub audios: Option<Vec<String>>,
-}
-
 pub trait Extractor {
     fn is_support(url: &str)  -> bool;
+    fn real_url(value: &Value) -> Option<Url>;
     fn extract(url: &str) -> ResultInfo;
 }
 
