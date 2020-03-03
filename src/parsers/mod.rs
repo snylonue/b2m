@@ -34,4 +34,7 @@ impl Url {
     pub fn with_all(videos: Vec<String>, audios: Vec<String>) -> Self {
         Self::new(Some(videos), Some(audios))
     }
+    pub fn with_videos(videos: Vec<String>) -> Self {
+        Self::new(Some(videos), None)
+    }
 }

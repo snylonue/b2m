@@ -32,7 +32,7 @@ impl Extractor for YouGet {
                 .iter()
                 .filter_map(|x| value_to_string!(x))
                 .collect();
-            Some(Url::new(Some(video_url), None))
+            Some(Url::with_videos(video_url))
         }
     }
     #[inline]
@@ -56,7 +56,7 @@ impl Extractor for Annie {
             .iter()
             .filter_map(|x| value_to_string!(x["url"]))
             .collect();
-        Some(Url::new(Some(urls), None))
+        Some(Url::with_videos(urls))
     }
     #[inline]
     fn extract(url: &str) -> super::ResultInfo {
