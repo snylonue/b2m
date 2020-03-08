@@ -17,7 +17,6 @@ impl<'a> ProxyAddr<'a> {
     pub fn from_str(s: &'a str) -> super::Res<Self> {
         let splits = {
             let mut splits = s.split("://");
-            // expect a to be protocal, b to be address(required)
             let (pt, addr) = (splits.next(), splits.next());
             if let Some(_) = addr {
                 (pt, addr)
@@ -26,8 +25,8 @@ impl<'a> ProxyAddr<'a> {
             }
         };
         match splits {
-            (Some(addr), Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
-            (Some(addr), None) => Ok(Self::from_addr(addr.parse()?)),
+            (Some(protocal), Some(addr)) => Ok(Self::new(addr.parse()?, protocal)),
+            (None, Some(addr)) => Ok(Self::from_addr(addr.parse()?)),
             _ => Err(failure::err_msg("Invailed proxy address syntax"))
         }
     }
