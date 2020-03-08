@@ -13,19 +13,30 @@ macro_rules! value_to_string {
         }
     };
 }
-#[macro_export]
-macro_rules! parse_json {
+macro_rules! try_do {
     ($s: expr) => {
-        match serde_json::from_str($s) {
+        match $s {
             Ok(v) => v,
-            Err(e) => return Err(failure::err_msg(format!("Failed to deserialize: {}", e))),
+            Err(e) => return Err(failure::err_msg(e.to_string())),
         }
     };
     ($s: expr, $err_msg: expr) => {
-        match serde_json::from_str($s) {
+        match $s {
             Ok(v) => v,
-            Err(_) => return Err($err_msg),
+            Err(_) => return Err(failure::err_msg($err_msg)),
         }
+    };
+    ($s: expr; $err_msg: expr) => {
+        match $s {
+            Ok(v) => v,
+            Err(e) => return Err(failure::err_msg(format!($err_msg, e))),
+        }
+    };
+}
+#[macro_export]
+macro_rules! parse_json {
+    ($s: expr) => {
+        try_do!(serde_json::from_str($s); "Failed to deserialize: {}")
     };
 }
 macro_rules! find_parser {
