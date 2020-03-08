@@ -2,6 +2,7 @@ use clap::Arg;
 use clap::App;
 use clap::SubCommand;
 use clap::ArgMatches;
+use crate::proxy;
 
 pub const NAME: &str = "mpv-bilibili";
 pub const VERSION: &str = "0.14.0";
@@ -14,20 +15,23 @@ pub struct Config<'a> {
     pub no_video: bool,
     pub info: bool,
     pub json: bool,
+    pub proxy: Option<proxy::ProxyAddr<'a>>,
 }
 
 impl<'a> Config<'a> {
-    pub fn new(args: &'a ArgMatches) -> Self {
+    pub fn new(args: &'a ArgMatches) -> crate::Res<Self> {
         let url = args.value_of("url").expect("Invaild input");
         let check = args.is_present("check");
-        let mut info = args.is_present("info-only");
         let json = args.is_present("json");
+        let info = json || args.is_present("info-only");
         let no_audio = args.is_present("no-audio");
         let no_video = args.is_present("no-video");
-        if json {
-            info = true;
-        }
-        Self { url, check, no_audio, no_video, info, json }
+        let proxy = if let Some(p) = args.value_of("proxy") {
+            Some(proxy::ProxyAddr::from_str(p)?)
+        } else {
+            None
+        };
+        Ok(Self { url, check, no_audio, no_video, info, json, proxy })
     }
 }
 

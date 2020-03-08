@@ -9,7 +9,7 @@ use b2m::*;
 
 fn main() -> Result<(), Error> {
     let matches = cli::b2m().get_matches();
-    let config = cli::Config::new(&matches);
+    let config = cli::Config::new(&matches)?;
     if config.check {
         check();
         process::exit(0);

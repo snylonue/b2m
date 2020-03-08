@@ -36,6 +36,7 @@ macro_rules! find_parser {
     };
 }
 
+pub mod proxy;
 pub mod cmd;
 pub mod extractors;
 pub mod parsers;
@@ -45,7 +46,7 @@ use std::process;
 use parsers::Url;
 use extractors::Extractor;
 
-type Res<T> = Result<T, failure::Error>;
+pub type Res<T> = Result<T, failure::Error>;
 
 pub struct MediaInfo {
     pub url: Url,
