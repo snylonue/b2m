@@ -29,15 +29,15 @@ macro_rules! parse_json {
     };
 }
 macro_rules! find_parser {
-    ($url: expr, $site: ident, $extractor: ident) => {
+    ($url: expr, $site: ident, $extractor: ident, $proxy: expr) => {
         if $crate::extractors::$site::$extractor::is_support($url) {
-            return $crate::extractors::$site::$extractor::extract($url);
+            return $crate::extractors::$site::$extractor::extract($url, $proxy);
         }
     };
 }
 
 pub mod proxy;
-pub mod cmd;
+pub mod command;
 pub mod extractors;
 pub mod parsers;
 
@@ -93,10 +93,10 @@ impl MediaInfo {
     }
 }
 
-pub fn parse(url: &str) -> Res<MediaInfo> {
-    find_parser!(url, bilibili, Annie);
-    find_parser!(url, bilibili, YouGet);
-    find_parser!(url, iqiyi, Annie);
-    find_parser!(url, iqiyi, YouGet);
+pub fn parse(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<MediaInfo> {
+    find_parser!(url, bilibili, Annie, pxy);
+    find_parser!(url, bilibili, YouGet, pxy);
+    find_parser!(url, iqiyi, Annie, pxy);
+    find_parser!(url, iqiyi, YouGet, pxy);
     Err(err_msg("Unsupport url"))
 }

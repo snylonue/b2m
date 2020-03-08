@@ -14,7 +14,7 @@ fn main() -> Result<(), Error> {
         check();
         process::exit(0);
     }
-    let media = parse(config.url)?;
+    let media = parse(config.url, &config.proxy)?;
     if config.info {
         print_info(media, config.json);
         process::exit(0);

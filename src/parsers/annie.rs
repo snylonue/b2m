@@ -1,18 +1,23 @@
 use serde_json::Value;
 use std::process;
+use super::proxy;
 use super::Parser;
 use super::Res;
-use super::super::cmd;
+use super::super::command;
 
 pub struct Annie;
 
 impl Parser for Annie {
-    fn run(url: &str) -> Res<Value> {
-        let (stdout, _) = cmd::run_command(process::Command::new("annie")
-            .arg("-j")
+    fn run(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<Value> {
+        let mut cmd = process::Command::new("annie");
+        cmd.arg("-j")
             .arg(url)
-            .stderr(process::Stdio::null())
-        )?;
+            .stderr(process::Stdio::null());
+        if let Some(pxy) = pxy {
+            cmd.env("HTTP_PROXY", pxy.to_string());
+        }
+        println!("{:?}", cmd);
+        let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(parse_json!(&stdout))
     }
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>) {

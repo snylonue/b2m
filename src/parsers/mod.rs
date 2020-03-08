@@ -3,6 +3,7 @@ pub mod annie;
 
 use serde_json::Value;
 use super::Res;
+use super::proxy;
 
 type ResultInfo = super::Res<super::MediaInfo>;
 
@@ -12,12 +13,12 @@ pub struct Url {
 }
 
 pub trait Parser {
-    fn run(url: &str) -> Res<Value>;
+    fn run(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<Value>;
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
-    fn parse<F>(url: &str, extractor: F) -> ResultInfo
+    fn parse<F>(url: &str, extractor: F, pxy: &Option<proxy::ProxyAddr>) -> ResultInfo
         where F: Fn(&Value) -> Option<Url>
     {
-        let infos = Self::run(url)?;
+        let infos = Self::run(url, pxy)?;
         let url = match extractor(&infos) {
             Some(url) => url,
             None => return Err(failure::err_msg("Failed to parse stdout as url")),

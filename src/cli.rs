@@ -75,6 +75,12 @@ pub fn b2m() -> App<'static, 'static> {
             .short("j")
             .multiple(true)
     )
+        .arg(Arg::with_name("proxy")
+            .help("Set proxy address")
+            .long("proxy")
+            .short("p")
+            .takes_value(true)
+    )
 }
 #[inline]
 #[allow(dead_code)]
