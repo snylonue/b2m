@@ -107,6 +107,7 @@ impl MediaInfo {
 pub fn parse(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<MediaInfo> {
     find_parser!(url, bilibili, Annie, pxy);
     find_parser!(url, bilibili, YouGet, pxy);
+    find_parser!(url, youtube, Annie, pxy);
     find_parser!(url, iqiyi, Annie, pxy);
     find_parser!(url, iqiyi, YouGet, pxy);
     Err(err_msg("Unsupport url"))

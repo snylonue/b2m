@@ -19,6 +19,7 @@ macro_rules! matched {
 
 pub mod bilibili;
 pub mod iqiyi;
+pub mod youtube;
 
 use serde_json::Value;
 use super::proxy;

@@ -16,7 +16,6 @@ impl Parser for Annie {
         if let Some(pxy) = pxy {
             cmd.env("HTTP_PROXY", pxy.to_string());
         }
-        println!("{:?}", cmd);
         let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(parse_json!(&stdout))
     }
