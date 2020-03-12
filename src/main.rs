@@ -28,6 +28,9 @@ fn main() -> Result<(), Error> {
         commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
+    if let Some(proxy) = config.proxy {
+        commands.env("HTTP_PROXT", proxy.to_string());
+    }
     commands.output()?;
     Ok(())
 }

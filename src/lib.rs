@@ -36,7 +36,7 @@ macro_rules! try_do {
 #[macro_export]
 macro_rules! parse_json {
     ($s: expr) => {
-        try_do!(serde_json::from_str($s); "Failed to deserialize: {}")
+        try_do!(serde_json::from_str($s), format!("Failed to deserialize json data: {}", $s))
     };
 }
 macro_rules! find_parser {
