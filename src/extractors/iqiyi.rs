@@ -1,5 +1,5 @@
 use serde_json::Value;
-use super::search_displays;
+use super::search_by_keys;
 use super::Extractor;
 use crate::proxy::ProxyAddr;
 use crate::parsers::Parser;
@@ -18,7 +18,7 @@ impl Extractor for YouGet {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = super::search_displays(value, &Self::DISPLAYS)?;
+        let (_, stream) = super::search_by_keys(value, &Self::DISPLAYS)?;
         let video_url = stream["urls"]
             .as_array()?
             .iter()
@@ -41,7 +41,7 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
+        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         let video_url = stream["src"]
             .as_array()?
             .iter()

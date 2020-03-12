@@ -1,6 +1,6 @@
 use serde_json::Value;
 use regex;
-use super::search_displays;
+use super::search_by_keys;
 use super::Extractor;
 use crate::proxy::ProxyAddr;
 use crate::parsers::Parser;
@@ -21,7 +21,7 @@ impl Extractor for YouGet {
     }
     fn real_url(value: &Value) -> Option<Url> {
         //json['streams'] is ordered with BTreeMap
-        let (dp, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
+        let (dp, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         if dp.matches("dash").next().is_some() {
             let dash_url = stream["src"].as_array()?;
             let video_url = vec![value_to_string!(dash_url[0][0])?];
@@ -51,7 +51,7 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_displays(&value["streams"], &Self::DISPLAYS)?;
+        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         let urls = stream["urls"]
             .as_array()?
             .iter()
