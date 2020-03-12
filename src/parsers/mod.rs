@@ -24,7 +24,7 @@ pub trait Parser {
             None => return Err(failure::err_msg("Failed to parse stdout as url")),
         };
         let (referrer, title) = Self::extract_infos(&infos);
-        Ok(super::MediaInfo { url, referrer, title })
+        Ok(super::MediaInfo::default_ua(url, title, referrer))
     }
 }
 
