@@ -29,7 +29,7 @@ fn main() -> Result<(), Error> {
         commands.arg("--force-window=immediate");
     }
     if let Some(proxy) = config.proxy {
-        commands.env("HTTP_PROXT", proxy.to_string());
+        commands.env("HTTP_PROXY", proxy.to_string());
     }
     commands.output()?;
     Ok(())
@@ -56,13 +56,14 @@ fn check() {
     }
 }
 fn print_info(media: MediaInfo, json: bool) {
-    let MediaInfo { url: parsers::Url { videos, audios }, title, referrer } = media;
+    let MediaInfo { url: parsers::Url { videos, audios }, title, referrer, user_agent } = media;
     if json {
         let j = json!({
             "video": videos,
             "audio": audios,
             "title": title,
             "referrer": referrer,
+            "user-agent": user_agent,
         });
         println!("{}", j.to_string());
     } else {
@@ -70,5 +71,6 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("audio: {:#?}", serde_json::to_string(&audios).unwrap());
         println!("title: {}", title.unwrap_or_else(|| String::new()));
         println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
+        println!("user-agent: {}", user_agent.unwrap_or_else(|| String::new()));
     }
 }

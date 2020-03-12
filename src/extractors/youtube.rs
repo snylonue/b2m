@@ -20,7 +20,8 @@ impl Extractor for Annie {
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = super::search_displays(&value["streams"], &Self::DISPLAYS)?;
         let video_url = value_to_string!(stream["urls"][0]["url"])?;
-        Some(Url::with_videos(vec![video_url]))
+        let audio_url = value_to_string!(stream["urls"][1]["url"])?;
+        Some(Url::with_all(vec![video_url], vec![audio_url]))
     }
     fn extract(url: &str, pxy: &Option<ProxyAddr>) -> super::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, pxy)
