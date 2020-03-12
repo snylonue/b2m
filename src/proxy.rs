@@ -1,6 +1,7 @@
 use std::net::SocketAddr;
 use std::fmt;
 use std::convert::TryFrom;
+use super::Res;
 
 pub struct ProxyAddr<'a> {
     addr: SocketAddr,
@@ -14,19 +15,11 @@ impl<'a> ProxyAddr<'a> {
     pub fn from_addr(addr: SocketAddr) -> Self {
         Self { addr, protocal: "http" }
     }
-    pub fn from_str(s: &'a str) -> super::Res<Self> {
-        let splits = {
-            let mut splits = s.split("://");
-            let (pt, addr) = (splits.next(), splits.next());
-            if let Some(_) = addr {
-                (pt, addr)
-            } else {
-                (None, pt)
-            }
-        };
-        match splits {
-            (Some(protocal), Some(addr)) => Ok(Self::new(addr.parse()?, protocal)),
-            (None, Some(addr)) => Ok(Self::from_addr(addr.parse()?)),
+    pub fn from_str(s: &'a str) -> Res<Self> {
+        let mut splits = s.rsplit("://");
+        match (splits.next(), splits.next()) {
+            (Some(addr),Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
+            (Some(addr), None) => Ok(Self::from_addr(addr.parse()?)),
             _ => Err(failure::err_msg("Invailed proxy address syntax"))
         }
     }
