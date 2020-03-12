@@ -18,7 +18,7 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = super::search_displays(value, &Self::DISPLAYS)?;
+        let (_, stream) = super::search_displays(&value["streams"], &Self::DISPLAYS)?;
         let video_url = value_to_string!(stream["urls"][0]["url"])?;
         Some(Url::with_videos(vec![video_url]))
     }
