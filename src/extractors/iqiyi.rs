@@ -1,7 +1,7 @@
 use serde_json::Value;
 use super::search_displays;
 use super::Extractor;
-use crate::proxy;
+use crate::proxy::ProxyAddr;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 
@@ -27,7 +27,7 @@ impl Extractor for YouGet {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, pxy: &Option<proxy::ProxyAddr>) -> super::ResultInfo {
+    fn extract(url: &str, pxy: &Option<ProxyAddr>) -> super::ResultInfo {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, pxy)
     }
 }
@@ -50,7 +50,7 @@ impl Extractor for Annie {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, pxy: &Option<proxy::ProxyAddr>) -> super::ResultInfo {
+    fn extract(url: &str, pxy: &Option<ProxyAddr>) -> super::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, pxy)
     }
 }

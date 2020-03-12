@@ -1,6 +1,6 @@
 use serde_json::Value;
 use super::Extractor;
-use crate::proxy;
+use crate::proxy::ProxyAddr;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 
@@ -22,7 +22,7 @@ impl Extractor for Annie {
         let video_url = value_to_string!(stream["urls"][0]["url"])?;
         Some(Url::with_videos(vec![video_url]))
     }
-    fn extract(url: &str, pxy: &Option<proxy::ProxyAddr>) -> super::ResultInfo {
+    fn extract(url: &str, pxy: &Option<ProxyAddr>) -> super::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, pxy)
     }
 }

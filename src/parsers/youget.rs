@@ -1,14 +1,14 @@
 use serde_json::Value;
 use std::process;
-use super::proxy;
 use super::Parser;
 use super::Res;
 use super::super::command;
+use crate::proxy::ProxyAddr;
 
 pub struct YouGet;
 
 impl Parser for YouGet {
-    fn run(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<Value> {
+    fn run(url: &str, pxy: &Option<ProxyAddr>) -> Res<Value> {
         let mut cmd = process::Command::new("you-get");
         cmd.arg(url)
             .arg("--json")

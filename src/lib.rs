@@ -54,6 +54,7 @@ pub mod parsers;
 
 use failure::err_msg;
 use std::process;
+use proxy::ProxyAddr;
 use parsers::Url;
 use extractors::Extractor;
 
@@ -114,7 +115,7 @@ impl MediaInfo {
     }
 }
 
-pub fn parse(url: &str, pxy: &Option<proxy::ProxyAddr>) -> Res<MediaInfo> {
+pub fn parse(url: &str, pxy: &Option<ProxyAddr>) -> Res<MediaInfo> {
     find_parser!(url, bilibili, Annie, pxy);
     find_parser!(url, bilibili, YouGet, pxy);
     find_parser!(url, youtube, Annie, pxy);
