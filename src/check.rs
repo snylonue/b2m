@@ -1,6 +1,6 @@
 use std::process;
 
-use b2m::cmd::parse_output;
+use crate::command::parse_output;
 
 const UNKNOWN: &str = "unknown";
 

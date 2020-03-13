@@ -1,10 +1,39 @@
 use clap::Arg;
 use clap::App;
 use clap::SubCommand;
+use clap::ArgMatches;
+use crate::proxy::ProxyAddr;
 
 pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.13.0";
+pub const VERSION: &str = "0.15.0";
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
+
+pub struct Config<'a> {
+    pub url: &'a str,
+    pub check: bool,
+    pub no_audio: bool,
+    pub no_video: bool,
+    pub info: bool,
+    pub json: bool,
+    pub proxy: Option<ProxyAddr<'a>>,
+}
+
+impl<'a> Config<'a> {
+    pub fn new(args: &'a ArgMatches) -> crate::Res<Self> {
+        let url = args.value_of("url").expect("Invaild input");
+        let check = args.is_present("check");
+        let json = args.is_present("json");
+        let info = json || args.is_present("info-only");
+        let no_audio = args.is_present("no-audio");
+        let no_video = args.is_present("no-video");
+        let proxy = if let Some(p) = args.value_of("proxy") {
+            Some(ProxyAddr::from_str(p)?)
+        } else {
+            None
+        };
+        Ok(Self { url, check, no_audio, no_video, info, json, proxy })
+    }
+}
 
 #[inline]
 pub fn b2m() -> App<'static, 'static> {
@@ -39,14 +68,18 @@ pub fn b2m() -> App<'static, 'static> {
             .long("info")
             .short("i")
             .multiple(true)
-            .group("info")
     )
         .arg(Arg::with_name("json")
             .help("Print stdout in json")
             .long("json")
             .short("j")
             .multiple(true)
-            .group("info")
+    )
+        .arg(Arg::with_name("proxy")
+            .help("Set proxy address")
+            .long("proxy")
+            .short("p")
+            .takes_value(true)
     )
 }
 #[inline]

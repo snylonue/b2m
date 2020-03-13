@@ -9,26 +9,28 @@ use b2m::*;
 
 fn main() -> Result<(), Error> {
     let matches = cli::b2m().get_matches();
-    if matches.is_present("check") {
+    let config = cli::Config::new(&matches)?;
+    if config.check {
         check();
         process::exit(0);
     }
-    let url = matches.value_of("url").expect("Invaild input");
-    let media = parse(url)?;
-    if matches.is_present("info") {
-        print_info(media, matches.is_present("json"));
+    let media = parse(config.url, &config.proxy)?;
+    if config.info {
+        print_info(media, config.json);
         process::exit(0);
     }
     let mut commands = media.as_command()?;
-    if matches.is_present("no-audio") {
+    if config.no_audio {
         commands.arg("--ao=null");
         commands.arg("--no-audio");
     }
-    if matches.is_present("no-video") {
+    if config.no_video {
         commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
-    println!("{:?}", commands);
+    if let Some(proxy) = config.proxy {
+        commands.env("HTTP_PROXY", proxy.to_string());
+    }
     commands.output()?;
     Ok(())
 }
@@ -54,13 +56,14 @@ fn check() {
     }
 }
 fn print_info(media: MediaInfo, json: bool) {
-    let MediaInfo { url: extractors::Url { videos, audios }, title, referrer } = media;
+    let MediaInfo { url: parsers::Url { videos, audios }, title, referrer, user_agent } = media;
     if json {
         let j = json!({
             "video": videos,
             "audio": audios,
             "title": title,
             "referrer": referrer,
+            "user-agent": user_agent,
         });
         println!("{}", j.to_string());
     } else {
@@ -68,5 +71,6 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("audio: {:#?}", serde_json::to_string(&audios).unwrap());
         println!("title: {}", title.unwrap_or_else(|| String::new()));
         println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
+        println!("user-agent: {}", user_agent.unwrap_or_else(|| String::new()));
     }
 }
