@@ -33,10 +33,10 @@ pub trait Extractor {
     fn extract(url: &str, pxy: &Option<ProxyAddr>) -> ResultInfo;
 }
 
-pub fn search_by_keys<'a>(object: &'a Value, displays: &[&str]) -> Option<(&'a String, &'a Value)> {
+pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
     let object = object.as_object()?;
     let mut res = None;
-    for i in displays.iter() {
+    for i in keys.iter() {
         match object.iter().find(|(x, _)| { x == i }) {
             Some(el) => {
                 res = Some(el);
