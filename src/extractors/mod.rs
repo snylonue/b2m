@@ -34,9 +34,10 @@ pub trait Extractor {
 
 pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
     let object = object.as_object()?;
-    for i in object.iter() {
-        if keys.contains(&i.0.as_str()) {
-            return Some(i)
+    for i in keys.iter() {
+        match object.iter().find(|(x, _)| { x == i }) {
+            Some(el) => return Some(el),
+            None => continue,
         }
     }
     Some(object.iter().next()?)
