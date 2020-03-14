@@ -7,7 +7,6 @@ macro_rules! matched {
         }
     };
     ($url:expr, $($regs: expr),*) => {
-        
         {
             let regs = regex::RegexSet::new(&[
                 $($regs,)*
@@ -35,18 +34,10 @@ pub trait Extractor {
 
 pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
     let object = object.as_object()?;
-    let mut res = None;
-    for i in keys.iter() {
-        match object.iter().find(|(x, _)| { x == i }) {
-            Some(el) => {
-                res = Some(el);
-                break;
-            },
-            None => continue,
+    for i in object.iter() {
+        if keys.contains(&i.0.as_str()) {
+            return Some(i)
         }
     }
-    match res {
-        Some(_) => res,
-        None => Some(object.iter().next()?)
-    }
+    Some(object.iter().next()?)
 }

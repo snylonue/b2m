@@ -21,7 +21,7 @@ pub trait Parser {
         let infos = Self::run(url, pxy)?;
         let url = match extractor(&infos) {
             Some(url) => url,
-            None => return Err(failure::err_msg("Failed to parse stdout as url")),
+            None => return Err(failure::err_msg("No stream is found")),
         };
         let (referrer, title) = Self::extract_infos(&infos);
         Ok(super::MediaInfo::default_ua(url, title, referrer))
