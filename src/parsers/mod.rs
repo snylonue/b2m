@@ -4,8 +4,9 @@ pub mod annie;
 use serde_json::Value;
 use super::Res;
 use super::proxy::ProxyAddr;
+use super::MediaInfo;
 
-type ResultInfo = super::Res<super::MediaInfo>;
+type ResultInfo = Res<MediaInfo>;
 
 pub struct Url {
     pub videos: Option<Vec<String>>,
@@ -24,7 +25,7 @@ pub trait Parser {
             None => return Err(failure::err_msg("No stream is found")),
         };
         let (referrer, title) = Self::extract_infos(&infos);
-        Ok(super::MediaInfo::default_ua(url, title, referrer))
+        Ok(MediaInfo::default_ua(url, title, referrer))
     }
 }
 

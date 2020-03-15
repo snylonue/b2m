@@ -54,6 +54,7 @@ pub mod parsers;
 
 use failure::err_msg;
 use std::process;
+use std::process::Command;
 use proxy::ProxyAddr;
 use parsers::Url;
 use extractors::Extractor;
@@ -78,7 +79,7 @@ impl MediaInfo {
         self.as_command()?.output()?;
         Ok(())
     }
-    pub fn as_command(&self) -> Res<process::Command> {
+    pub fn as_command(&self) -> Res<Command> {
         let Url { videos, audios } = &self.url;
         let mut cmd = process::Command::new("mpv");
         if let Some(urls) = videos {
@@ -99,7 +100,7 @@ impl MediaInfo {
             }
             cmd.arg("--force-window=yes");
         } else {
-            return Err(err_msg(format!("No urls to play")));
+            return Err(err_msg("No urls to play"));
         }
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));
