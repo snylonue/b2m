@@ -23,7 +23,7 @@ macro_rules! try_do {
     ($s: expr, $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(_) => return Err(failure::err_msg($err_msg)),
+            Err(_) => return Err(failure::err_msg($err_msg.replace('\n', " "))),
         }
     };
     ($s: expr; $err_msg: expr) => {
@@ -36,7 +36,7 @@ macro_rules! try_do {
 #[macro_export]
 macro_rules! parse_json {
     ($s: expr) => {
-        try_do!(serde_json::from_str($s), format!("Failed to deserialize json data: {}", $s))
+        try_do!(serde_json::from_str($s), format!("Invalid json data: {}", $s))
     };
 }
 macro_rules! find_parser {

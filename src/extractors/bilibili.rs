@@ -14,7 +14,7 @@ impl YouGet {
 }
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
-        matched!(url, 
+        matched!(url,
             r"(?:https?://)?(?:www\.)?bilibili\.com/(?:video/av|bangumi/play/(?:ep|ss))\d",
             r"(?:https?://)?live\.bilibili\.com/\d"
         )
