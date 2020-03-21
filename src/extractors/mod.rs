@@ -27,7 +27,7 @@ use super::parsers::Url;
 type ResultInfo = super::Res<super::MediaInfo>;
 
 pub trait Extractor {
-    fn is_support(url: &str)  -> bool;
+    fn is_support(url: &str) -> bool;
     fn real_url(value: &Value) -> Option<Url>;
     fn extract(url: &str, pxy: &Option<ProxyAddr>) -> ResultInfo;
 }

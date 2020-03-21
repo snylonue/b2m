@@ -120,10 +120,10 @@ impl MediaInfo {
 }
 
 pub fn parse(url: &str, pxy: &Option<ProxyAddr>) -> Res<MediaInfo> {
-    find_parser!(url, bilibili, Annie, pxy);
-    find_parser!(url, bilibili, YouGet, pxy);
-    find_parser!(url, youtube, Annie, pxy);
-    find_parser!(url, iqiyi, Annie, pxy);
-    find_parser!(url, iqiyi, YouGet, pxy);
+    #[cfg(feature= "annie")]find_parser!(url, bilibili, Annie, pxy);
+    #[cfg(feature= "youget")]find_parser!(url, bilibili, YouGet, pxy);
+    #[cfg(feature= "annie")]find_parser!(url, youtube, Annie, pxy);
+    #[cfg(feature= "annie")]find_parser!(url, iqiyi, Annie, pxy);
+    #[cfg(feature= "youget")]find_parser!(url, iqiyi, YouGet, pxy);
     Err(err_msg("Unsupport url"))
 }

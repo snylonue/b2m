@@ -14,3 +14,8 @@ regex = "1"
 
 [profile.release]
 lto = true
+
+[features]
+default = ["annie", "youget"]
+annie = []
+youget = []
