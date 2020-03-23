@@ -1,4 +1,6 @@
 use std::net::SocketAddr;
+use std::net::IpAddr;
+use std::net::Ipv4Addr;
 use std::fmt;
 use std::convert::TryFrom;
 use super::Res;
@@ -9,10 +11,10 @@ pub struct ProxyAddr<'a> {
 }
 
 impl<'a> ProxyAddr<'a> {
-    pub fn new(addr: SocketAddr, protocal: &'a str) -> Self {
+    pub const fn new(addr: SocketAddr, protocal: &'a str) -> Self {
         Self { addr, protocal }
     }
-    pub fn from_addr(addr: SocketAddr) -> Self {
+    pub const fn from_addr(addr: SocketAddr) -> Self {
         Self { addr, protocal: "http" }
     }
     pub fn from_str(s: &'a str) -> Res<Self> {
@@ -35,5 +37,10 @@ impl<'a> TryFrom<&'a str> for ProxyAddr<'a> {
     #[inline]
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
         Self::from_str(value)
+    }
+}
+impl<'a> Default for ProxyAddr<'a> {
+    fn default() -> Self {
+        Self::from_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 1080))
     }
 }
