@@ -13,11 +13,11 @@ macro_rules! value_to_string {
         }
     };
 }
-macro_rules! try_do {
+macro_rules! try_get {
     ($s: expr) => {
         match $s {
             Ok(v) => v,
-            Err(e) => return Err(failure::err_msg(e.to_string())),
+            Err(e) => return Err(e),
         }
     };
     ($s: expr, $err_msg: expr) => {
@@ -29,14 +29,14 @@ macro_rules! try_do {
     ($s: expr; $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(e) => return Err(failure::err_msg(format!($err_msg, e))),
+            Err(e) => return Err(failure::err_msg(format!($err_msg, e).replace('\n', " "))),
         }
     };
 }
 #[macro_export]
 macro_rules! parse_json {
     ($s: expr) => {
-        try_do!(serde_json::from_str($s), format!("Invalid json data: {}", $s))
+        try_get!(serde_json::from_str($s), format!("Invalid json data: {}", $s))
     };
 }
 macro_rules! find_parser {

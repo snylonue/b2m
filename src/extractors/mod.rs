@@ -32,6 +32,7 @@ pub trait Extractor {
     fn extract(url: &str, setting: &Setting) -> ResultInfo;
 }
 
+/// Searches an object with given keys in order, returns the first exist key and its value
 pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
     let object = object.as_object()?;
     for i in keys.iter() {

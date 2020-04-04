@@ -8,6 +8,7 @@ use crate::Setting;
 
 type ResultInfo = Res<MediaInfo>;
 
+/// A struct that contains two kinds of urls
 pub struct Url {
     pub videos: Option<Vec<String>>,
     pub audios: Option<Vec<String>>,
@@ -15,9 +16,10 @@ pub struct Url {
 
 pub trait Parser {
     fn run(url: &str, setting: &Setting) -> Res<Value>;
+    /// Returns a tuple like (Some(referrer), Some(title))
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
     fn parse<F>(url: &str, extractor: F, setting: &Setting) -> ResultInfo
-        where F: Fn(&Value) -> Option<Url>
+        where F: FnOnce(&Value) -> Option<Url>
     {
         let infos = Self::run(url, setting)?;
         let url = match extractor(&infos) {
