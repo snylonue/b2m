@@ -40,9 +40,9 @@ macro_rules! parse_json {
     };
 }
 macro_rules! find_parser {
-    ($url: expr, $site: ident, $extractor: ident, $proxy: expr) => {
+    ($url: expr, $site: ident, $extractor: ident, $setting: expr) => {
         if $crate::extractors::$site::$extractor::is_support($url) {
-            return $crate::extractors::$site::$extractor::extract($url, $proxy);
+            return $crate::extractors::$site::$extractor::extract($url, $setting);
         }
     };
 }
@@ -66,6 +66,10 @@ pub struct MediaInfo {
     pub title: Option<String>,
     pub referrer: Option<String>,
     pub user_agent: Option<String>,
+}
+pub struct Setting<'a> {
+    pub proxy_addr: Option<ProxyAddr<'a>>,
+    pub cookie: Option<&'a str>,
 }
 
 impl MediaInfo {
@@ -101,7 +105,7 @@ impl MediaInfo {
             for i in urls {
                 cmd.arg(i);
             }
-            cmd.arg("--force-window=yes");
+            cmd.arg("--force-window=immediate");
         } else {
             return Err(err_msg("No urls to play"));
         }
@@ -118,12 +122,27 @@ impl MediaInfo {
         Ok(cmd)
     }
 }
+impl<'a> From<ProxyAddr<'a>> for Setting<'a> {
+    fn from(proxy_addr: ProxyAddr<'a>) -> Setting<'a> {
+       Setting { proxy_addr: Some(proxy_addr), cookie: None }
+    }
+}
+impl<'a> From<Option<ProxyAddr<'a>>> for Setting<'a> {
+    fn from(proxy_addr: Option<ProxyAddr<'a>>) -> Setting<'a> {
+       Setting { proxy_addr: proxy_addr, cookie: None }
+    }
+}
+impl<'a> AsRef<Option<ProxyAddr<'a>>> for Setting<'a> {
+    fn as_ref(&self) -> &Option<ProxyAddr<'a>> {
+        &self.proxy_addr
+    }
+}
 
-pub fn parse(url: &str, pxy: &Option<ProxyAddr>) -> Res<MediaInfo> {
-    #[cfg(feature= "annie")]find_parser!(url, bilibili, Annie, pxy);
-    #[cfg(feature= "youget")]find_parser!(url, bilibili, YouGet, pxy);
-    #[cfg(feature= "annie")]find_parser!(url, youtube, Annie, pxy);
-    #[cfg(feature= "annie")]find_parser!(url, iqiyi, Annie, pxy);
-    #[cfg(feature= "youget")]find_parser!(url, iqiyi, YouGet, pxy);
+pub fn parse(url: &str, setting: &Setting) -> Res<MediaInfo> {
+    #[cfg(feature= "annie")]find_parser!(url, bilibili, Annie, setting);
+    #[cfg(feature= "youget")]find_parser!(url, bilibili, YouGet, setting);
+    #[cfg(feature= "annie")]find_parser!(url, youtube, Annie, setting);
+    #[cfg(feature= "annie")]find_parser!(url, iqiyi, Annie, setting);
+    #[cfg(feature= "youget")]find_parser!(url, iqiyi, YouGet, setting);
     Err(err_msg("Unsupport url"))
 }

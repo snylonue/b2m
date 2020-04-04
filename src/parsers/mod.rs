@@ -3,8 +3,8 @@ pub mod annie;
 
 use serde_json::Value;
 use super::Res;
-use super::proxy::ProxyAddr;
 use super::MediaInfo;
+use crate::Setting;
 
 type ResultInfo = Res<MediaInfo>;
 
@@ -14,12 +14,12 @@ pub struct Url {
 }
 
 pub trait Parser {
-    fn run(url: &str, pxy: &Option<ProxyAddr>) -> Res<Value>;
+    fn run(url: &str, setting: &Setting) -> Res<Value>;
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
-    fn parse<F>(url: &str, extractor: F, pxy: &Option<ProxyAddr>) -> ResultInfo
+    fn parse<F>(url: &str, extractor: F, setting: &Setting) -> ResultInfo
         where F: Fn(&Value) -> Option<Url>
     {
-        let infos = Self::run(url, pxy)?;
+        let infos = Self::run(url, setting)?;
         let url = match extractor(&infos) {
             Some(url) => url,
             None => return Err(failure::err_msg("No stream is found")),

@@ -3,18 +3,18 @@ use std::process;
 use super::Parser;
 use super::Res;
 use super::super::command;
-use crate::proxy::ProxyAddr;
+use crate::Setting;
 
 pub struct Annie;
 
 impl Parser for Annie {
-    fn run(url: &str, pxy: &Option<ProxyAddr>) -> Res<Value> {
+    fn run(url: &str, setting: &Setting) -> Res<Value> {
         let mut cmd = process::Command::new("annie");
         cmd.arg("-j")
             .arg(url)
             .stderr(process::Stdio::null());
-        if let Some(pxy) = pxy {
-            cmd.env("HTTP_PROXY", pxy.to_string());
+        if let Some(proxy) = &setting.proxy_addr {
+            cmd.env("HTTP_PROXY", proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(parse_json!(&stdout))

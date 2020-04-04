@@ -14,7 +14,8 @@ fn main() -> Result<(), Error> {
         check();
         process::exit(0);
     }
-    let media = parse(config.url, &config.proxy)?;
+    let settings = config.proxy.into();
+    let media = parse(config.url, &settings)?;
     if config.info {
         print_info(media, config.json);
         process::exit(0);
@@ -28,7 +29,7 @@ fn main() -> Result<(), Error> {
         commands.arg("--no-video");
         commands.arg("--force-window=immediate");
     }
-    if let Some(proxy) = config.proxy {
+    if let Some(proxy) = &settings.proxy_addr {
         commands.env("HTTP_PROXY", proxy.to_string());
     }
     commands.output()?;

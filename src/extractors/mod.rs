@@ -21,7 +21,7 @@ pub mod iqiyi;
 pub mod youtube;
 
 use serde_json::Value;
-use super::proxy::ProxyAddr;
+use super::Setting;
 use super::parsers::Url;
 
 type ResultInfo = super::Res<super::MediaInfo>;
@@ -29,7 +29,7 @@ type ResultInfo = super::Res<super::MediaInfo>;
 pub trait Extractor {
     fn is_support(url: &str) -> bool;
     fn real_url(value: &Value) -> Option<Url>;
-    fn extract(url: &str, pxy: &Option<ProxyAddr>) -> ResultInfo;
+    fn extract(url: &str, setting: &Setting) -> ResultInfo;
 }
 
 pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
