@@ -5,6 +5,7 @@ use std::fmt;
 use std::convert::TryFrom;
 use super::Res;
 
+#[derive(Debug)]
 pub struct ProxyAddr<'a> {
     addr: SocketAddr,
     protocal: &'a str,
