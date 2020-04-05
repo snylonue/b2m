@@ -1,13 +1,12 @@
 mod check;
 mod cli;
 
-use failure::Error;
 use serde_json::json;
 use std::process;
 
 use b2m::*;
 
-fn main() -> Result<(), Error> {
+fn main() -> Res<()> {
     let matches = cli::b2m().get_matches();
     let config = cli::Config::new(&matches)?;
     if config.check {

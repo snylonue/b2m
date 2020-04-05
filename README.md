@@ -10,7 +10,7 @@ cargo install --git https://github.com/snylonue/b2m.git
 b2m -h
 ```
 
-或者 [Python 版(不再维护)](src/bilibili2mpv.py)
+或者 [Python 版(不再维护)](src/b2m.py)
 
 ### 用法
 ```
