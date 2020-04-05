@@ -20,7 +20,7 @@ fn main() -> Result<(), Error> {
         print_info(media, config.json);
         process::exit(0);
     }
-    let mut commands = media.as_command()?;
+    let mut commands = media.as_command();
     if config.no_audio {
         commands.arg("--ao=null");
         commands.arg("--no-audio");

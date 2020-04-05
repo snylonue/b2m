@@ -53,8 +53,8 @@ pub mod extractors;
 pub mod parsers;
 
 use failure::err_msg;
-use std::process;
 use std::process::Command;
+use std::io::Result as IoResult;
 use proxy::ProxyAddr;
 use parsers::Url;
 use extractors::Extractor;
@@ -82,13 +82,14 @@ impl MediaInfo {
     pub fn default_ua(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
         Self::with_ua(url, title, referrer, Some(String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.4 Safari/537.36")))
     }
-    pub fn play(&self) -> Res<()> {
-        self.as_command()?.output()?;
+    pub fn play(&self) -> IoResult<()> {
+        self.as_command().output()?;
         Ok(())
     }
-    pub fn as_command(&self) -> Res<Command> {
+    /// Spwans commands to run mpv
+    pub fn as_command(&self) -> Command {
         let Url { videos, audios } = &self.url;
-        let mut cmd = process::Command::new("mpv");
+        let mut cmd = Command::new("mpv");
         if let Some(urls) = videos {
             for i in urls {
                 cmd.arg(i);
@@ -106,8 +107,6 @@ impl MediaInfo {
                 cmd.arg(i);
             }
             cmd.arg("--force-window=immediate");
-        } else {
-            return Err(err_msg("No urls to play"));
         }
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));
@@ -119,7 +118,7 @@ impl MediaInfo {
             cmd.arg(format!("--user-agent={}", user_agent));
         }
         cmd.arg("--no-ytdl");
-        Ok(cmd)
+        cmd
     }
 }
 impl<'a> From<ProxyAddr<'a>> for Setting<'a> {
