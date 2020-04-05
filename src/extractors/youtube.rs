@@ -14,7 +14,7 @@ impl Annie {
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url,
-            r"(?:https?://)?(?:www\.)?youtube\.com/watch\?v=."
+            r"(?:https://)?(?:www\.)?youtube\.com/watch\?v=."
         )
     }
     fn real_url(value: &Value) -> Option<Url> {

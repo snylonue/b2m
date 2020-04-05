@@ -71,7 +71,7 @@ pub fn b2m() -> App<'static, 'static> {
             .multiple(true)
     )
         .arg(Arg::with_name("json")
-            .help("Print stdout in json")
+            .help("Print information with json")
             .long("json")
             .short("j")
             .multiple(true)
