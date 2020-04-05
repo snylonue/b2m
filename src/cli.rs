@@ -5,9 +5,10 @@ use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
 
 pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.15.0";
+pub const VERSION: &str = "0.16.0";
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
 
+#[derive(Debug)]
 pub struct Config<'a> {
     pub url: &'a str,
     pub check: bool,
@@ -26,10 +27,10 @@ impl<'a> Config<'a> {
         let info = json || args.is_present("info-only");
         let no_audio = args.is_present("no-audio");
         let no_video = args.is_present("no-video");
-        let proxy = if let Some(p) = args.value_of("proxy") {
-            Some(ProxyAddr::from_str(p)?)
-        } else {
-            None
+        let proxy = match args.value_of("proxy") {
+            Some(p) => Some(ProxyAddr::from_str(p)?),
+            None if args.is_present("proxy") => Some(ProxyAddr::default()),
+            None => None,
         };
         Ok(Self { url, check, no_audio, no_video, info, json, proxy })
     }
@@ -70,7 +71,7 @@ pub fn b2m() -> App<'static, 'static> {
             .multiple(true)
     )
         .arg(Arg::with_name("json")
-            .help("Print stdout in json")
+            .help("Print information with json")
             .long("json")
             .short("j")
             .multiple(true)
@@ -79,7 +80,6 @@ pub fn b2m() -> App<'static, 'static> {
             .help("Set proxy address")
             .long("proxy")
             .short("p")
-            .takes_value(true)
     )
 }
 #[inline]

@@ -1,8 +1,8 @@
 use serde_json::Value;
 use super::Extractor;
-use crate::proxy::ProxyAddr;
 use crate::parsers::Parser;
 use crate::parsers::Url;
+use crate::Setting;
 
 pub struct YouGet;
 pub struct Annie;
@@ -14,7 +14,7 @@ impl Annie {
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url,
-            r"(?:https?://)?(?:www\.)?youtube\.com/watch\?v=."
+            r"(?:https://)?(?:www\.)?youtube\.com/watch\?v=."
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
@@ -23,7 +23,7 @@ impl Extractor for Annie {
         let audio_url = value_to_string!(stream["urls"][1]["url"])?;
         Some(Url::with_all(vec![video_url], vec![audio_url]))
     }
-    fn extract(url: &str, pxy: &Option<ProxyAddr>) -> super::ResultInfo {
-        crate::parsers::annie::Annie::parse(url, Self::real_url, pxy)
+    fn extract(url: &str, setting: &Setting) -> super::ResultInfo {
+        crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }
