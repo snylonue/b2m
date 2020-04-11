@@ -1,7 +1,7 @@
 use std::process::Output;
 use std::process::Command;
 use std::string::FromUtf8Error;
-use super::Res;
+use crate::Res;
 
 #[inline]
 pub fn parse_output(output: Output) -> Result<(String, String), FromUtf8Error> {

@@ -21,8 +21,8 @@ pub mod iqiyi;
 pub mod youtube;
 
 use serde_json::Value;
-use super::Setting;
-use super::parsers::Url;
+use crate::Setting;
+use crate::parsers::Url;
 
 type ResultInfo = super::Res<super::MediaInfo>;
 

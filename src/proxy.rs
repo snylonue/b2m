@@ -3,7 +3,7 @@ use std::net::IpAddr;
 use std::net::Ipv4Addr;
 use std::fmt;
 use std::convert::TryFrom;
-use super::Res;
+use crate::Res;
 
 #[derive(Debug)]
 pub struct ProxyAddr<'a> {

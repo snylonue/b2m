@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::process;
 use super::Parser;
 use super::Res;
-use super::super::command;
+use crate::command;
 use crate::Setting;
 
 pub struct YouGet;

@@ -1,5 +1,4 @@
 use serde_json::Value;
-use regex;
 use super::search_by_keys;
 use super::Extractor;
 use crate::Setting;

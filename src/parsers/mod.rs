@@ -2,8 +2,8 @@ pub mod youget;
 pub mod annie;
 
 use serde_json::Value;
-use super::Res;
-use super::MediaInfo;
+use crate::Res;
+use crate::MediaInfo;
 use crate::Setting;
 
 type ResultInfo = Res<MediaInfo>;
