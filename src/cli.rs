@@ -21,16 +21,19 @@ pub struct Config<'a> {
 
 impl<'a> Config<'a> {
     pub fn new(args: &'a ArgMatches) -> crate::Res<Self> {
-        let url = args.value_of("url").expect("Invaild input");
         let check = args.is_present("check");
+        let url = if !check {
+            args.value_of("url").expect("Invaild input")
+        } else {
+            ""
+        };
         let json = args.is_present("json");
         let info = json || args.is_present("info-only");
         let no_audio = args.is_present("no-audio");
         let no_video = args.is_present("no-video");
         let proxy = match args.value_of("proxy") {
-            Some(p) => Some(ProxyAddr::from_str(p)?),
-            None if args.is_present("proxy") => Some(ProxyAddr::default()),
-            None => None,
+            Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_str(p)?),
+            _ => None,
         };
         Ok(Self { url, check, no_audio, no_video, info, json, proxy })
     }
@@ -80,6 +83,7 @@ pub fn b2m() -> App<'static, 'static> {
             .help("Set proxy address")
             .long("proxy")
             .short("p")
+            .default_value("127.0.0.1:1080")
     )
 }
 #[inline]
