@@ -14,11 +14,11 @@ b2m -h
 
 ### 用法
 ```
-mpv-bilibili 0.16.0
+mpv-bilibili 0.17.0
 Play bilibili video with mpv
 
 USAGE:
-    b2m [FLAGS] <url>
+    b2m [FLAGS] [OPTIONS] <url>
 
 FLAGS:
     -c, --check      Check if all dependencies are installed
@@ -27,8 +27,10 @@ FLAGS:
     -j, --json       Print information with json
         --an         Play without audio output
         --vn         Play without video output
-    -p, --proxy      Set proxy address
     -V, --version    Prints version information
+
+OPTIONS:
+    -p, --proxy <proxy>    Set proxy address [default: 127.0.0.1:1080]
 
 ARGS:
     <url>    Video url

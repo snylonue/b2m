@@ -5,7 +5,7 @@ use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
 
 pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.16.0";
+pub const VERSION: &str = "0.17.0";
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
 
 #[derive(Debug)]

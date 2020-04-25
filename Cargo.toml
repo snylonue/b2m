@@ -1,6 +1,6 @@
 [package]
 name = "b2m"
-version = "0.16.0"
+version = "0.17.0"
 authors = ["snylonue <snylonue@gmail.com>"]
 edition = "2018"
 
@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 clap = "2.33"
 serde_json = "1.0"
-failure = "0.1.5"
+failure = "0.1.7"
 regex = "1"
 
 [profile.release]
