@@ -1,3 +1,4 @@
+use anyhow::Result;
 use clap::Arg;
 use clap::App;
 use clap::SubCommand;
@@ -5,7 +6,7 @@ use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
 
 pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.17.0";
+pub const VERSION: &str = "0.18.0";
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
 
 #[derive(Debug)]
@@ -20,7 +21,7 @@ pub struct Config<'a> {
 }
 
 impl<'a> Config<'a> {
-    pub fn new(args: &'a ArgMatches) -> crate::Res<Self> {
+    pub fn new(args: &'a ArgMatches) -> Result<Self> {
         let check = args.is_present("check");
         let url = if !check {
             args.value_of("url").expect("Invaild input")

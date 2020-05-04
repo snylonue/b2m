@@ -27,7 +27,7 @@ impl Extractor for YouGet {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> super::ResultInfo {
+    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
@@ -50,7 +50,7 @@ impl Extractor for Annie {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> super::ResultInfo {
+    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }

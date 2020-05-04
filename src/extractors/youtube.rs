@@ -23,7 +23,7 @@ impl Extractor for Annie {
         let audio_url = value_to_string!(stream["urls"][1]["url"])?;
         Some(Url::with_all(vec![video_url], vec![audio_url]))
     }
-    fn extract(url: &str, setting: &Setting) -> super::ResultInfo {
+    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }

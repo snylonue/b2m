@@ -1,12 +1,11 @@
 pub mod youget;
 pub mod annie;
 
+use anyhow::Result;
 use serde_json::Value;
-use crate::Res;
+use crate::ResultInfo;
 use crate::MediaInfo;
 use crate::Setting;
-
-type ResultInfo = Res<MediaInfo>;
 
 /// A struct that contains two kinds of urls
 pub struct Url {
@@ -15,7 +14,7 @@ pub struct Url {
 }
 
 pub trait Parser {
-    fn run(url: &str, setting: &Setting) -> Res<Value>;
+    fn run(url: &str, setting: &Setting) -> Result<Value>;
     /// Returns a tuple like (Some(referrer), Some(title))
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
     fn parse<F>(url: &str, extractor: F, setting: &Setting) -> ResultInfo
@@ -24,7 +23,7 @@ pub trait Parser {
         let infos = Self::run(url, setting)?;
         let url = match extractor(&infos) {
             Some(url) => url,
-            None => return Err(failure::err_msg("No stream is found")),
+            None => return Err(anyhow::anyhow!("No stream is found")),
         };
         let (referrer, title) = Self::extract_infos(&infos);
         Ok(MediaInfo::new(url, title, referrer))

@@ -23,8 +23,7 @@ pub mod youtube;
 use serde_json::Value;
 use crate::Setting;
 use crate::parsers::Url;
-
-type ResultInfo = super::Res<super::MediaInfo>;
+use crate::ResultInfo;
 
 pub trait Extractor {
     fn is_support(url: &str) -> bool;

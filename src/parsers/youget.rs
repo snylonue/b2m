@@ -1,14 +1,14 @@
+use anyhow::Result;
 use serde_json::Value;
 use std::process;
 use super::Parser;
-use super::Res;
 use crate::command;
 use crate::Setting;
 
 pub struct YouGet;
 
 impl Parser for YouGet {
-    fn run(url: &str, setting: &Setting) -> Res<Value> {
+    fn run(url: &str, setting: &Setting) -> Result<Value> {
         let mut cmd = process::Command::new("you-get");
         cmd.arg(url)
             .arg("--json")

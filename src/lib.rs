@@ -23,13 +23,13 @@ macro_rules! try_get {
     ($s: expr, $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(_) => return Err(failure::err_msg($err_msg.replace('\n', " "))),
+            Err(_) => return Err(anyhow::anyhow!($err_msg.replace('\n', " "))),
         }
     };
     ($s: expr; $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(e) => return Err(failure::err_msg(format!($err_msg, e).replace('\n', " "))),
+            Err(e) => return Err(anyhow::anyhow!(format!($err_msg, e).replace('\n', " "))),
         }
     };
 }
@@ -52,14 +52,14 @@ pub mod command;
 pub mod extractors;
 pub mod parsers;
 
-use failure::err_msg;
+use anyhow::Result;
 use std::process::Command;
 use std::io::Result as IoResult;
 use proxy::ProxyAddr;
 use parsers::Url;
 use extractors::Extractor;
 
-pub type Res<T> = Result<T, failure::Error>;
+pub(crate) type ResultInfo = Result<MediaInfo>;
 
 pub struct MediaInfo {
     pub url: Url,
@@ -137,11 +137,11 @@ impl<'a> AsRef<Option<ProxyAddr<'a>>> for Setting<'a> {
     }
 }
 
-pub fn parse(url: &str, setting: &Setting) -> Res<MediaInfo> {
+pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
     #[cfg(feature= "annie")]find_parser!(url, bilibili, Annie, setting);
     #[cfg(feature= "youget")]find_parser!(url, bilibili, YouGet, setting);
     #[cfg(feature= "annie")]find_parser!(url, youtube, Annie, setting);
     #[cfg(feature= "annie")]find_parser!(url, iqiyi, Annie, setting);
     #[cfg(feature= "youget")]find_parser!(url, iqiyi, YouGet, setting);
-    Err(err_msg("Unsupport url"))
+    Err(anyhow::anyhow!("Unsupport url"))
 }

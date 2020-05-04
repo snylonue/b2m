@@ -1,9 +1,10 @@
+use anyhow::Result;
+use anyhow::Error;
 use std::net::SocketAddr;
 use std::net::IpAddr;
 use std::net::Ipv4Addr;
 use std::fmt;
 use std::convert::TryFrom;
-use crate::Res;
 
 #[derive(Debug)]
 pub struct ProxyAddr<'a> {
@@ -18,12 +19,12 @@ impl<'a> ProxyAddr<'a> {
     pub const fn from_addr(addr: SocketAddr) -> Self {
         Self { addr, protocal: "http" }
     }
-    pub fn from_str(s: &'a str) -> Res<Self> {
+    pub fn from_str(s: &'a str) -> Result<Self> {
         let mut splits = s.rsplit("://");
         match (splits.next(), splits.next()) {
             (Some(addr),Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
             (Some(addr), None) => Ok(Self::from_addr(addr.parse()?)),
-            _ => Err(failure::err_msg("Invailed proxy address syntax"))
+            _ => Err(anyhow::anyhow!("Invailed proxy address syntax"))
         }
     }
 }
@@ -33,7 +34,7 @@ impl<'a> fmt::Display for ProxyAddr<'a> {
     }
 }
 impl<'a> TryFrom<&'a str> for ProxyAddr<'a> {
-    type Error = failure::Error;
+    type Error = Error;
 
     #[inline]
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
