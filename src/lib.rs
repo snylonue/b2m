@@ -23,13 +23,13 @@ macro_rules! try_get {
     ($s: expr, $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(_) => return Err(anyhow::anyhow!($err_msg.replace('\n', " "))),
+            Err(_) => return Err(anyhow::anyhow!($err_msg)),
         }
     };
     ($s: expr; $err_msg: expr) => {
         match $s {
             Ok(v) => v,
-            Err(e) => return Err(anyhow::anyhow!(format!($err_msg, e).replace('\n', " "))),
+            Err(e) => return Err(anyhow::anyhow!(format!($err_msg, e))),
         }
     };
 }
