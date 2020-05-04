@@ -40,8 +40,8 @@ macro_rules! parse_json {
     };
 }
 macro_rules! find_parser {
-    ($url: expr, $site: ident, $extractor: ident, $setting: expr) => {
-        if $crate::extractors::$site::$extractor::is_support($url) {
+    ($url: expr, $site: ident, $extractor_name: expr, $extractor: ident, $setting: expr) => {
+        if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
             return $crate::extractors::$site::$extractor::extract($url, $setting);
         }
     };
@@ -138,10 +138,10 @@ impl<'a> AsRef<Option<ProxyAddr<'a>>> for Setting<'a> {
 }
 
 pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
-    #[cfg(feature= "annie")]find_parser!(url, bilibili, Annie, setting);
-    #[cfg(feature= "youget")]find_parser!(url, bilibili, YouGet, setting);
-    #[cfg(feature= "annie")]find_parser!(url, youtube, Annie, setting);
-    #[cfg(feature= "annie")]find_parser!(url, iqiyi, Annie, setting);
-    #[cfg(feature= "youget")]find_parser!(url, iqiyi, YouGet, setting);
+    find_parser!(url, bilibili, "annie", Annie, setting);
+    find_parser!(url, bilibili, "youget", YouGet, setting);
+    find_parser!(url, youtube, "annie", Annie, setting);
+    find_parser!(url, iqiyi, "annie", Annie, setting);
+    find_parser!(url, iqiyi, "youget", YouGet, setting);
     Err(anyhow::anyhow!("Unsupport url"))
 }
