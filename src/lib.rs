@@ -2,41 +2,24 @@
 macro_rules! value_to_string {
     ($v: expr) => {
         match $v {
-            serde_json::Value::String(ref s) => Some(s.clone()),
+            serde_json::Value::String(ref s) => Some(s.to_owned()),
             _ => None,
         }
     };
-    ($v: expr, $or: expr) => {
+    ($v: expr, $($or: expr),+) => {
         match $v {
-            serde_json::Value::String(ref s) => Some(s.clone()),
-            _ => $crate::value_to_string!($or),
-        }
-    };
-}
-macro_rules! try_get {
-    ($s: expr) => {
-        match $s {
-            Ok(v) => v,
-            Err(e) => return Err(e),
-        }
-    };
-    ($s: expr, $err_msg: expr) => {
-        match $s {
-            Ok(v) => v,
-            Err(_) => return Err(anyhow::anyhow!($err_msg)),
-        }
-    };
-    ($s: expr; $err_msg: expr) => {
-        match $s {
-            Ok(v) => v,
-            Err(e) => return Err(anyhow::anyhow!(format!($err_msg, e))),
+            serde_json::Value::String(ref s) => Some(s.to_owned()),
+            _ => $crate::value_to_string!($($or),+),
         }
     };
 }
 #[macro_export]
 macro_rules! parse_json {
     ($s: expr) => {
-        try_get!(serde_json::from_str($s), format!("Invalid json data: {}", $s))
+        match serde_json::from_str($s) {
+            Ok(v) => v,
+            Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
+        }
     };
 }
 macro_rules! find_parser {
