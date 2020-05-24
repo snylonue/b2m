@@ -5,8 +5,8 @@ use clap::SubCommand;
 use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
 
-pub const NAME: &str = "mpv-bilibili";
-pub const VERSION: &str = "0.18.0";
+pub const NAME: &str = env!("CARGO_PKG_NAME");
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const DESCRIPTION: &str = "Play bilibili video with mpv";
 
 #[derive(Debug)]
