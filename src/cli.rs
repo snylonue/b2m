@@ -1,7 +1,6 @@
 use anyhow::Result;
 use clap::Arg;
 use clap::App;
-use clap::SubCommand;
 use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
 
@@ -86,11 +85,4 @@ pub fn b2m() -> App<'static, 'static> {
             .short("p")
             .default_value("127.0.0.1:1080")
     )
-}
-#[inline]
-#[allow(dead_code)]
-pub fn mpv() -> App<'static, 'static> {
-    SubCommand::with_name("mpv")
-        .about("mpv configuration")
-        .arg(Arg::with_name("mpv-conf"))
 }
