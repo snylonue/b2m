@@ -14,8 +14,12 @@ impl Parser for YouGet {
             .arg("--json")
             .stderr(process::Stdio::null());
         if let Some(proxy) = &setting.proxy_addr {
-            cmd.arg("-x") // http only
-                .arg(proxy.to_string());
+            match proxy.protocal() {
+                "http" => cmd.arg("-x"),
+                "socks5" => cmd.arg("-s"),
+                p => return Err(anyhow::anyhow!("protocal {} is not supported by you-get", p)),
+            };
+            cmd.arg(proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(parse_json!(&stdout))
