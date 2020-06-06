@@ -27,6 +27,12 @@ impl<'a> ProxyAddr<'a> {
             _ => Err(anyhow::anyhow!("Invailed proxy address syntax"))
         }
     }
+    pub const fn protocal(&self) -> &str {
+        self.protocal
+    }
+    pub const fn addr(&self) -> &SocketAddr {
+        &self.addr
+    }
 }
 impl<'a> fmt::Display for ProxyAddr<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
