@@ -25,7 +25,7 @@ impl Extractor for YouGet {
             let dash_url = stream["src"].as_array()?;
             let video_url = vec![value_to_string!(dash_url[0][0])?];
             let audio_url = vec![value_to_string!(dash_url[1][0])?];
-            Some(Url::with_all(video_url, audio_url))
+            Some(Url::new(video_url, audio_url))
         } else {
             let video_url = stream["src"]
                 .as_array()?

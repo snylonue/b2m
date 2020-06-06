@@ -9,8 +9,8 @@ use crate::Setting;
 
 /// A struct that contains two kinds of urls
 pub struct Url {
-    pub videos: Option<Vec<String>>,
-    pub audios: Option<Vec<String>>,
+    pub videos: Vec<String>,
+    pub audios: Vec<String>,
 }
 
 pub trait Parser {
@@ -31,13 +31,10 @@ pub trait Parser {
 }
 
 impl Url {
-    pub fn new(videos: Option<Vec<String>>, audios: Option<Vec<String>>) -> Self {
+    pub fn new(videos: Vec<String>, audios: Vec<String>) -> Self {
         Url { videos, audios }
     }
-    pub fn with_all(videos: Vec<String>, audios: Vec<String>) -> Self {
-        Self::new(Some(videos), Some(audios))
-    }
     pub fn with_videos(videos: Vec<String>) -> Self {
-        Self::new(Some(videos), None)
+        Self::new(videos, Vec::new())
     }
 }
