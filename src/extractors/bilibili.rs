@@ -50,8 +50,8 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
-        let urls = stream["urls"]
+        let (_, stream) = search_by_keys(&value[0]["streams"], &Self::DISPLAYS)?;
+        let urls = stream["parts"]
             .as_array()?
             .iter()
             .filter_map(|x| value_to_string!(x["url"]))
