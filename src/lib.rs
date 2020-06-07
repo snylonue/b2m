@@ -44,6 +44,7 @@ use extractors::Extractor;
 
 pub(crate) type ResultInfo = Result<MediaInfo>;
 
+#[derive(Debug)]
 pub struct MediaInfo {
     pub url: Url,
     pub title: Option<String>,

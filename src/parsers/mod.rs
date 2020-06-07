@@ -8,6 +8,7 @@ use crate::MediaInfo;
 use crate::Setting;
 
 /// A struct that contains two kinds of urls
+#[derive(Debug)]
 pub struct Url {
     pub videos: Option<Vec<String>>,
     pub audios: Option<Vec<String>>,
