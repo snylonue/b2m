@@ -22,12 +22,12 @@ fn main() -> Result<()> {
     }
     let mut commands = media.as_command();
     if config.no_audio {
-        commands.arg("--ao=null");
-        commands.arg("--no-audio");
+        commands.arg("--ao=null")
+            .arg("--no-audio");
     }
     if config.no_video {
-        commands.arg("--no-video");
-        commands.arg("--force-window=immediate");
+        commands.arg("--no-video")
+            .arg("--force-window=immediate");
     }
     if let Some(proxy) = &settings.proxy_addr {
         commands.env("HTTP_PROXY", proxy.to_string());

@@ -21,6 +21,24 @@ macro_rules! parse_json {
             Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
         }
     };
+    ($s: expr, $ty: ty) => {
+        match serde_json::from_str($s) {
+            Ok::<$ty, _>(v) => v,
+            Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
+        }
+    };
+}
+#[macro_export]
+macro_rules! get {
+    ($v: expr) => {
+        $v
+    };
+    ($v: expr, $($vn: expr),+) => {
+        match $v {
+            serde_json::Value::Null => $crate::get!($($vn),+),
+            _ => $v,
+        }
+    }
 }
 macro_rules! find_parser {
     ($url: expr, $site: ident, $extractor_name: expr, $extractor: ident, $setting: expr) => {
@@ -44,6 +62,7 @@ use extractors::Extractor;
 
 pub(crate) type ResultInfo = Result<MediaInfo>;
 
+#[derive(Debug)]
 pub struct MediaInfo {
     pub url: Url,
     pub title: Option<String>,
