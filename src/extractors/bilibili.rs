@@ -22,7 +22,7 @@ impl Extractor for YouGet {
         //json['streams'] is ordered with BTreeMap
         let (dp, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         if dp.matches("dash").next().is_some() {
-            let dash_url = stream["src"].as_array()?;
+            let dash_url = &stream["src"];
             let video_url = vec![value_to_string!(dash_url[0][0])?];
             let audio_url = vec![value_to_string!(dash_url[1][0])?];
             Some(Url::with_all(video_url, audio_url))
@@ -50,8 +50,8 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_by_keys(&value[0]["streams"], &Self::DISPLAYS)?;
-        let urls = stream["parts"]
+        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
+        let urls = get!(&stream["parts"], &stream["urls"])
             .as_array()?
             .iter()
             .filter_map(|x| value_to_string!(x["url"]))

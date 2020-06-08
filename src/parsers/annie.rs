@@ -17,11 +17,11 @@ impl Parser for Annie {
            cmd.env("HTTP_PROXY", proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
-        Ok(parse_json!(&stdout))
+        Ok(parse_json!(&stdout, Value)[0].clone())
     }
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>) {
-        let referrer = value_to_string!(info[0]["url"]);
-        let title = value_to_string!(info[0]["title"]);
+        let referrer = value_to_string!(info["url"]);
+        let title = value_to_string!(info["title"]);
         (referrer, title)
     }
 }
