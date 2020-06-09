@@ -1,6 +1,6 @@
 [package]
 name = "b2m"
-version = "0.18.1"
+version = "0.18.2"
 authors = ["snylonue <snylonue@gmail.com>"]
 edition = "2018"
 

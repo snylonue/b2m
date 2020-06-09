@@ -33,7 +33,7 @@ dependencies = [
 
 [[package]]
 name = "b2m"
-version = "0.18.1"
+version = "0.18.2"
 dependencies = [
  "anyhow 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.33.1 (registry+https://github.com/rust-lang/crates.io-index)",
