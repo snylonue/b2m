@@ -6,7 +6,7 @@ use crate::proxy::ProxyAddr;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
-pub const DESCRIPTION: &str = "Play bilibili video with mpv";
+pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 
 #[derive(Debug)]
 pub struct Config<'a> {

@@ -3,6 +3,11 @@ name = "b2m"
 version = "0.18.2"
 authors = ["snylonue <snylonue@gmail.com>"]
 edition = "2018"
+repository = "https://github.com/snylonue/b2m"
+description = "Play bilibili or other videos with mpv"
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/snylonue/b2m"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
