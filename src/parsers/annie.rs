@@ -17,7 +17,7 @@ impl Parser for Annie {
            cmd.env("HTTP_PROXY", proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
-        Ok(parse_json!(&stdout, Value)[0].clone())
+        Ok(get!(parse_json!(&stdout, Value)[0].clone(), parse_json!(&stdout)))
     }
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>) {
         let referrer = value_to_string!(info["url"]);
