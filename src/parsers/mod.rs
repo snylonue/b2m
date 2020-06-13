@@ -27,7 +27,7 @@ pub trait Parser {
             None => return Err(anyhow::anyhow!("No stream is found")),
         };
         let (referrer, title) = Self::extract_infos(&infos);
-        Ok(MediaInfo::new(url, title, referrer))
+        Ok(MediaInfo::default_ua(url, title, referrer))
     }
 }
 

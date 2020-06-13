@@ -25,11 +25,6 @@ impl Extractor for Annie {
         Some(Url::new(vec![video_url], vec![audio_url]))
     }
     fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
-        let mut res = crate::parsers::annie::Annie::parse(url, Self::real_url, setting);
-        match res.iter_mut().next() {
-            Some(media) => media.user_agent = Some(String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36")),
-            None => {},
-        };
-        res
+        crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }
