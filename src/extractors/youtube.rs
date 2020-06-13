@@ -19,8 +19,9 @@ impl Extractor for Annie {
     }
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = super::search_by_keys(&value["streams"], &Self::DISPLAYS)?;
-        let video_url = value_to_string!(get!(&stream["parts"], &stream["urls"])[0]["url"])?;
-        let audio_url = value_to_string!(get!(&stream["parts"], &stream["urls"])[1]["url"])?;
+        let urls = get!(&stream["parts"], &stream["urls"]);
+        let video_url = value_to_string!(urls[0]["url"])?;
+        let audio_url = value_to_string!(urls[1]["url"])?;
         Some(Url::with_all(vec![video_url], vec![audio_url]))
     }
     fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {

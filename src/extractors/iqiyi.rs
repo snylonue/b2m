@@ -1,5 +1,4 @@
 use serde_json::Value;
-use super::search_by_keys;
 use super::Extractor;
 use crate::Setting;
 use crate::parsers::Parser;
@@ -31,9 +30,6 @@ impl Extractor for YouGet {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
-impl Annie {
-    const DISPLAYS: [&'static str; 4] = ["5", "4", "2", "1"];
-}
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url,
@@ -41,7 +37,7 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
+        let stream = value["streams"].as_object()?.values().last()?;
         let video_url = stream["src"]
             .as_array()?
             .iter()

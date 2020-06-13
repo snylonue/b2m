@@ -21,7 +21,7 @@ impl Extractor for YouGet {
     fn real_url(value: &Value) -> Option<Url> {
         //json['streams'] is ordered with BTreeMap
         let (dp, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
-        if dp.matches("dash").next().is_some() {
+        if dp.starts_with("dash") {
             let dash_url = &stream["src"];
             let video_url = vec![value_to_string!(dash_url[0][0])?];
             let audio_url = vec![value_to_string!(dash_url[1][0])?];
@@ -40,18 +40,15 @@ impl Extractor for YouGet {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
-impl Annie {
-    const DISPLAYS: [&'static str; 4] = ["80", "64", "32", "16"];
-}
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url, 
             r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/(?:BV|av)|bangumi/play/ep).",
-            r"BV|ep|av."
+            r"(?:BV|ep|av)."
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
+        let stream = value["streams"].as_object()?.values().last()?;
         let urls = get!(&stream["parts"], &stream["urls"])
             .as_array()?
             .iter()
