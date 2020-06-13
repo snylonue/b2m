@@ -22,7 +22,7 @@ impl Extractor for Annie {
         let urls = get!(&stream["parts"], &stream["urls"]);
         let video_url = value_to_string!(urls[0]["url"])?;
         let audio_url = value_to_string!(urls[1]["url"])?;
-        Some(Url::with_all(vec![video_url], vec![audio_url]))
+        Some(Url::new(vec![video_url], vec![audio_url]))
     }
     fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
         let mut res = crate::parsers::annie::Annie::parse(url, Self::real_url, setting);

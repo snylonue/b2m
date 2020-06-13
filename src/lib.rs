@@ -92,24 +92,21 @@ impl MediaInfo {
     pub fn as_command(&self) -> Command {
         let Url { videos, audios } = &self.url;
         let mut cmd = Command::new("mpv");
-        if let Some(urls) = videos {
-            for i in urls {
-                cmd.arg(i);
-            }
-            if let Some(aurls) = audios {
-                for i in aurls {
-                    cmd.arg(format!("--audio-file={}", i));
-                }
-            }
-            if urls.len() > 1 {
-                cmd.arg("--merge-files");
-            }
-        } else if let Some(urls) = audios {
-            for i in urls {
-                cmd.arg(i);
-            }
-            cmd.arg("--force-window=immediate");
-        }
+        match videos.len() {
+            0 => cmd.args(audios.iter())
+                .arg("--force-window=immediate"),
+            1 => cmd.arg(&videos[0])
+                .args(audios
+                    .iter()
+                    .map(|a| format!("--audio-file={}", a))
+                ),
+            _ => cmd.args(videos.iter())
+                .args(audios
+                    .iter()
+                    .map(|a| format!("--audio-file={}", a))
+                )
+                .arg("--merge-files"),
+        };
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));
         }
