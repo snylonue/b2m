@@ -6,7 +6,7 @@ you-get 本身支持调用播放器播放，但不完善
 
 ### 安装(使用 cargo)
 ```
-cargo install --git https://github.com/snylonue/b2m.git
+cargo install b2m
 b2m -h
 ```
 
@@ -14,8 +14,8 @@ b2m -h
 
 ### 用法
 ```
-mpv-bilibili 0.17.0
-Play bilibili video with mpv
+b2m 0.19.0
+Play bilibili or other videos with mpv
 
 USAGE:
     b2m [FLAGS] [OPTIONS] <url>
