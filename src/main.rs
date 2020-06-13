@@ -1,3 +1,14 @@
+macro_rules! find_parser {
+    ($url: expr, $site: ident, $extractor_name: expr, $extractor: ident, $setting: expr) => {
+       {
+            use $crate::extractors::Extractor;
+            if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
+                return $crate::extractors::$site::$extractor::extract($url, $setting);
+            }
+        }
+    };
+}
+
 mod check;
 mod cli;
 
@@ -74,4 +85,12 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
         println!("user-agent: {}", user_agent.unwrap_or_else(|| String::new()));
     }
+}
+pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
+    find_parser!(url, bilibili, "annie", Annie, setting);
+    find_parser!(url, bilibili, "youget", YouGet, setting);
+    find_parser!(url, youtube, "annie", Annie, setting);
+    find_parser!(url, iqiyi, "annie", Annie, setting);
+    find_parser!(url, iqiyi, "youget", YouGet, setting);
+    Err(anyhow::anyhow!("Unsupport url"))
 }

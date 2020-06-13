@@ -40,13 +40,6 @@ macro_rules! get {
         }
     }
 }
-macro_rules! find_parser {
-    ($url: expr, $site: ident, $extractor_name: expr, $extractor: ident, $setting: expr) => {
-        if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
-            return $crate::extractors::$site::$extractor::extract($url, $setting);
-        }
-    };
-}
 
 pub mod proxy;
 pub mod command;
@@ -58,9 +51,8 @@ use std::process::Command;
 use std::io::Result as IoResult;
 use proxy::ProxyAddr;
 use parsers::Url;
-use extractors::Extractor;
 
-pub(crate) type ResultInfo = Result<MediaInfo>;
+type ResultInfo = Result<MediaInfo>;
 
 #[derive(Debug)]
 pub struct MediaInfo {
@@ -134,13 +126,4 @@ impl<'a> AsRef<Option<ProxyAddr<'a>>> for Setting<'a> {
     fn as_ref(&self) -> &Option<ProxyAddr<'a>> {
         &self.proxy_addr
     }
-}
-
-pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
-    find_parser!(url, bilibili, "annie", Annie, setting);
-    find_parser!(url, bilibili, "youget", YouGet, setting);
-    find_parser!(url, youtube, "annie", Annie, setting);
-    find_parser!(url, iqiyi, "annie", Annie, setting);
-    find_parser!(url, iqiyi, "youget", YouGet, setting);
-    Err(anyhow::anyhow!("Unsupport url"))
 }
