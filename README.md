@@ -1,5 +1,5 @@
-# mpv-bilibili
-**mpv自带 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 解析，使用体验好很多**
+# b2m
+**mpv 自带 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 解析，使用体验好很多**
 
 使用 mpv 播放 bilibili (以及 youtube, iqiqyi)视频  
 you-get 本身支持调用播放器播放，但不完善
