@@ -14,7 +14,6 @@ mod cli;
 
 use anyhow::Result;
 use serde_json::json;
-use std::process;
 
 use b2m::*;
 
@@ -23,13 +22,13 @@ fn main() -> Result<()> {
     let config = cli::Config::new(&matches)?;
     if config.check {
         check();
-        process::exit(0);
+        return Ok(());
     }
     let settings = config.proxy.into();
     let media = parse(config.url, &settings)?;
     if config.info {
         print_info(media, config.json);
-        process::exit(0);
+        return Ok(());
     }
     let mut commands = media.as_command();
     if config.no_audio {
