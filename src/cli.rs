@@ -17,6 +17,7 @@ pub struct Config<'a> {
     pub info: bool,
     pub json: bool,
     pub proxy: Option<ProxyAddr<'a>>,
+    pub cookie: Option<&'a str>,
 }
 
 impl<'a> Config<'a> {
@@ -35,7 +36,8 @@ impl<'a> Config<'a> {
             Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_str(p)?),
             _ => None,
         };
-        Ok(Self { url, check, no_audio, no_video, info, json, proxy })
+        let cookie = args.value_of("cookie");
+        Ok(Self { url, check, no_audio, no_video, info, json, proxy, cookie })
     }
 }
 
@@ -51,7 +53,7 @@ pub fn b2m() -> App<'static, 'static> {
     )
         .arg(Arg::with_name("check")
             .help("Check if all dependencies are installed")
-            .short("c")
+            // .short("c")
             .long("check")
             .multiple(true)
     )
@@ -84,5 +86,11 @@ pub fn b2m() -> App<'static, 'static> {
             .long("proxy")
             .short("p")
             .default_value("127.0.0.1:1080")
+    )
+        .arg(Arg::with_name("cookie")
+            .help("Set cookie")
+            .long("cookie")
+            .short("c")
+            .takes_value(true)
     )
 }

@@ -16,6 +16,10 @@ impl Parser for Annie {
         if let Some(proxy) = &setting.proxy_addr {
            cmd.env("HTTP_PROXY", proxy.to_string());
         }
+        if let Some(cookie) = &setting.cookie {
+            cmd.arg("-c")
+                .arg(cookie);
+        }
         let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(get!(parse_json!(&stdout, Value)[0].clone(), parse_json!(&stdout)))
     }

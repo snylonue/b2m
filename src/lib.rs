@@ -112,6 +112,11 @@ impl MediaInfo {
         cmd
     }
 }
+impl<'a> Setting<'a> {
+    pub fn new(proxy_addr: Option<ProxyAddr<'a>>, cookie: Option<&'a str>) -> Self {
+        Self { proxy_addr, cookie }
+    }
+}
 impl<'a> From<ProxyAddr<'a>> for Setting<'a> {
     fn from(proxy_addr: ProxyAddr<'a>) -> Setting<'a> {
        Setting { proxy_addr: Some(proxy_addr), cookie: None }

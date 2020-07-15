@@ -21,6 +21,10 @@ impl Parser for YouGet {
             };
             cmd.arg(proxy.to_string());
         }
+        if let Some(cookie) = &setting.cookie {
+            cmd.arg("-c")
+                .arg(cookie);
+        }
         let (stdout, _) = command::run_command(&mut cmd)?;
         Ok(parse_json!(&stdout))
     }

@@ -24,7 +24,7 @@ fn main() -> Result<()> {
         check();
         return Ok(());
     }
-    let settings = config.proxy.into();
+    let settings = Setting::new(config.proxy, config.cookie);
     let media = parse(config.url, &settings)?;
     if config.info {
         print_info(media, config.json);
@@ -41,6 +41,9 @@ fn main() -> Result<()> {
     }
     if let Some(proxy) = &settings.proxy_addr {
         commands.env("HTTP_PROXY", proxy.to_string());
+    }
+    if let Some(cookie) = &settings.cookie {
+        commands.arg(format!("--cookies-file={}", cookie));
     }
     commands.output()?;
     Ok(())
@@ -80,9 +83,9 @@ fn print_info(media: MediaInfo, json: bool) {
     } else {
         println!("video: {}", serde_json::to_string(&videos).unwrap());
         println!("audio: {}", serde_json::to_string(&audios).unwrap());
-        println!("title: {}", title.unwrap_or_else(|| String::new()));
-        println!("referrer: {}", referrer.unwrap_or_else(|| String::new()));
-        println!("user-agent: {}", user_agent.unwrap_or_else(|| String::new()));
+        println!("title: {}", title.unwrap_or_else(String::new));
+        println!("referrer: {}", referrer.unwrap_or_else(String::new));
+        println!("user-agent: {}", user_agent.unwrap_or_else(String::new));
     }
 }
 pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
