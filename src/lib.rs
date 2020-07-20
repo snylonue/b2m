@@ -21,12 +21,6 @@ macro_rules! parse_json {
             Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
         }
     };
-    ($s: expr, $ty: ty) => {
-        match serde_json::from_str($s) {
-            Ok::<$ty, _>(v) => v,
-            Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
-        }
-    };
 }
 #[macro_export]
 macro_rules! get {

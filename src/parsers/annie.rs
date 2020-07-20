@@ -21,7 +21,8 @@ impl Parser for Annie {
                 .arg(cookie);
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
-        Ok(get!(parse_json!(&stdout, Value)[0].clone(), parse_json!(&stdout)))
+        let res: Value = parse_json!(&stdout);
+        Ok(get!(res[0].clone(), res))
     }
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>) {
         let referrer = value_to_string!(info["url"]);
