@@ -53,7 +53,6 @@ pub fn b2m() -> App<'static, 'static> {
     )
         .arg(Arg::with_name("check")
             .help("Check if all dependencies are installed")
-            // .short("c")
             .long("check")
             .multiple(true)
     )

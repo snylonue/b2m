@@ -41,7 +41,7 @@ impl Extractor for YouGet {
     }
 }
 impl Annie {
-    const DISPLAYS: [&'static str; 5] = ["112", "80", "64", "32", "16"];
+    const DISPLAYS: [&'static str; 8] = ["120", "116", "112", "80", "74", "64", "32", "16"];
 }
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
@@ -51,6 +51,7 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
+        // dbg!(value["streams"].as_object()?.keys().collect::<Vec<_>>());
         let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         let urls = get!(&stream["parts"], &stream["urls"]);
         let videos = vec![value_to_string!(urls[0]["url"])?];
