@@ -7,6 +7,7 @@ use crate::proxy::ProxyAddr;
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
+const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
 
 #[derive(Debug)]
 pub struct Config<'a> {
@@ -36,7 +37,7 @@ impl<'a> Config<'a> {
             Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_str(p)?),
             _ => None,
         };
-        let cookie = args.value_of("cookie");
+        let cookie = args.value_of("cookie").or(DEFAULT_COOKIES);
         Ok(Self { url, check, no_audio, no_video, info, json, proxy, cookie })
     }
 }
