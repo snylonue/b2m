@@ -40,6 +40,9 @@ impl Extractor for YouGet {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
+impl Annie {
+    const DISPLAYS: [&'static str; 5] = ["112", "80", "64", "32", "16"];
+}
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url, 
@@ -48,13 +51,11 @@ impl Extractor for Annie {
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
-        let stream = value["streams"].as_object()?.values().last()?;
-        let urls = get!(&stream["parts"], &stream["urls"])
-            .as_array()?
-            .iter()
-            .filter_map(|x| value_to_string!(x["url"]))
-            .collect();
-        Some(Url::with_videos(urls))
+        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
+        let urls = get!(&stream["parts"], &stream["urls"]);
+        let videos = vec![value_to_string!(urls[0]["url"])?];
+        let audios = vec![value_to_string!(urls[1]["url"])?];
+        Some(Url::new(videos, audios))
     }
     #[inline]
     fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
