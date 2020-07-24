@@ -10,15 +10,15 @@ pub struct Annie;
 impl Parser for Annie {
     fn run(url: &str, setting: &Setting) -> Result<Value> {
         let mut cmd = process::Command::new("annie");
-        cmd.arg("-j")
-           .arg(url)
-           .stderr(process::Stdio::null());
-        if let Some(proxy) = &setting.proxy_addr {
-           cmd.env("HTTP_PROXY", proxy.to_string());
-        }
         if let Some(cookie) = &setting.cookie {
             cmd.arg("-c")
                 .arg(cookie);
+        }
+        cmd.arg("-j")
+            .arg(url)
+            .stderr(process::Stdio::null());
+        if let Some(proxy) = &setting.proxy_addr {
+           cmd.env("HTTP_PROXY", proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
         let res: Value = parse_json!(&stdout);
