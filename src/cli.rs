@@ -37,7 +37,11 @@ impl<'a> Config<'a> {
             Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_str(p)?),
             _ => None,
         };
-        let cookie = args.value_of("cookie").or(DEFAULT_COOKIES);
+        let cookie = if !args.is_present("no-cookie") {
+            args.value_of("cookie").or(DEFAULT_COOKIES)
+        } else {
+            None
+        };
         Ok(Self { url, check, no_audio, no_video, info, json, proxy, cookie })
     }
 }
@@ -92,5 +96,10 @@ pub fn b2m() -> App<'static, 'static> {
             .long("cookie")
             .short("c")
             .takes_value(true)
+    )
+        .arg(Arg::with_name("no-cookie")
+            .help("Don't use any cookie")
+            .long("no-cookie")
+            .alias("nc")
     )
 }
