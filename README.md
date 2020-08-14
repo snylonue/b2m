@@ -10,6 +10,8 @@ cargo install b2m
 b2m -h
 ```
 
+使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，具体见 [Cargo.toml](Cargo.toml)
+
 或者 [Python 版(不再维护)](src/b2m.py)
 
 ### 用法
