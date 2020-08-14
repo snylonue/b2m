@@ -6,8 +6,8 @@ macro_rules! find_parser {
                 match $crate::extractors::$site::$extractor::extract($url, $setting) {
                     res @ Ok(_) => return res,
                     Err(e) => { 
-                        println!("Error caught with {}/{}", stringify!($site), $extractor_name);
-                        println!("Error: {:#?}", e);
+                        eprintln!("Error caught with {}/{}", stringify!($site), $extractor_name);
+                        eprintln!("Error: {:#?}", e);
                      }
                 }
             })*
@@ -85,7 +85,7 @@ fn print_info(media: MediaInfo, json: bool) {
             "referrer": referrer,
             "user-agent": user_agent,
         });
-        println!("{}", j.to_string());
+        println!("{}", serde_json::to_string_pretty(&j).unwrap());
     } else {
         println!("video: {}", serde_json::to_string(&videos).unwrap());
         println!("audio: {}", serde_json::to_string(&audios).unwrap());
