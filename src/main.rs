@@ -1,10 +1,11 @@
 macro_rules! find_parser {
-    ($url: expr, $site: ident, $extractor_name: expr, $extractor: ident, $setting: expr) => {
+    ($url: expr, $setting: expr, $($site: ident, $extractor_name: expr, $extractor: ident),*) => {
        {
             use $crate::extractors::Extractor;
-            if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
+            $(if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
                 return $crate::extractors::$site::$extractor::extract($url, $setting);
             }
+            })*
         }
     };
 }
@@ -89,10 +90,13 @@ fn print_info(media: MediaInfo, json: bool) {
     }
 }
 pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
-    find_parser!(url, bilibili, "annie", Annie, setting);
-    find_parser!(url, bilibili, "youget", YouGet, setting);
-    find_parser!(url, youtube, "annie", Annie, setting);
-    find_parser!(url, iqiyi, "annie", Annie, setting);
-    find_parser!(url, iqiyi, "youget", YouGet, setting);
+    find_parser!(
+        url, setting,
+        bilibili, "annie", Annie, 
+        bilibili, "youget", YouGet,
+        youtube, "annie", Annie, 
+        iqiyi, "annie", Annie, 
+        iqiyi, "youget", YouGet
+    );
     Err(anyhow::anyhow!("Unsupport url"))
 }
