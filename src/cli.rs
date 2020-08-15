@@ -8,6 +8,7 @@ pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
+const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
 
 #[derive(Debug)]
 pub struct Config<'a> {
@@ -89,7 +90,7 @@ pub fn b2m() -> App<'static, 'static> {
             .help("Set proxy address")
             .long("proxy")
             .short("p")
-            .default_value("127.0.0.1:1080")
+            .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080"))
     )
         .arg(Arg::with_name("cookie")
             .help("Set cookie")
