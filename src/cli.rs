@@ -20,6 +20,7 @@ pub struct Config<'a> {
     pub json: bool,
     pub proxy: Option<ProxyAddr<'a>>,
     pub cookie: Option<&'a str>,
+    pub merge: bool,
 }
 
 impl<'a> Config<'a> {
@@ -41,7 +42,8 @@ impl<'a> Config<'a> {
         } else {
             None
         };
-        Ok(Self { url, check: false, no_audio, no_video, info, json, proxy, cookie })
+        let merge = !args.is_present("no-merging");
+        Ok(Self { url, check: false, no_audio, no_video, info, json, proxy, cookie, merge })
     }
 }
 
@@ -100,5 +102,10 @@ pub fn b2m() -> App<'static, 'static> {
             .help("Don't use any cookie")
             .long("no-cookie")
             .alias("nc")
+    )
+        .arg(Arg::with_name("no-merging")
+            .help("Don't pass --merge-files to mpv")
+            .long("no-merge")
+            .alias("nm")
     )
 }

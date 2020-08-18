@@ -51,6 +51,9 @@ fn main() -> Result<()> {
     if let Some(cookie) = &settings.cookie {
         commands.arg(format!("--cookies-file={}", cookie));
     }
+    if config.merge {
+        commands.arg("--merge-files");
+    }
     commands.output()?;
     Ok(())
 }
@@ -97,10 +100,10 @@ fn print_info(media: MediaInfo, json: bool) {
 pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
     find_parser!(
         url, setting,
-        bilibili, "annie", Annie, 
+        bilibili, "annie", Annie,
         bilibili, "youget", YouGet,
-        youtube, "annie", Annie, 
-        iqiyi, "annie", Annie, 
+        youtube, "annie", Annie,
+        iqiyi, "annie", Annie,
         iqiyi, "youget", YouGet
     );
     Err(anyhow::anyhow!("Unsupport url"))
