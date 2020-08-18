@@ -2,7 +2,7 @@ macro_rules! find_parser {
     ($url: expr, $setting: expr, $($site: ident, $extractor_name: expr, $extractor: ident),*) => {
        {
             use $crate::extractors::Extractor;
-            $(if cfg!(feature = $extractor_name) && $crate::extractors::$site::$extractor::is_support($url) {
+            $(#[cfg(feature = $extractor_name)]if $crate::extractors::$site::$extractor::is_support($url) {
                 match $crate::extractors::$site::$extractor::extract($url, $setting) {
                     res @ Ok(_) => return res,
                     Err(e) => { 
@@ -101,7 +101,8 @@ pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
         bilibili, "youget", YouGet,
         youtube, "annie", Annie, 
         iqiyi, "annie", Annie, 
-        iqiyi, "youget", YouGet
+        iqiyi, "youget", YouGet,
+        netease_music, "nfinata", Finata
     );
     Err(anyhow::anyhow!("Unsupport url"))
 }
