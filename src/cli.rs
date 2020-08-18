@@ -10,7 +10,7 @@ pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
 const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Config<'a> {
     pub url: &'a str,
     pub check: bool,
@@ -24,12 +24,10 @@ pub struct Config<'a> {
 
 impl<'a> Config<'a> {
     pub fn new(args: &'a ArgMatches) -> Result<Self> {
-        let check = args.is_present("check");
-        let url = if !check {
-            args.value_of("url").expect("Invaild input")
-        } else {
-            ""
-        };
+        if args.is_present("check") {
+            return Ok(Self { check: true, ..Self::default() });
+        }
+        let url = args.value_of("url").expect("Invaild input");
         let json = args.is_present("json");
         let info = json || args.is_present("info-only");
         let no_audio = args.is_present("no-audio");
@@ -43,7 +41,7 @@ impl<'a> Config<'a> {
         } else {
             None
         };
-        Ok(Self { url, check, no_audio, no_video, info, json, proxy, cookie })
+        Ok(Self { url, check: false, no_audio, no_video, info, json, proxy, cookie })
     }
 }
 
