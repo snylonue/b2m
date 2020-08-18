@@ -6,6 +6,10 @@ const UNKNOWN: &str = "unknown";
 
 pub fn check_you_get() -> bool {
     println!("Checking for you-get");
+    if !cfg!(feature = "youget") {
+        println!("Feature `youget` is not enabled, skip check");
+        return false;
+    }
     println!("Running you-get -V");
     match process::Command::new("you-get")
         .arg("-V")
@@ -33,6 +37,10 @@ pub fn check_you_get() -> bool {
 }
 pub fn check_annie() -> bool {
     println!("Checking for annie");
+    if !cfg!(feature = "annie") {
+        println!("Feature `annie` is not enabled, skip check");
+        return false;
+    }
     println!("Running annie -v");
     match process::Command::new("annie")
         .arg("-v")

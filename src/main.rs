@@ -55,24 +55,24 @@ fn main() -> Result<()> {
     Ok(())
 }
 fn check() {
-    println!("Running checking");
+    println!("Running check");
     println!("b2m version: {}\n", cli::VERSION);
     if check::check_you_get() {
-        println!("\nyou-get checking succeeded");
+        println!("\nyou-get check succeeded");
     } else {
-        println!("\nyou-get checking failed");
+        println!("\nyou-get check failed");
     }
     println!();
     if check::check_annie() {
-        println!("\nannie checking succeeded");
+        println!("\nannie check succeeded");
     } else {
-        println!("\nannie checking failed");
+        println!("\nannie check failed");
     }
     println!();
     if check::check_mpv() {
-      println!("\nmpv checking succeeded");
+      println!("\nmpv check succeeded");
     } else {
-      println!("\nmpv checking failed");
+      println!("\nmpv check failed");
     }
 }
 fn print_info(media: MediaInfo, json: bool) {
