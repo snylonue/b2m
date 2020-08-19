@@ -62,13 +62,13 @@ pub struct Setting<'a> {
 
 impl MediaInfo {
     pub fn new(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
-        Self::with_ua(url, title, referrer, None)
+        Self { url, title, referrer, user_agent: None }
     }
-    pub fn with_ua(url: Url, title: Option<String>, referrer: Option<String>, user_agent: Option<String>) -> Self {
-        Self { url, title, referrer, user_agent }
+    pub fn with_ua(url: Url, title: Option<String>, referrer: Option<String>, user_agent: String) -> Self {
+        Self { url, title, referrer, user_agent: Some(user_agent) }
     }
     pub fn default_ua(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
-        Self::with_ua(url, title, referrer, Some(String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36")))
+        Self::with_ua(url, title, referrer, String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36"))
     }
     pub fn play(&self) -> IoResult<()> {
         self.as_command().output()?;
