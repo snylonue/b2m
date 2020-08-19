@@ -14,7 +14,7 @@ impl YouGet {
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
         matched!(url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/[AaBb][Vv]|bangumi/play/ep).",
+            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/[AaBb][Vv]|bangumi/play/(?:ep|ss)).",
             r"(?:https://)?live\.bilibili\.com/\d"
         )
     }
@@ -46,8 +46,8 @@ impl Annie {
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(url, 
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/[AaBb][Vv]|bangumi/play/ep).",
-            r"(?:BV|ep|av)."
+            r"(?:https://)?(?:www\.)?bilibili\.com/(?:(?:video/)?[AaBb][Vv]|bangumi/play/ep).",
+            r"(?:[AaBb][Vv]|ep)."
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
