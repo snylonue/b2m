@@ -24,7 +24,7 @@ impl Finata {
                 url,
                 info.title,
                 info.header.get("referer").map(|v| v.to_str().unwrap().to_owned()),
-                info.header.get("user-agent").map(|v| v.to_str().unwrap().to_owned())
+                info.header.get("user-agent").unwrap().to_str().unwrap().to_owned()
             )
         )
     }
