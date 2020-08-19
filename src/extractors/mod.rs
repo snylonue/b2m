@@ -19,6 +19,8 @@ macro_rules! matched {
 pub mod bilibili;
 pub mod iqiyi;
 pub mod youtube;
+#[cfg(feature = "nfinata")]
+pub mod netease_music;
 
 use serde_json::Value;
 use crate::Setting;
