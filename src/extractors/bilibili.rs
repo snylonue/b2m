@@ -1,4 +1,5 @@
 use serde_json::Value;
+use std::iter::FromIterator;
 use super::search_by_keys;
 use super::Extractor;
 use crate::Setting;
@@ -53,8 +54,8 @@ impl Extractor for Annie {
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
         let urls = get!(&stream["parts"], &stream["urls"]);
-        let videos = value_to_string!(urls[0]["url"]).into_iter().collect();
-        let audios = value_to_string!(urls[1]["url"]).into_iter().collect();
+        let videos = Vec::from_iter(value_to_string!(urls[0]["url"]));
+        let audios = Vec::from_iter(value_to_string!(urls[1]["url"]));
         Some(Url::new(videos, audios))
     }
     #[inline]

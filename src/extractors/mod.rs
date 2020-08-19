@@ -32,13 +32,13 @@ pub trait Extractor {
 }
 
 /// Searches an object with given keys in order, returns the first exist key and its value
-pub fn search_by_keys<'a>(object: &'a Value, keys: &[&str]) -> Option<(&'a String, &'a Value)> {
+pub fn search_by_keys<'a>(object: &'a Value, keys: &[&'a str]) -> Option<(&'a str, &'a Value)> {
     let object = object.as_object()?;
-    for i in keys.iter() {
-        match object.iter().find(|(x, _)| x == i) {
-            Some(el) => return Some(el),
+    for key in keys {
+        match object.get(*key) {
+            Some(v) => return Some((key.to_owned(), v)),
             None => continue,
         }
     }
-    Some(object.iter().next()?)
+    Some(object.iter().next().map(|(k, v)| (k.as_str(), v))?)
 }
