@@ -110,18 +110,3 @@ impl<'a> Setting<'a> {
         Self { proxy_addr, cookie }
     }
 }
-impl<'a> From<ProxyAddr<'a>> for Setting<'a> {
-    fn from(proxy_addr: ProxyAddr<'a>) -> Setting<'a> {
-       Setting { proxy_addr: Some(proxy_addr), cookie: None }
-    }
-}
-impl<'a> From<Option<ProxyAddr<'a>>> for Setting<'a> {
-    fn from(proxy_addr: Option<ProxyAddr<'a>>) -> Setting<'a> {
-       Setting { proxy_addr: proxy_addr, cookie: None }
-    }
-}
-impl<'a> AsRef<Option<ProxyAddr<'a>>> for Setting<'a> {
-    fn as_ref(&self) -> &Option<ProxyAddr<'a>> {
-        &self.proxy_addr
-    }
-}
