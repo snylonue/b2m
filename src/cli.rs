@@ -10,7 +10,7 @@ pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
 const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Copy, Clone)]
 pub struct Config<'a> {
     pub url: &'a str,
     pub check: bool,

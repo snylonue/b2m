@@ -6,7 +6,7 @@ use std::net::Ipv4Addr;
 use std::fmt;
 use std::convert::TryFrom;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct ProxyAddr<'a> {
     addr: SocketAddr,
     protocal: &'a str,
