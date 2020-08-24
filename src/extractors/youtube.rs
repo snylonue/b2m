@@ -2,7 +2,7 @@ use serde_json::Value;
 use super::Extractor;
 use crate::parsers::Parser;
 use crate::parsers::Url;
-use crate::Setting;
+use crate::Config;
 
 pub struct YouGet;
 pub struct Annie;
@@ -24,7 +24,7 @@ impl Extractor for Annie {
         let audio_url = value_to_string!(urls[1]["url"])?;
         Some(Url::new(vec![video_url], vec![audio_url]))
     }
-    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }

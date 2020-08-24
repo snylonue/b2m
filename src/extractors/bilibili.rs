@@ -2,7 +2,7 @@ use serde_json::Value;
 use std::iter::FromIterator;
 use super::search_by_keys;
 use super::Extractor;
-use crate::Setting;
+use crate::Config;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 
@@ -37,7 +37,7 @@ impl Extractor for YouGet {
         }
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
@@ -59,7 +59,7 @@ impl Extractor for Annie {
         Some(Url::new(videos, audios))
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }

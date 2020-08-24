@@ -1,7 +1,7 @@
 use finata::website::netease_cloud_music::Song;
 use tokio::runtime::Runtime;
 use super::Extractor;
-use crate::Setting;
+use crate::Config;
 use crate::ResultInfo;
 use crate::parsers::Url;
 use crate::MediaInfo;
@@ -39,7 +39,7 @@ impl Extractor for Finata {
     fn real_url(_: &serde_json::Value) -> Option<Url> {
         None
     }
-    fn extract(url: &str, _: &Setting) -> ResultInfo {
+    fn extract(url: &str, _: &Config) -> ResultInfo {
         let mut runtime = Runtime::new().unwrap();
         runtime.block_on(Self::extract_async(url))
     }

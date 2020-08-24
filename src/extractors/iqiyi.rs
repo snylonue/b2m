@@ -1,6 +1,6 @@
 use serde_json::Value;
 use super::Extractor;
-use crate::Setting;
+use crate::Config;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 
@@ -26,7 +26,7 @@ impl Extractor for YouGet {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::youget::YouGet::parse(url, Self::real_url, setting)
     }
 }
@@ -46,7 +46,7 @@ impl Extractor for Annie {
         Some(Url::with_videos(video_url))
     }
     #[inline]
-    fn extract(url: &str, setting: &Setting) -> crate::ResultInfo {
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }

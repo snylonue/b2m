@@ -39,12 +39,14 @@ pub mod proxy;
 pub mod command;
 pub mod extractors;
 pub mod parsers;
+pub mod cli;
 
 use anyhow::Result;
 use std::process::Command;
 use std::io::Result as IoResult;
-use proxy::ProxyAddr;
-use parsers::Url;
+use crate::proxy::ProxyAddr;
+use crate::parsers::Url;
+use crate::cli::Config;
 
 type ResultInfo = Result<MediaInfo>;
 

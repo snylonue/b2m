@@ -16,7 +16,6 @@ macro_rules! find_parser {
 }
 
 mod check;
-mod cli;
 
 use anyhow::Result;
 use serde_json::json;
@@ -31,7 +30,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
     let settings = Setting::new(config.proxy, config.cookie);
-    let media = parse(config.url, &settings)?;
+    let media = parse(config.url, &config)?;
     if config.info {
         print_info(media, config.json);
         return Ok(());
@@ -94,7 +93,7 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("user-agent: {}", user_agent.unwrap_or_else(String::new));
     }
 }
-pub fn parse(url: &str, setting: &Setting) -> Result<MediaInfo> {
+pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
         url, setting,
         bilibili, "annie", Annie,

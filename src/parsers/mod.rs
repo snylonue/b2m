@@ -5,7 +5,7 @@ use anyhow::Result;
 use serde_json::Value;
 use crate::ResultInfo;
 use crate::MediaInfo;
-use crate::Setting;
+use crate::Config;
 
 /// A struct that contains two kinds of urls
 #[derive(Debug)]
@@ -15,10 +15,10 @@ pub struct Url {
 }
 
 pub trait Parser {
-    fn run(url: &str, setting: &Setting) -> Result<Value>;
+    fn run(url: &str, setting: &Config) -> Result<Value>;
     /// Returns a tuple like (Some(referrer), Some(title))
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
-    fn parse<F>(url: &str, extractor: F, setting: &Setting) -> ResultInfo
+    fn parse<F>(url: &str, extractor: F, setting: &Config) -> ResultInfo
         where F: FnOnce(&Value) -> Option<Url>
     {
         let infos = Self::run(url, setting)?;

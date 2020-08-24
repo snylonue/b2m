@@ -3,17 +3,17 @@ use serde_json::Value;
 use std::process;
 use super::Parser;
 use crate::command;
-use crate::Setting;
+use crate::Config;
 
 pub struct YouGet;
 
 impl Parser for YouGet {
-    fn run(url: &str, setting: &Setting) -> Result<Value> {
+    fn run(url: &str, setting: &Config) -> Result<Value> {
         let mut cmd = process::Command::new("you-get");
         cmd.arg(url)
             .arg("--json")
             .stderr(process::Stdio::null());
-        if let Some(proxy) = &setting.proxy_addr {
+        if let Some(proxy) = &setting.proxy {
             match proxy.protocal() {
                 "http" => cmd.arg("-x"),
                 "socks5" => cmd.arg("-s"),
