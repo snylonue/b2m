@@ -90,7 +90,8 @@ impl MediaInfo {
                 .args(audios
                     .iter()
                     .map(|a| format!("--audio-file={}", a))
-                ),
+                )
+                .arg("--merge-files"),
         };
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));

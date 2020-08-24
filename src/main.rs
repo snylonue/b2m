@@ -51,9 +51,6 @@ fn main() -> Result<()> {
     if let Some(cookie) = &settings.cookie {
         commands.arg(format!("--cookies-file={}", cookie));
     }
-    if config.merge {
-        commands.arg("--merge-files");
-    }
     commands.output()?;
     Ok(())
 }
