@@ -44,7 +44,6 @@ pub mod cli;
 use anyhow::Result;
 use std::process::Command;
 use std::io::Result as IoResult;
-use crate::proxy::ProxyAddr;
 use crate::parsers::Url;
 use crate::cli::Config;
 
@@ -56,10 +55,6 @@ pub struct MediaInfo {
     pub title: Option<String>,
     pub referrer: Option<String>,
     pub user_agent: Option<String>,
-}
-pub struct Setting<'a> {
-    pub proxy_addr: Option<ProxyAddr<'a>>,
-    pub cookie: Option<&'a str>,
 }
 
 impl MediaInfo {
@@ -106,10 +101,5 @@ impl MediaInfo {
         }
         cmd.arg("--no-ytdl");
         cmd
-    }
-}
-impl<'a> Setting<'a> {
-    pub fn new(proxy_addr: Option<ProxyAddr<'a>>, cookie: Option<&'a str>) -> Self {
-        Self { proxy_addr, cookie }
     }
 }

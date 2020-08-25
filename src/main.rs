@@ -29,7 +29,6 @@ fn main() -> Result<()> {
         check();
         return Ok(());
     }
-    let settings = Setting::new(config.proxy, config.cookie);
     let media = parse(config.url, &config)?;
     if config.info {
         print_info(media, config.json);
@@ -44,10 +43,10 @@ fn main() -> Result<()> {
         commands.arg("--no-video")
             .arg("--force-window=immediate");
     }
-    if let Some(proxy) = &settings.proxy_addr {
+    if let Some(proxy) = &config.proxy {
         commands.env("HTTP_PROXY", proxy.to_string());
     }
-    if let Some(cookie) = &settings.cookie {
+    if let Some(cookie) = &config.cookie {
         commands.arg(format!("--cookies-file={}", cookie));
     }
     commands.output()?;
