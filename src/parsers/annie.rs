@@ -3,12 +3,12 @@ use serde_json::Value;
 use std::process;
 use super::Parser;
 use crate::command;
-use crate::Setting;
+use crate::Config;
 
 pub struct Annie;
 
 impl Parser for Annie {
-    fn run(url: &str, setting: &Setting) -> Result<Value> {
+    fn run(url: &str, setting: &Config) -> Result<Value> {
         let mut cmd = process::Command::new("annie");
         if let Some(cookie) = &setting.cookie {
             cmd.arg("-c")
@@ -17,7 +17,7 @@ impl Parser for Annie {
         cmd.arg("-j")
             .arg(url)
             .stderr(process::Stdio::null());
-        if let Some(proxy) = &setting.proxy_addr {
+        if let Some(proxy) = &setting.proxy {
            cmd.env("HTTP_PROXY", proxy.to_string());
         }
         let (stdout, _) = command::run_command(&mut cmd)?;
