@@ -67,12 +67,12 @@ impl MediaInfo {
     pub fn default_ua(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
         Self::with_ua(url, title, referrer, String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36"))
     }
-    pub fn play(&self) -> IoResult<()> {
-        self.as_command().output()?;
+    pub fn play(&self, config: &Config) -> IoResult<()> {
+        self.as_command(config).output()?;
         Ok(())
     }
     /// Spwans commands to run mpv
-    pub fn as_command(&self) -> Command {
+    pub fn as_command(&self, config: &Config) -> Command {
         let Url { videos, audios } = &self.url;
         let mut cmd = Command::new("mpv");
         match videos.len() {
@@ -88,7 +88,7 @@ impl MediaInfo {
                     .iter()
                     .map(|a| format!("--audio-file={}", a))
                 )
-                .arg("--merge-files"),
+                .args::<&[&str], _>(if config.merge { &["--merge-files"] } else { &[] }),
         };
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));

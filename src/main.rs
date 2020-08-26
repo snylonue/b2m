@@ -34,7 +34,7 @@ fn main() -> Result<()> {
         print_info(media, config.json);
         return Ok(());
     }
-    let mut commands = media.as_command();
+    let mut commands = media.as_command(&config);
     if config.no_audio {
         commands.arg("--ao=null")
             .arg("--no-audio");
