@@ -7,8 +7,8 @@ use crate::proxy::ProxyAddr;
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
-const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
-const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
+pub const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
+pub const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
 
 #[derive(Debug, Default, Copy, Clone)]
 pub struct Config<'a> {
