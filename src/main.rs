@@ -34,23 +34,7 @@ fn main() -> Result<()> {
         print_info(media, config.json);
         return Ok(());
     }
-    let mut commands = media.as_command(&config);
-    if config.no_audio {
-        commands.arg("--ao=null")
-            .arg("--no-audio");
-    }
-    if config.no_video {
-        commands.arg("--no-video")
-            .arg("--force-window=immediate");
-    }
-    if let Some(proxy) = &config.proxy {
-        commands.env("HTTP_PROXY", proxy.to_string());
-    }
-    if let Some(cookie) = &config.cookie {
-        commands.arg(format!("--cookies-file={}", cookie));
-    }
-    commands.output()?;
-    Ok(())
+    Ok(media.play(&config)?)
 }
 fn check() {
     println!("Running check");

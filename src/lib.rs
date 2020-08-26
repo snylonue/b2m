@@ -99,6 +99,18 @@ impl MediaInfo {
         if let Some(user_agent) = &self.user_agent {
             cmd.arg(format!("--user-agent={}", user_agent));
         }
+        if config.no_audio {
+            cmd.args(&["--ao=null", "--no-audio"]);
+        }
+        if config.no_video {
+            cmd.args(&["--no-video", "--force-window=immediate"]);
+        }
+        if let Some(proxy) = &config.proxy {
+            cmd.env("HTTP_PROXY", proxy.to_string());
+        }
+        if let Some(cookie) = &config.cookie {
+            cmd.arg(format!("--cookies-file={}", cookie));
+        }
         cmd.arg("--no-ytdl");
         cmd
     }
