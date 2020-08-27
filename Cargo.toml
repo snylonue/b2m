@@ -19,9 +19,6 @@ regex = "1"
 finata = { git = "https://github.com/snylonue/finata.git", optional = true }
 tokio = { version = "0.2", optional = true }
 
-[profile.release]
-lto = "fat"
-
 [features]
 default = ["annie", "youget"]
 annie = []
