@@ -16,7 +16,7 @@ clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
 regex = "1"
-finata = { git = "https://github.com/snylonue/finata.git", optional = true }
+finata = { git = "https://github.com/snylonue/finata.git", optional = true, rev = "65f9949" }
 tokio = { version = "0.2", optional = true }
 
 [features]

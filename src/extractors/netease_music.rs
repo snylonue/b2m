@@ -1,4 +1,4 @@
-use finata::website::netease_cloud_music::Song;
+use finata::website::netease_music::Song;
 use tokio::runtime::Runtime;
 use super::Extractor;
 use crate::Config;
