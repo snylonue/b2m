@@ -4,7 +4,7 @@
 import subprocess
 import argparse
 
-def main(url, hwdec, debug: bool):
+def main(url, hwdec, debug):
 	rescmd = subprocess.run(f'you-get {url} -u', shell = True, stdout = subprocess.PIPE)
 	getout = rescmd.stdout.decode().strip().split('\r\n')
 	try:
@@ -13,13 +13,11 @@ def main(url, hwdec, debug: bool):
 		raise OSError(f'can not get real url of {url}')
 	else:
 		urls = getout[sp+1:]
-	#assert urls
+	assert urls
 	if len(urls) == 2:
-		cmd = f"""mpv{debug} "{urls[0]}" --audio-file="{urls[1]}" --referrer="https://www.bilibili.com" --no-ytdl \
---hwdec={hwdec}"""
+		cmd = f"""mpv{debug} "{urls[0]}" --audio-file="{urls[1]}" --referrer="https://www.bilibili.com" --no-ytdl --hwdec={hwdec}"""
 	else:
-		cmd = f"""mpv{debug} {'"' + '" "'.join(urls) + '"'} --referrer="https://www.bilibili.com" --no-ytdl --merge-files \
---hwdec={hwdec}"""
+		cmd = f"""mpv{debug} "{'"'.join(urls)}" --referrer="https://www.bilibili.com" --no-ytdl --merge-files --hwdec={hwdec}"""
 	#assert cmd
 	subprocess.run(cmd, shell = True)
 
