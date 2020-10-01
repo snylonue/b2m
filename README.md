@@ -6,9 +6,10 @@ you-get 本身支持调用播放器播放，但不完善
 
 ### 安装(使用 cargo)
 ```
-cargo install b2m
+cargo install --git https://github.com/snylonue/b2m.git
 b2m -h
 ```
+由于使用了未发布至 crates.io 的依赖，目前无法通过 `cargo install b2m` 安装最新版
 
 使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，具体见 [Cargo.toml](Cargo.toml)
 
