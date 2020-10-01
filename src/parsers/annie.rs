@@ -15,8 +15,7 @@ impl Parser for Annie {
                 .arg(cookie);
         }
         cmd.arg("-j")
-            .arg(url)
-            .stderr(process::Stdio::null());
+            .arg(url);
         if let Some(proxy) = &setting.proxy {
            cmd.env("HTTP_PROXY", proxy.to_string());
         }

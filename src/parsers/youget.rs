@@ -11,8 +11,7 @@ impl Parser for YouGet {
     fn run(url: &str, setting: &Config) -> Result<Value> {
         let mut cmd = process::Command::new("you-get");
         cmd.arg(url)
-            .arg("--json")
-            .stderr(process::Stdio::null());
+            .arg("--json");
         if let Some(proxy) = &setting.proxy {
             match proxy.protocal() {
                 "http" => cmd.arg("-x"),
