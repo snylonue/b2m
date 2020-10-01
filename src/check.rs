@@ -45,22 +45,21 @@ pub fn check_annie() -> bool {
     match process::Command::new("annie")
         .arg("-v")
         .output() {
-            Ok(r) => {
-                let (stdout, stderr) = match parse_output(r) {
-                    Ok(r) => r,
-                    Err(e) => {
-                        eprintln!("Failed to check for annie: unable to parse stdout and stderr:\n{:?}", e);
-                        return false;
-                    },
-                };
-                let stdout = stdout.trim();
-                let splits = stdout.split(' ').collect::<Vec<_>>();
-                let version = splits.get(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
-                println!("annie version: {}\n", version);
-                println!("{}", format!("Stdout:\n{}", stdout).trim());
-                println!("{}", format!("Stderr:\n{}", stderr).trim());
-                true
-            },
+            Ok(r) => match parse_output(r) {
+                Ok((stdout, stderr)) => {
+                    let stdout = stdout.trim();
+                    let mut splits = stdout.split(' ');
+                    let version = splits.nth(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
+                    println!("annie version: {}\n", version);
+                    println!("{}", format!("Stdout:\n{}", stdout).trim());
+                    println!("{}", format!("Stderr:\n{}", stderr).trim());
+                    true  
+                },
+                Err(e) => {
+                    eprintln!("Failed to check for annie: unable to parse stdout and stderr:\n{:?}", e);
+                    false
+                },
+            }
             Err(e) => {
                 eprintln!("Failed to check for annie: unable to run annie:\n{:?}", e);
                 false
@@ -73,20 +72,19 @@ pub fn check_mpv() -> bool {
     match process::Command::new("mpv")
         .arg("-V")
         .output() {
-            Ok(r) => {
-                let (stdout, stderr) = match parse_output(r) {
-                    Ok(r) => r,
-                    Err(e) => {
-                        eprintln!("Failed to check for mpv: unable to parse stdout and stderr:\n {:?}", e);
-                        return false;
-                    },
-                };
-                let splits = stdout.split(' ').collect::<Vec<_>>();
-                let version = splits.get(1).unwrap_or(&UNKNOWN).trim_end_matches(',');
-                println!("mpv version: {}\n", version);
-                println!("{}", format!("Stdout:\n{}", stdout).trim());
-                println!("{}", format!("Stderr:\n{}", stderr).trim());
-                true
+            Ok(r) => match parse_output(r) {
+               Ok((stdout, stderr)) => {
+                   let mut splits = stdout.split(' ');
+                   let version = splits.nth(1).unwrap_or(&UNKNOWN).trim_end_matches(',');
+                   println!("mpv version: {}\n", version);
+                   println!("{}", format!("Stdout:\n{}", stdout).trim());
+                   println!("{}", format!("Stderr:\n{}", stderr).trim());
+                   true
+               },
+               Err(e) => {
+                   eprintln!("Failed to check for mpv: unable to parse stdout and stderr:\n {:?}", e);
+                   false
+               },
             },
             Err(e) => {
                 eprintln!("Failed to check for mpv: unable to run mpv:\n{:?}", e);
