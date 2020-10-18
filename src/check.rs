@@ -48,8 +48,7 @@ pub fn check_annie() -> bool {
             Ok(r) => match parse_output(r) {
                 Ok((stdout, stderr)) => {
                     let stdout = stdout.trim();
-                    let mut splits = stdout.split(' ');
-                    let version = splits.nth(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
+                    let version = stdout.split(' ').nth(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
                     println!("annie version: {}\n", version);
                     println!("{}", format!("Stdout:\n{}", stdout).trim());
                     println!("{}", format!("Stderr:\n{}", stderr).trim());
@@ -74,8 +73,7 @@ pub fn check_mpv() -> bool {
         .output() {
             Ok(r) => match parse_output(r) {
                Ok((stdout, stderr)) => {
-                   let mut splits = stdout.split(' ');
-                   let version = splits.nth(1).unwrap_or(&UNKNOWN).trim_end_matches(',');
+                   let version = stdout.split(' ').nth(1).unwrap_or(&UNKNOWN).trim_end_matches(',');
                    println!("mpv version: {}\n", version);
                    println!("{}", format!("Stdout:\n{}", stdout).trim());
                    println!("{}", format!("Stderr:\n{}", stderr).trim());

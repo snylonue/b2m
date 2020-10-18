@@ -19,7 +19,7 @@ impl<'a> ProxyAddr<'a> {
     pub const fn from_addr(addr: SocketAddr) -> Self {
         Self { addr, protocal: "http" }
     }
-    pub fn from_str(s: &'a str) -> Result<Self> {
+    pub fn from_string(s: &'a str) -> Result<Self> {
         let mut splits = s.rsplit("://");
         match (splits.next(), splits.next()) {
             (Some(addr),Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
@@ -44,7 +44,7 @@ impl<'a> TryFrom<&'a str> for ProxyAddr<'a> {
 
     #[inline]
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        Self::from_str(value)
+        Self::from_string(value)
     }
 }
 impl<'a> Default for ProxyAddr<'a> {

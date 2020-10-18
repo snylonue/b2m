@@ -34,7 +34,7 @@ impl<'a> Config<'a> {
         let no_audio = args.is_present("no-audio");
         let no_video = args.is_present("no-video");
         let proxy = match args.value_of("proxy") {
-            Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_str(p)?),
+            Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_string(p)?),
             _ => None,
         };
         let cookie = if !args.is_present("no-cookie") {
