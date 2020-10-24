@@ -42,7 +42,7 @@ impl Extractor for YouGet {
     }
 }
 impl Annie {
-    const DISPLAYS: [&'static str; 8] = ["120", "116", "112", "80", "74", "64", "32", "16"];
+    const DISPLAYS: [&'static str; 9] = ["125", "120", "116", "112", "80", "74", "64", "32", "16"];
 }
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
