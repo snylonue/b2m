@@ -1,6 +1,6 @@
 [package]
 name = "b2m"
-version = "0.21.0"
+version = "0.22.0"
 authors = ["snylonue <snylonue@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/snylonue/b2m"
@@ -16,7 +16,7 @@ clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
 regex = "1"
-finata = { git = "https://github.com/snylonue/finata.git", optional = true, rev = "65f9949" }
+finata = { version = "0.1", optional = true }
 tokio = { version = "0.2", optional = true }
 
 [features]

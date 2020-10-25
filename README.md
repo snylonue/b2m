@@ -6,18 +6,17 @@ you-get 本身支持调用播放器播放，但不完善
 
 ### 安装(使用 cargo)
 ```
-cargo install --git https://github.com/snylonue/b2m.git
+cargo install b2m
 b2m -h
 ```
-由于使用了未发布至 crates.io 的依赖，目前无法通过 `cargo install b2m` 安装最新版
 
-使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，具体见 [Cargo.toml](Cargo.toml)
+使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，详见 [Cargo.toml](Cargo.toml)
 
 或者 [Python 版(不再维护)](src/b2m.py)
 
 ### 用法
 ```
-b2m 0.20.0
+b2m 0.22.0
 Play bilibili or other videos with mpv
 
 USAGE:
@@ -30,12 +29,13 @@ FLAGS:
     -j, --json         Print information with json
         --an           Play without audio output
         --no-cookie    Don't use any cookie
+        --no-merge     Don't pass --merge-files to mpv
         --vn           Play without video output
     -V, --version      Prints version information
 
 OPTIONS:
     -c, --cookie <cookie>    Set cookie
-    -p, --proxy <proxy>      Set proxy address [default: http://127.0.0.1:1080]
+    -p, --proxy <proxy>      Set proxy address [default: http://127.0.0.1:1080  ]
 
 ARGS:
     <url>    Video url
