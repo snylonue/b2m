@@ -25,8 +25,8 @@ pub fn check_you_get() -> bool {
                 let splits = stderr.split(' ').collect::<Vec<_>>();
                 let version = splits.get(2).unwrap_or(&UNKNOWN);
                 println!("you-get version: {}\n", version);
-                println!("{}", format!("Stdout:\n{}", stdout).trim());
-                println!("{}", format!("Stderr:\n{}", stderr).trim());
+                println!("Stdout:\n{}", stdout.trim_end());
+                println!("Stderr:\n{}", stderr.trim_end());
                 true
             },
             Err(e) => {
@@ -50,8 +50,8 @@ pub fn check_annie() -> bool {
                     let stdout = stdout.trim();
                     let version = stdout.split(' ').nth(2).unwrap_or(&UNKNOWN).trim_end_matches(',');
                     println!("annie version: {}\n", version);
-                    println!("{}", format!("Stdout:\n{}", stdout).trim());
-                    println!("{}", format!("Stderr:\n{}", stderr).trim());
+                    println!("Stdout:\n{}", stdout.trim_end());
+                    println!("Stderr:\n{}", stderr.trim_end());
                     true  
                 },
                 Err(e) => {
@@ -75,8 +75,8 @@ pub fn check_mpv() -> bool {
                Ok((stdout, stderr)) => {
                    let version = stdout.split(' ').nth(1).unwrap_or(&UNKNOWN).trim_end_matches(',');
                    println!("mpv version: {}\n", version);
-                   println!("{}", format!("Stdout:\n{}", stdout).trim());
-                   println!("{}", format!("Stderr:\n{}", stderr).trim());
+                   println!("Stdout:\n{}", stdout.trim_end());
+                   println!("Stderr:\n{}", stderr.trim_end());
                    true
                },
                Err(e) => {
