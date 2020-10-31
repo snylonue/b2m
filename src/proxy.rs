@@ -1,10 +1,10 @@
-use anyhow::Result;
 use anyhow::Error;
-use std::net::SocketAddr;
+use anyhow::Result;
+use std::convert::TryFrom;
+use std::fmt;
 use std::net::IpAddr;
 use std::net::Ipv4Addr;
-use std::fmt;
-use std::convert::TryFrom;
+use std::net::SocketAddr;
 
 #[derive(Debug, Copy, Clone)]
 pub struct ProxyAddr<'a> {
@@ -17,14 +17,17 @@ impl<'a> ProxyAddr<'a> {
         Self { addr, protocal }
     }
     pub const fn from_addr(addr: SocketAddr) -> Self {
-        Self { addr, protocal: "http" }
+        Self {
+            addr,
+            protocal: "http",
+        }
     }
     pub fn from_string(s: &'a str) -> Result<Self> {
         let mut splits = s.rsplit("://");
         match (splits.next(), splits.next()) {
-            (Some(addr),Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
+            (Some(addr), Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
             (Some(addr), None) => Ok(Self::from_addr(addr.parse()?)),
-            _ => Err(anyhow::anyhow!("Invailed proxy address syntax"))
+            _ => Err(anyhow::anyhow!("Invailed proxy address syntax")),
         }
     }
     pub const fn protocal(&self) -> &str {

@@ -1,8 +1,8 @@
-use serde_json::Value;
 use super::Extractor;
-use crate::Config;
 use crate::parsers::Parser;
 use crate::parsers::Url;
+use crate::Config;
+use serde_json::Value;
 
 pub struct YouGet;
 pub struct Annie;
@@ -12,9 +12,7 @@ impl YouGet {
 }
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
-        matched!(url,
-            r"(?:https?://)?(?:www\.)?iqiyi\.com/."
-        )
+        matched!(url, r"(?:https?://)?(?:www\.)?iqiyi\.com/.")
     }
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = super::search_by_keys(value, &Self::DISPLAYS)?;
@@ -32,9 +30,7 @@ impl Extractor for YouGet {
 }
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
-        matched!(url,
-            r"(?:https?://)?(?:www\.)?iqiyi\.com/."
-        )
+        matched!(url, r"(?:https?://)?(?:www\.)?iqiyi\.com/.")
     }
     fn real_url(value: &Value) -> Option<Url> {
         let stream = value["streams"].as_object()?.values().last()?;

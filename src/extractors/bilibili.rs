@@ -1,20 +1,30 @@
-use serde_json::Value;
-use std::iter::FromIterator;
 use super::search_by_keys;
 use super::Extractor;
-use crate::Config;
 use crate::parsers::Parser;
 use crate::parsers::Url;
+use crate::Config;
+use serde_json::Value;
+use std::iter::FromIterator;
 
 pub struct YouGet;
 pub struct Annie;
 
 impl YouGet {
-    const DISPLAYS: [&'static str; 8] = ["dash-flv", "flv", "dash-flv720", "flv720", "dash-flv480", "flv480", "dash-flv360", "flv360"];
+    const DISPLAYS: [&'static str; 8] = [
+        "dash-flv",
+        "flv",
+        "dash-flv720",
+        "flv720",
+        "dash-flv480",
+        "flv480",
+        "dash-flv360",
+        "flv360",
+    ];
 }
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
-        matched!(url,
+        matched!(
+            url,
             r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/[AaBb][Vv]|bangumi/play/(?:ep|ss)).",
             r"(?:https://)?live\.bilibili\.com/\d"
         )
@@ -46,7 +56,8 @@ impl Annie {
 }
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
-        matched!(url, 
+        matched!(
+            url,
             r"(?:https://)?(?:www\.)?bilibili\.com/(?:(?:video/)?[AaBb][Vv]|bangumi/play/ep).",
             r"(?:[AaBb][Vv]|ep)."
         )

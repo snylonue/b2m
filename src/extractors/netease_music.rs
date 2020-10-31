@@ -1,10 +1,10 @@
+use super::Extractor;
+use crate::parsers::Url;
+use crate::Config;
+use crate::MediaInfo;
+use crate::ResultInfo;
 use finata::website::netease_music::Song;
 use tokio::runtime::Runtime;
-use super::Extractor;
-use crate::Config;
-use crate::ResultInfo;
-use crate::parsers::Url;
-use crate::MediaInfo;
 
 pub struct Finata;
 
@@ -17,24 +17,26 @@ impl Finata {
             info.raw_url
                 .into_iter()
                 .map(|(url, _)| url.to_string())
-                .collect()
+                .collect(),
         );
-        Ok(
-            MediaInfo::with_ua(
-                url,
-                info.title,
-                info.header.get("referer").map(|v| v.to_str().unwrap().to_owned()),
-                info.header.get("user-agent").unwrap().to_str().unwrap().to_owned()
-            )
-        )
+        Ok(MediaInfo::with_ua(
+            url,
+            info.title,
+            info.header
+                .get("referer")
+                .map(|v| v.to_str().unwrap().to_owned()),
+            info.header
+                .get("user-agent")
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_owned(),
+        ))
     }
 }
 impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
-        matched!(
-            url,
-            r"(?:https?://)?music.163.com/#/song\?id=\d"
-        )
+        matched!(url, r"(?:https?://)?music.163.com/#/song\?id=\d")
     }
     fn real_url(_: &serde_json::Value) -> Option<Url> {
         None

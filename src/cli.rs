@@ -1,8 +1,8 @@
-use anyhow::Result;
-use clap::Arg;
-use clap::App;
-use clap::ArgMatches;
 use crate::proxy::ProxyAddr;
+use anyhow::Result;
+use clap::App;
+use clap::Arg;
+use clap::ArgMatches;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -26,7 +26,10 @@ pub struct Config<'a> {
 impl<'a> Config<'a> {
     pub fn new(args: &'a ArgMatches) -> Result<Self> {
         if args.is_present("check") {
-            return Ok(Self { check: true, ..Self::default() });
+            return Ok(Self {
+                check: true,
+                ..Self::default()
+            });
         }
         let url = args.value_of("url").expect("Invaild input");
         let json = args.is_present("json");
@@ -43,7 +46,17 @@ impl<'a> Config<'a> {
             None
         };
         let merge = !args.is_present("no-merging");
-        Ok(Self { url, check: false, no_audio, no_video, info, json, proxy, cookie, merge })
+        Ok(Self {
+            url,
+            check: false,
+            no_audio,
+            no_video,
+            info,
+            json,
+            proxy,
+            cookie,
+            merge,
+        })
     }
 }
 
@@ -52,60 +65,70 @@ pub fn b2m() -> App<'static, 'static> {
     App::new(NAME)
         .version(VERSION)
         .about(DESCRIPTION)
-        .arg(Arg::with_name("url")
-            .help("Video url")
-            .index(1)
-            .required_unless("check")
-    )
-        .arg(Arg::with_name("check")
-            .help("Check if all dependencies are installed")
-            .long("check")
-            .multiple(true)
-    )
-        .arg(Arg::with_name("no-audio")
-            .help("Play without audio output")
-            .long("an")
-            .alias("no-audio")
-            .multiple(true)
-    )
-        .arg(Arg::with_name("no-video")
-            .help("Play without video output")
-            .long("vn")
-            .alias("no-video")
-            .multiple(true)
-    )
-        .arg(Arg::with_name("info-only")
-            .help("Print information only")
-            .long("info")
-            .short("i")
-            .multiple(true)
-    )
-        .arg(Arg::with_name("json")
-            .help("Print information with json")
-            .long("json")
-            .short("j")
-            .multiple(true)
-    )
-        .arg(Arg::with_name("proxy")
-            .help("Set proxy address")
-            .long("proxy")
-            .short("p")
-            .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080"))
-    )
-        .arg(Arg::with_name("cookie")
-            .help("Set cookie")
-            .long("cookie")
-            .short("c")
-            .takes_value(true)
-    )
-        .arg(Arg::with_name("no-cookie")
-            .help("Don't use any cookie")
-            .long("no-cookie")
-            .alias("nc")
-    )
-        .arg(Arg::with_name("no-merging")
-            .help("Don't pass --merge-files to mpv")
-            .long("no-merge")
-            .alias("nm")
-    )
+        .arg(
+            Arg::with_name("url")
+                .help("Video url")
+                .index(1)
+                .required_unless("check"),
+        )
+        .arg(
+            Arg::with_name("check")
+                .help("Check if all dependencies are installed")
+                .long("check")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("no-audio")
+                .help("Play without audio output")
+                .long("an")
+                .alias("no-audio")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("no-video")
+                .help("Play without video output")
+                .long("vn")
+                .alias("no-video")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("info-only")
+                .help("Print information only")
+                .long("info")
+                .short("i")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("json")
+                .help("Print information with json")
+                .long("json")
+                .short("j")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("proxy")
+                .help("Set proxy address")
+                .long("proxy")
+                .short("p")
+                .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080")),
+        )
+        .arg(
+            Arg::with_name("cookie")
+                .help("Set cookie")
+                .long("cookie")
+                .short("c")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("no-cookie")
+                .help("Don't use any cookie")
+                .long("no-cookie")
+                .alias("nc"),
+        )
+        .arg(
+            Arg::with_name("no-merging")
+                .help("Don't pass --merge-files to mpv")
+                .long("no-merge")
+                .alias("nm"),
+        )
 }

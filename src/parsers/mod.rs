@@ -1,11 +1,11 @@
-pub mod youget;
 pub mod annie;
+pub mod youget;
 
+use crate::Config;
+use crate::MediaInfo;
+use crate::ResultInfo;
 use anyhow::Result;
 use serde_json::Value;
-use crate::ResultInfo;
-use crate::MediaInfo;
-use crate::Config;
 
 /// A struct that contains two kinds of urls
 #[derive(Debug)]
@@ -19,7 +19,8 @@ pub trait Parser {
     /// Returns a tuple like (Some(referrer), Some(title))
     fn extract_infos(info: &Value) -> (Option<String>, Option<String>);
     fn parse<F>(url: &str, extractor: F, setting: &Config) -> ResultInfo
-        where F: FnOnce(&Value) -> Option<Url>
+    where
+        F: FnOnce(&Value) -> Option<Url>,
     {
         let infos = Self::run(url, setting)?;
         let url = match extractor(&infos) {

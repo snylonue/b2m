@@ -5,7 +5,7 @@ macro_rules! find_parser {
             $(#[cfg(feature = $extractor_name)]if $crate::extractors::$site::$extractor::is_support($url) {
                 match $crate::extractors::$site::$extractor::extract($url, $setting) {
                     res @ Ok(_) => return res,
-                    Err(e) => { 
+                    Err(e) => {
                         eprintln!("Error caught with {}/{}", stringify!($site), $extractor_name);
                         eprintln!("Error: {:#?}", e);
                      }
@@ -39,7 +39,11 @@ fn main() -> Result<()> {
 fn check() {
     println!("Running check");
     println!("b2m version: {}\n", cli::VERSION);
-    println!("Enabled enviroment variables:\nDEFAULT_COOKIES: {}\nDEFAULT_PROXY: {}\n", cli::DEFAULT_COOKIES.unwrap_or("None"), cli::DEFAULT_PROXY.unwrap_or("None"));
+    println!(
+        "Enabled enviroment variables:\nDEFAULT_COOKIES: {}\nDEFAULT_PROXY: {}\n",
+        cli::DEFAULT_COOKIES.unwrap_or("None"),
+        cli::DEFAULT_PROXY.unwrap_or("None")
+    );
     if check::check_you_get() {
         println!("\nyou-get check succeeded");
     } else {
@@ -53,13 +57,18 @@ fn check() {
     }
     println!();
     if check::check_mpv() {
-      println!("\nmpv check succeeded");
+        println!("\nmpv check succeeded");
     } else {
-      println!("\nmpv check failed");
+        println!("\nmpv check failed");
     }
 }
 fn print_info(media: MediaInfo, json: bool) {
-    let MediaInfo { url: parsers::Url { videos, audios }, title, referrer, user_agent } = media;
+    let MediaInfo {
+        url: parsers::Url { videos, audios },
+        title,
+        referrer,
+        user_agent,
+    } = media;
     if json {
         let j = json!({
             "video": videos,
@@ -79,13 +88,26 @@ fn print_info(media: MediaInfo, json: bool) {
 }
 pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
-        url, setting,
-        bilibili, "annie", Annie,
-        bilibili, "youget", YouGet,
-        youtube, "annie", Annie,
-        iqiyi, "annie", Annie,
-        iqiyi, "youget", YouGet,
-        netease_music, "nfinata", Finata
+        url,
+        setting,
+        bilibili,
+        "annie",
+        Annie,
+        bilibili,
+        "youget",
+        YouGet,
+        youtube,
+        "annie",
+        Annie,
+        iqiyi,
+        "annie",
+        Annie,
+        iqiyi,
+        "youget",
+        YouGet,
+        netease_music,
+        "nfinata",
+        Finata
     );
     Err(anyhow::anyhow!("Unsupport url"))
 }

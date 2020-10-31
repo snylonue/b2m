@@ -18,14 +18,14 @@ macro_rules! matched {
 
 pub mod bilibili;
 pub mod iqiyi;
-pub mod youtube;
 #[cfg(feature = "nfinata")]
 pub mod netease_music;
+pub mod youtube;
 
-use serde_json::Value;
-use crate::Config;
 use crate::parsers::Url;
+use crate::Config;
 use crate::ResultInfo;
+use serde_json::Value;
 
 pub trait Extractor {
     fn is_support(url: &str) -> bool;

@@ -35,17 +35,18 @@ macro_rules! get {
     }
 }
 
-pub mod proxy;
+pub mod cli;
 pub mod command;
 pub mod extractors;
 pub mod parsers;
-pub mod cli;
+pub mod proxy;
 
-use anyhow::Result;
-use std::process::Command;
-use std::io::Result as IoResult;
-use crate::parsers::Url;
 use crate::cli::Config;
+use crate::parsers::Url;
+use anyhow::Result;
+use std::io::Result as IoResult;
+use std::process::Command;
+use std::process::Stdio;
 
 type ResultInfo = Result<MediaInfo>;
 
@@ -59,16 +60,34 @@ pub struct MediaInfo {
 
 impl MediaInfo {
     pub fn new(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
-        Self { url, title, referrer, user_agent: None }
+        Self {
+            url,
+            title,
+            referrer,
+            user_agent: None,
+        }
     }
-    pub fn with_ua(url: Url, title: Option<String>, referrer: Option<String>, user_agent: String) -> Self {
-        Self { url, title, referrer, user_agent: Some(user_agent) }
+    pub fn with_ua(
+        url: Url,
+        title: Option<String>,
+        referrer: Option<String>,
+        user_agent: String,
+    ) -> Self {
+        Self {
+            url,
+            title,
+            referrer,
+            user_agent: Some(user_agent),
+        }
     }
     pub fn default_ua(url: Url, title: Option<String>, referrer: Option<String>) -> Self {
         Self::with_ua(url, title, referrer, String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36"))
     }
     pub fn play(&self, config: &Config) -> IoResult<()> {
-        self.as_command(config).output()?;
+        self.as_command(config)
+            .stdin(Stdio::inherit())
+            .stdout(Stdio::inherit())
+            .output()?;
         Ok(())
     }
     /// Spwans commands to run mpv
@@ -76,19 +95,18 @@ impl MediaInfo {
         let Url { videos, audios } = &self.url;
         let mut cmd = Command::new("mpv");
         match videos.len() {
-            0 => cmd.args(audios.iter())
-                .arg("--force-window=immediate"),
-            1 => cmd.arg(&videos[0])
-                .args(audios
-                    .iter()
-                    .map(|a| format!("--audio-file={}", a))
-                ),
-            _ => cmd.args(videos.iter())
-                .args(audios
-                    .iter()
-                    .map(|a| format!("--audio-file={}", a))
-                )
-                .args::<&[&str], _>(if config.merge { &["--merge-files"] } else { &[] }),
+            0 => cmd.args(audios.iter()).arg("--force-window=immediate"),
+            1 => cmd
+                .arg(&videos[0])
+                .args(audios.iter().map(|a| format!("--audio-file={}", a))),
+            _ => cmd
+                .args(videos.iter())
+                .args(audios.iter().map(|a| format!("--audio-file={}", a)))
+                .args::<&[&str], _>(if config.merge {
+                    &["--merge-files"]
+                } else {
+                    &[]
+                }),
         };
         if let Some(referrer) = &self.referrer {
             cmd.arg(format!("--referrer={}", referrer));
