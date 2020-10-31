@@ -14,15 +14,6 @@ macro_rules! value_to_string {
     };
 }
 #[macro_export]
-macro_rules! parse_json {
-    ($s: expr) => {
-        match serde_json::from_str($s) {
-            Ok(v) => v,
-            Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
-        }
-    };
-}
-#[macro_export]
 macro_rules! get {
     ($v: expr) => {
         $v

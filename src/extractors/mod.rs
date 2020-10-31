@@ -1,11 +1,5 @@
 #[macro_export]
 macro_rules! matched {
-    ($url:expr, $reg: expr) => {
-        {
-            let reg = regex::Regex::new($reg).unwrap();
-            reg.is_match($url)
-        }
-    };
     ($url:expr, $($regs: expr),*) => {
         {
             let regs = regex::RegexSet::new(&[

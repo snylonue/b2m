@@ -1,3 +1,13 @@
+#[macro_export]
+macro_rules! parse_json {
+    ($s: expr) => {
+        match serde_json::from_str($s) {
+            Ok(v) => v,
+            Err(_) => return Err(anyhow::anyhow!(format!("Invalid json data: {}", $s))),
+        }
+    };
+}
+
 pub mod annie;
 pub mod youget;
 
