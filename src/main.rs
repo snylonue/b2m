@@ -86,28 +86,17 @@ fn print_info(media: MediaInfo, json: bool) {
         println!("user-agent: {}", user_agent.unwrap_or_else(String::new));
     }
 }
+#[rustfmt::skip]
 pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
         url,
         setting,
-        bilibili,
-        "annie",
-        Annie,
-        bilibili,
-        "youget",
-        YouGet,
-        youtube,
-        "annie",
-        Annie,
-        iqiyi,
-        "annie",
-        Annie,
-        iqiyi,
-        "youget",
-        YouGet,
-        netease_music,
-        "nfinata",
-        Finata
+        bilibili, "annie", Annie,
+        bilibili, "youget", YouGet,
+        youtube, "annie", Annie,
+        iqiyi, "annie", Annie,
+        iqiyi, "youget", YouGet,
+        netease_music, "nfinata", Finata
     );
     Err(anyhow::anyhow!("Unsupport url"))
 }
