@@ -3,7 +3,7 @@ macro_rules! find_parser {
        {
             use $crate::extractors::Extractor;
             $(#[cfg(feature = $extractor_name)]if $crate::extractors::$site::$extractor::is_support($url) {
-                match $crate::extractors::$site::$extractor::extract($url, $setting) {
+                match <$crate::extractors::$site::$extractor as Extractor>::extract($url, $setting) {
                     res @ Ok(_) => return res,
                     Err(e) => {
                         eprintln!("Error caught with {}/{}", stringify!($site), $extractor_name);
