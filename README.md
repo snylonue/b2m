@@ -35,7 +35,7 @@ FLAGS:
 
 OPTIONS:
     -c, --cookie <cookie>    Set cookie
-    -p, --proxy <proxy>      Set proxy address [default: http://127.0.0.1:1080  ]
+    -p, --proxy <proxy>      Set proxy address [default: http://127.0.0.1:1080]
 
 ARGS:
     <url>    Video url

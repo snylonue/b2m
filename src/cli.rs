@@ -110,14 +110,16 @@ pub fn b2m() -> App<'static, 'static> {
                 .help("Set proxy address")
                 .long("proxy")
                 .short("p")
-                .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080")),
+                .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080"))
+                .env("HTTP_PROXY"),
         )
         .arg(
             Arg::with_name("cookie")
                 .help("Set cookie")
                 .long("cookie")
                 .short("c")
-                .takes_value(true),
+                .takes_value(true)
+                .env("B2M_COOKIES"),
         )
         .arg(
             Arg::with_name("no-cookie")
