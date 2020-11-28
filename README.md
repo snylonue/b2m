@@ -16,7 +16,7 @@ b2m -h
 
 ### 用法
 ```
-b2m 0.22.0
+b2m 0.22.1
 Play bilibili or other videos with mpv
 
 USAGE:
@@ -34,8 +34,8 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -c, --cookie <cookie>    Set cookie
-    -p, --proxy <proxy>      Set proxy address [default: http://127.0.0.1:1080]
+    -c, --cookie <cookie>    Set cookie [env: B2M_COOKIES=]
+    -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: http://127.0.0.1:10809]
 
 ARGS:
     <url>    Video url
