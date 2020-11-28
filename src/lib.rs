@@ -37,7 +37,6 @@ use crate::parsers::Url;
 use anyhow::Result;
 use std::io::Result as IoResult;
 use std::process::Command;
-use std::process::Stdio;
 
 type ResultInfo = Result<MediaInfo>;
 
@@ -75,10 +74,7 @@ impl MediaInfo {
         Self::with_ua(url, title, referrer, String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3579.1 Safari/537.36"))
     }
     pub fn play(&self, config: &Config) -> IoResult<()> {
-        self.as_command(config)
-            .stdin(Stdio::inherit())
-            .stdout(Stdio::inherit())
-            .output()?;
+        self.as_command(config).output()?;
         Ok(())
     }
     /// Spwans commands to run mpv
