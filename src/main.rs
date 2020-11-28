@@ -40,7 +40,7 @@ fn check() {
     println!("Running check");
     println!("b2m version: {}\n", cli::VERSION);
     println!(
-        "Enabled enviroment variables:\nDEFAULT_COOKIES: {}\nDEFAULT_PROXY: {}\n",
+        "Enabled environment variables:\nDEFAULT_COOKIES: {}\nDEFAULT_PROXY: {}\n",
         cli::DEFAULT_COOKIES.unwrap_or("None"),
         cli::DEFAULT_PROXY.unwrap_or("None")
     );
