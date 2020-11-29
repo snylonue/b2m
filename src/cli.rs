@@ -82,6 +82,7 @@ pub fn b2m() -> App<'static, 'static> {
                 .help("Play without audio output")
                 .long("an")
                 .alias("no-audio")
+                .alias("vo")
                 .multiple(true),
         )
         .arg(
@@ -89,6 +90,7 @@ pub fn b2m() -> App<'static, 'static> {
                 .help("Play without video output")
                 .long("vn")
                 .alias("no-video")
+                .alias("ao")
                 .multiple(true),
         )
         .arg(
