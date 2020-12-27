@@ -2,7 +2,9 @@ macro_rules! find_parser {
     ($url: expr, $setting: expr, $($site: ident, $extractor_name: expr, $extractor: ident),*) => {
        {
             use $crate::extractors::Extractor;
-            $(#[cfg(feature = $extractor_name)]if $crate::extractors::$site::$extractor::is_support($url) {
+            $(#[cfg(feature = $extractor_name)]
+            if $setting.parser.map(|p| p == $extractor_name).unwrap_or(true)
+                && $crate::extractors::$site::$extractor::is_support($url) {
                 match $crate::extractors::$site::$extractor::extract($url, $setting) {
                     res @ Ok(_) => return res,
                     Err(e) => {
@@ -89,8 +91,7 @@ fn print_info(media: MediaInfo, json: bool) {
 #[rustfmt::skip]
 pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
-        url,
-        setting,
+        url, setting,
         bilibili, "annie", Annie,
         bilibili, "youget", YouGet,
         youtube, "annie", Annie,

@@ -21,6 +21,7 @@ pub struct Config<'a> {
     pub proxy: Option<ProxyAddr>,
     pub cookie: Option<&'a str>,
     pub merge: bool,
+    pub parser: Option<&'a str>,
 }
 
 impl<'a> Config<'a> {
@@ -45,6 +46,7 @@ impl<'a> Config<'a> {
         } else {
             None
         };
+        let parser = args.value_of("parser");
         let merge = !args.is_present("no-merging");
         Ok(Self {
             url,
@@ -56,6 +58,7 @@ impl<'a> Config<'a> {
             proxy,
             cookie,
             merge,
+            parser,
         })
     }
 }
@@ -134,5 +137,11 @@ pub fn b2m() -> App<'static, 'static> {
                 .help("Don't pass --merge-files to mpv")
                 .long("no-merge")
                 .alias("nm"),
+        )
+        .arg(
+            Arg::with_name("parser")
+                .help("Choose a parser")
+                .long("parser")
+                .takes_value(true),
         )
 }
