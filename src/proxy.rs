@@ -1,6 +1,6 @@
+use std::convert::Infallible;
 use std::fmt;
 use std::str::FromStr;
-use std::convert::Infallible;
 
 #[derive(Debug, Clone)]
 pub struct ProxyAddr {
@@ -40,10 +40,5 @@ impl FromStr for ProxyAddr {
             (Some(addr), None) => Ok(Self::with_http(addr.to_owned())),
             _ => unreachable!(),
         }
-    }
-}
-impl Default for ProxyAddr {
-    fn default() -> Self {
-        Self::with_http("127.0.0.1:1080".to_owned())
     }
 }
