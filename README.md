@@ -16,7 +16,7 @@ b2m -h
 
 ### 用法
 ```
-b2m 0.22.1
+b2m 0.23.0
 Play bilibili or other videos with mpv
 
 USAGE:
@@ -35,11 +35,14 @@ FLAGS:
 
 OPTIONS:
     -c, --cookie <cookie>    Set cookie [env: B2M_COOKIES=]
+        --parser <parser>    Choose a parser [possible values: annie, youget, nfinata]
     -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: http://127.0.0.1:10809]
 
 ARGS:
     <url>    Video url
 ```
+
+从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端
 
 ### 依赖
 - [you-get](https://github.com/soimort/you-get)  
