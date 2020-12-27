@@ -1,57 +1,49 @@
-use anyhow::Error;
-use anyhow::Result;
-use std::convert::TryFrom;
 use std::fmt;
-use std::net::IpAddr;
-use std::net::Ipv4Addr;
-use std::net::SocketAddr;
+use std::str::FromStr;
+use std::convert::Infallible;
 
-#[derive(Debug, Copy, Clone)]
-pub struct ProxyAddr<'a> {
-    addr: SocketAddr,
-    protocal: &'a str,
+#[derive(Debug, Clone)]
+pub struct ProxyAddr {
+    addr: String,
+    protocal: String,
 }
 
-impl<'a> ProxyAddr<'a> {
-    pub const fn new(addr: SocketAddr, protocal: &'a str) -> Self {
+impl ProxyAddr {
+    pub const fn new(addr: String, protocal: String) -> Self {
         Self { addr, protocal }
     }
-    pub const fn from_addr(addr: SocketAddr) -> Self {
+    pub fn with_http(addr: String) -> Self {
         Self {
             addr,
-            protocal: "http",
+            protocal: "http".to_owned(),
         }
     }
-    pub fn from_string(s: &'a str) -> Result<Self> {
-        let mut splits = s.rsplit("://");
-        match (splits.next(), splits.next()) {
-            (Some(addr), Some(protocal)) => Ok(Self::new(addr.parse()?, protocal)),
-            (Some(addr), None) => Ok(Self::from_addr(addr.parse()?)),
-            _ => Err(anyhow::anyhow!("Invailed proxy address syntax")),
-        }
+    pub fn protocal(&self) -> &str {
+        &self.protocal
     }
-    pub const fn protocal(&self) -> &str {
-        self.protocal
-    }
-    pub const fn addr(&self) -> &SocketAddr {
+    pub fn addr(&self) -> &str {
         &self.addr
     }
 }
-impl<'a> fmt::Display for ProxyAddr<'a> {
+impl fmt::Display for ProxyAddr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}://{}", self.protocal, self.addr)
     }
 }
-impl<'a> TryFrom<&'a str> for ProxyAddr<'a> {
-    type Error = Error;
+impl FromStr for ProxyAddr {
+    type Err = Infallible;
 
-    #[inline]
-    fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        Self::from_string(value)
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut splits = s.rsplit("://");
+        match (splits.next(), splits.next()) {
+            (Some(addr), Some(protocal)) => Ok(Self::new(addr.to_owned(), protocal.to_owned())),
+            (Some(addr), None) => Ok(Self::with_http(addr.to_owned())),
+            _ => unreachable!(),
+        }
     }
 }
-impl<'a> Default for ProxyAddr<'a> {
+impl Default for ProxyAddr {
     fn default() -> Self {
-        Self::from_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 1080))
+        Self::with_http("127.0.0.1:1080".to_owned())
     }
 }

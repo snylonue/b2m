@@ -10,7 +10,7 @@ pub const DESCRIPTION: &str = env!("CARGO_PKG_DESCRIPTION");
 pub const DEFAULT_COOKIES: Option<&str> = option_env!("B2M_DEFAULT_COOKIES");
 pub const DEFAULT_PROXY: Option<&str> = option_env!("B2M_DEFAULT_PROXY");
 
-#[derive(Debug, Default, Copy, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct Config<'a> {
     pub url: &'a str,
     pub check: bool,
@@ -18,7 +18,7 @@ pub struct Config<'a> {
     pub no_video: bool,
     pub info: bool,
     pub json: bool,
-    pub proxy: Option<ProxyAddr<'a>>,
+    pub proxy: Option<ProxyAddr>,
     pub cookie: Option<&'a str>,
     pub merge: bool,
 }
@@ -37,7 +37,7 @@ impl<'a> Config<'a> {
         let no_audio = args.is_present("no-audio");
         let no_video = args.is_present("no-video");
         let proxy = match args.value_of("proxy") {
-            Some(p) if args.occurrences_of("proxy") == 1 => Some(ProxyAddr::from_string(p)?),
+            Some(p) if args.occurrences_of("proxy") == 1 => Some(p.parse()?),
             _ => None,
         };
         let cookie = if !args.is_present("no-cookie") {
