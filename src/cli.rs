@@ -26,13 +26,8 @@ pub struct Config<'a> {
 
 impl<'a> Config<'a> {
     pub fn new(args: &'a ArgMatches) -> Result<Self> {
-        if args.is_present("check") {
-            return Ok(Self {
-                check: true,
-                ..Self::default()
-            });
-        }
-        let url = args.value_of("url").expect("Invaild input");
+        let check = args.is_present("check");
+        let url = args.value_of("url").unwrap_or_default();
         let json = args.is_present("json");
         let info = json || args.is_present("info-only");
         let no_audio = args.is_present("no-audio");
@@ -50,7 +45,7 @@ impl<'a> Config<'a> {
         let merge = !args.is_present("no-merging");
         Ok(Self {
             url,
-            check: false,
+            check,
             no_audio,
             no_video,
             info,
@@ -120,7 +115,7 @@ pub fn b2m() -> App<'static, 'static> {
         )
         .arg(
             Arg::with_name("cookie")
-                .help("Set cookie")
+                .help("Load cookie")
                 .long("cookie")
                 .short("c")
                 .takes_value(true)

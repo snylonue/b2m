@@ -28,7 +28,7 @@ fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
     let config = cli::Config::new(&matches)?;
     if config.check {
-        check();
+        check(&config);
         return Ok(());
     }
     let media = parse(config.url, &config)?;
@@ -38,14 +38,10 @@ fn main() -> Result<()> {
     }
     Ok(media.play(&config)?)
 }
-fn check() {
+fn check(conf: &cli::Config) {
     println!("Running check");
     println!("b2m version: {}\n", cli::VERSION);
-    println!(
-        "Enabled environment variables:\nDEFAULT_COOKIES: {}\nDEFAULT_PROXY: {}\n",
-        cli::DEFAULT_COOKIES.unwrap_or("None"),
-        cli::DEFAULT_PROXY.unwrap_or("None")
-    );
+    dbg!(conf);
     if check::check_you_get() {
         println!("\nyou-get check succeeded");
     } else {
