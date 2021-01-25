@@ -17,10 +17,11 @@ serde_json = "1.0"
 anyhow = "1"
 regex = "1"
 finata = { git = "https://github.com/snylonue/finata", rev = "88d7932", optional = true }
-tokio = { version = "1", optional = true }
+tokio = { version = "1", features = ["rt-multi-thread"], optional = true }
+netscape-cookie = { version = "0.1", optional = true }
 
 [features]
 default = ["annie", "youget"]
 annie = []
 youget = []
-nfinata = ["finata", "tokio"]
+nfinata = ["finata", "tokio", "netscape-cookie"]
