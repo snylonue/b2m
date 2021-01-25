@@ -3,8 +3,6 @@ use super::Extractor;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 use crate::Config;
-use serde_json::Value;
-use std::iter::FromIterator;
 #[cfg(feature = "nfinata")]
 use crate::MediaInfo;
 #[cfg(feature = "nfinata")]
@@ -15,10 +13,12 @@ use finata::Extract;
 use finata::Origin;
 #[cfg(feature = "nfinata")]
 use netscape_cookie::parse;
+use serde_json::Value;
 #[cfg(feature = "nfinata")]
 use std::fs::File;
 #[cfg(feature = "nfinata")]
 use std::io::Read;
+use std::iter::FromIterator;
 #[cfg(feature = "nfinata")]
 use tokio::runtime::Runtime;
 
@@ -94,19 +94,18 @@ impl Extractor for Annie {
 }
 #[cfg(feature = "nfinata")]
 impl Finata {
-    pub async fn extract_async<'a>(url: &str, conf: &Config<'a>) -> crate::ResultInfo {
+    pub async fn extract_async(url: &str, conf: &Config<'_>) -> crate::ResultInfo {
         let mut extor = Bilibili::new(url)?;
-        match conf.cookie {
-            Some(path) => {
-                let mut cookie_file = File::open(path)?;
-                let mut buf = String::new();
-                cookie_file.read_to_string(&mut buf)?;
-                let cookies: Vec<_> = parse(buf.as_bytes()).unwrap().iter().map(|cookie| {
-                    format!("{}={}", cookie.name, cookie.value)
-                }).collect();
-                extor.client_mut().push_cookie(&cookies.join(";"))?;
-            }
-            None => {}
+        if let Some(path) = conf.cookie {
+            let mut cookie_file = File::open(path)?;
+            let mut buf = Vec::new();
+            cookie_file.read_to_end(&mut buf)?;
+            let cookies: Vec<_> = parse(&buf)
+                .unwrap()
+                .iter()
+                .map(|cookie| format!("{}={}", cookie.name, cookie.value))
+                .collect();
+            extor.client_mut().push_cookie(&cookies.join(";"))?;
         }
         let info = Extract::extract(&mut extor).await?;
         let mut single_video = info.raws().iter();
@@ -114,14 +113,24 @@ impl Finata {
         video.extend(single_video.next());
         audio.extend(single_video.next());
         let to_string = |ori: &&Origin| ori.url.to_string();
-        let url = Url::new(video.iter().map(to_string).collect(), audio.iter().map(to_string).collect());
-        Ok(MediaInfo::new(url, Some(info.into_title()), Some("https://www.bilibili.com".to_owned())))
+        let url = Url::new(
+            video.iter().map(to_string).collect(),
+            audio.iter().map(to_string).collect(),
+        );
+        Ok(MediaInfo::new(
+            url,
+            Some(info.into_title()),
+            Some("https://www.bilibili.com".to_owned()),
+        ))
     }
 }
 #[cfg(feature = "nfinata")]
 impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
-        matched!(url, r"(?:https://)?(?:www\.)?bilibili\.com/video/[AaBb][Vv].")
+        matched!(
+            url,
+            r"(?:https://)?(?:www\.)?bilibili\.com/video/[AaBb][Vv]."
+        )
     }
     fn real_url(_: &serde_json::Value) -> Option<Url> {
         None

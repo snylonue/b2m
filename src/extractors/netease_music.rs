@@ -14,20 +14,17 @@ use tokio::runtime::Runtime;
 pub struct Finata;
 
 impl Finata {
-    pub async fn extract_async<'a>(url: &str, conf: &Config<'a>) -> ResultInfo {
+    pub async fn extract_async(url: &str, conf: &Config<'_>) -> ResultInfo {
         let mut song = Song::new(url.parse()?)?;
-        match conf.cookie {
-            Some(path) => {
-                let mut cookie_file = File::open(path)?;
-                let mut buf = Vec::new();
-                cookie_file.read(&mut buf)?;
-                let cookies = parse(&buf).unwrap();
-                let client = song.client_mut();
-                for cookie in cookies {
-                    client.push_cookie(&format!("{}={}", cookie.name, cookie.value))?;
-                }
+        if let Some(path) = conf.cookie {
+            let mut cookie_file = File::open(path)?;
+            let mut buf = Vec::new();
+            cookie_file.read_to_end(&mut buf)?;
+            let cookies = parse(&buf).unwrap();
+            let client = song.client_mut();
+            for cookie in cookies {
+                client.push_cookie(&format!("{}={}", cookie.name, cookie.value))?;
             }
-            None => {}
         }
         let info = Extract::extract(&mut song).await?;
         let url = Url::new(
