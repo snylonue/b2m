@@ -5,9 +5,27 @@ use crate::parsers::Url;
 use crate::Config;
 use serde_json::Value;
 use std::iter::FromIterator;
+#[cfg(feature = "nfinata")]
+use crate::MediaInfo;
+#[cfg(feature = "nfinata")]
+use finata::website::bilibili::Bilibili;
+#[cfg(feature = "nfinata")]
+use finata::Extract;
+#[cfg(feature = "nfinata")]
+use finata::Origin;
+#[cfg(feature = "nfinata")]
+use netscape_cookie::parse;
+#[cfg(feature = "nfinata")]
+use std::fs::File;
+#[cfg(feature = "nfinata")]
+use std::io::Read;
+#[cfg(feature = "nfinata")]
+use tokio::runtime::Runtime;
 
 pub struct YouGet;
 pub struct Annie;
+#[cfg(feature = "nfinata")]
+pub struct Finata;
 
 impl YouGet {
     const DISPLAYS: [&'static str; 8] = [
@@ -72,5 +90,44 @@ impl Extractor for Annie {
     #[inline]
     fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
+    }
+}
+#[cfg(feature = "nfinata")]
+impl Finata {
+    pub async fn extract_async<'a>(url: &str, conf: &Config<'a>) -> crate::ResultInfo {
+        let mut extor = Bilibili::new(url)?;
+        match conf.cookie {
+            Some(path) => {
+                let mut cookie_file = File::open(path)?;
+                let mut buf = String::new();
+                cookie_file.read_to_string(&mut buf)?;
+                let cookies: Vec<_> = parse(buf.as_bytes()).unwrap().iter().map(|cookie| {
+                    format!("{}={}", cookie.name, cookie.value)
+                }).collect();
+                extor.client_mut().push_cookie(&cookies.join(";"))?;
+            }
+            None => {}
+        }
+        let info = Extract::extract(&mut extor).await?;
+        let mut single_video = info.raws().iter();
+        let (mut video, mut audio) = (vec![], vec![]);
+        video.extend(single_video.next());
+        audio.extend(single_video.next());
+        let to_string = |ori: &&Origin| ori.url.to_string();
+        let url = Url::new(video.iter().map(to_string).collect(), audio.iter().map(to_string).collect());
+        Ok(MediaInfo::new(url, Some(info.into_title()), Some("https://www.bilibili.com".to_owned())))
+    }
+}
+#[cfg(feature = "nfinata")]
+impl Extractor for Finata {
+    fn is_support(url: &str) -> bool {
+        matched!(url, r"(?:https://)?(?:www\.)?bilibili\.com/video/[AaBb][Vv].")
+    }
+    fn real_url(_: &serde_json::Value) -> Option<Url> {
+        None
+    }
+    fn extract(url: &str, conf: &Config) -> crate::ResultInfo {
+        let runtime = Runtime::new().unwrap();
+        runtime.block_on(Self::extract_async(url, conf))
     }
 }
