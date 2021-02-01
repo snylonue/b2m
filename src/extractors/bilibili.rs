@@ -126,7 +126,7 @@ impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
         matched!(
             url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/video/[AaBb][Vv]."
+            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/)?[AaBb][Vv]."
         )
     }
     fn real_url(_: &serde_json::Value) -> Option<Url> {
