@@ -16,6 +16,13 @@ macro_rules! find_parser {
         }
     };
 }
+macro_rules! features {
+    ($($feature: tt),*) => {
+        println!("features enabled:");
+        $(#[cfg(feature = $feature)]
+        println!(concat!("  ", $feature));)*
+    };
+}
 
 mod check;
 
@@ -41,6 +48,7 @@ fn main() -> Result<()> {
 fn check(conf: &cli::Config) {
     println!("Running check");
     println!("b2m version: {}\n", cli::VERSION);
+    features!("annie", "nfinata", "youget");
     dbg!(conf);
     if check::check_you_get() {
         println!("\nyou-get check succeeded");
