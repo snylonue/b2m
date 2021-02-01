@@ -20,11 +20,11 @@ impl Finata {
             let mut cookie_file = File::open(path)?;
             let mut buf = Vec::new();
             cookie_file.read_to_end(&mut buf)?;
-            let cookies = parse(&buf).unwrap();
-            let client = song.client_mut();
-            for cookie in cookies {
-                client.push_cookie(&format!("{}={}", cookie.name, cookie.value))?;
-            }
+            let cookies: Vec<_> = parse(&buf)?
+                .iter()
+                .map(|cookie| format!("{}={}", cookie.name, cookie.value))
+                .collect();
+            song.client_mut().push_cookie(&cookies.join(";"))?;
         }
         let info = Extract::extract(&mut song).await?;
         let url = Url::new(

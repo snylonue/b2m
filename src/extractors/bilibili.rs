@@ -4,8 +4,6 @@ use crate::parsers::Parser;
 use crate::parsers::Url;
 use crate::Config;
 #[cfg(feature = "nfinata")]
-use crate::MediaInfo;
-#[cfg(feature = "nfinata")]
 use finata::website::bilibili::Bilibili;
 #[cfg(feature = "nfinata")]
 use finata::Extract;
@@ -100,8 +98,7 @@ impl Finata {
             let mut cookie_file = File::open(path)?;
             let mut buf = Vec::new();
             cookie_file.read_to_end(&mut buf)?;
-            let cookies: Vec<_> = parse(&buf)
-                .unwrap()
+            let cookies: Vec<_> = parse(&buf)?
                 .iter()
                 .map(|cookie| format!("{}={}", cookie.name, cookie.value))
                 .collect();
@@ -117,7 +114,7 @@ impl Finata {
             video.iter().map(to_string).collect(),
             audio.iter().map(to_string).collect(),
         );
-        Ok(MediaInfo::new(
+        Ok(crate::MediaInfo::new(
             url,
             Some(info.into_title()),
             Some("https://www.bilibili.com".to_owned()),
