@@ -96,6 +96,7 @@ fn print_info(media: MediaInfo, json: bool) {
 pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
         url, setting,
+        bilibili, "nfinata", Finata,
         bilibili, "annie", Annie,
         bilibili, "youget", YouGet,
         youtube, "annie", Annie,
