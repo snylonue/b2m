@@ -200,7 +200,7 @@ dependencies = [
 [[package]]
 name = "finata"
 version = "0.1.0"
-source = "git+https://github.com/snylonue/finata?rev=3d8e4ab#3d8e4ab222e9d3b85157fa4e71137a8972443b8c"
+source = "git+https://github.com/snylonue/finata?rev=ca88053#ca880536149a7680c6c27130e57fd9f8c2ae11bb"
 dependencies = [
  "async-trait",
  "lazy_static",
@@ -209,6 +209,7 @@ dependencies = [
  "serde_json",
  "snafu",
  "sugars",
+ "tokio",
  "url",
 ]
 

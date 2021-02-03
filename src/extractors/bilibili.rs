@@ -8,6 +8,8 @@ use finata::website::bilibili::Bilibili;
 #[cfg(feature = "nfinata")]
 use finata::Extract;
 #[cfg(feature = "nfinata")]
+use finata::ExtractSync;
+#[cfg(feature = "nfinata")]
 use finata::Origin;
 #[cfg(feature = "nfinata")]
 use netscape_cookie::parse;
@@ -17,8 +19,6 @@ use std::fs::File;
 #[cfg(feature = "nfinata")]
 use std::io::Read;
 use std::iter::FromIterator;
-#[cfg(feature = "nfinata")]
-use tokio::runtime::Runtime;
 
 pub struct YouGet;
 pub struct Annie;
@@ -91,8 +91,17 @@ impl Extractor for Annie {
     }
 }
 #[cfg(feature = "nfinata")]
-impl Finata {
-    pub async fn extract_async(url: &str, conf: &Config<'_>) -> crate::ResultInfo {
+impl Extractor for Finata {
+    fn is_support(url: &str) -> bool {
+        matched!(
+            url,
+            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/)?[AaBb][Vv]."
+        )
+    }
+    fn real_url(_: &serde_json::Value) -> Option<Url> {
+        None
+    }
+    fn extract(url: &str, conf: &Config) -> crate::ResultInfo {
         let mut extor = Bilibili::new(url)?;
         if let Some(path) = conf.cookie {
             let mut cookie_file = File::open(path)?;
@@ -104,7 +113,7 @@ impl Finata {
                 .collect();
             extor.client_mut().push_cookie(&cookies.join(";"))?;
         }
-        let info = Extract::extract(&mut extor).await?;
+        let info = extor.extract_sync()?;
         let mut single_video = info.raws().iter();
         let (mut video, mut audio) = (vec![], vec![]);
         video.extend(single_video.next());
@@ -119,21 +128,5 @@ impl Finata {
             Some(info.into_title()),
             Some("https://www.bilibili.com".to_owned()),
         ))
-    }
-}
-#[cfg(feature = "nfinata")]
-impl Extractor for Finata {
-    fn is_support(url: &str) -> bool {
-        matched!(
-            url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/)?[AaBb][Vv]."
-        )
-    }
-    fn real_url(_: &serde_json::Value) -> Option<Url> {
-        None
-    }
-    fn extract(url: &str, conf: &Config) -> crate::ResultInfo {
-        let runtime = Runtime::new().unwrap();
-        runtime.block_on(Self::extract_async(url, conf))
     }
 }
