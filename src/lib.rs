@@ -116,6 +116,9 @@ impl MediaInfo {
         if let Some(cookie) = &config.cookie {
             cmd.arg(format!("--cookies-file={}", cookie));
         }
+        if let Some(values) = config.commands.clone() {
+            cmd.args(values);
+        }
         cmd.arg("--no-ytdl");
         cmd
     }

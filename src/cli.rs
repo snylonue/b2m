@@ -3,6 +3,7 @@ use anyhow::Result;
 use clap::App;
 use clap::Arg;
 use clap::ArgMatches;
+use clap::Values;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -22,6 +23,7 @@ pub struct Config<'a> {
     pub cookie: Option<&'a str>,
     pub merge: bool,
     pub parser: Option<&'a str>,
+    pub commands: Option<Values<'a>>,
 }
 
 impl<'a> Config<'a> {
@@ -41,6 +43,7 @@ impl<'a> Config<'a> {
         } else {
             None
         };
+        let commands = args.values_of("mpv-args");
         let parser = args.value_of("parser");
         let merge = !args.is_present("no-merging");
         Ok(Self {
@@ -54,6 +57,7 @@ impl<'a> Config<'a> {
             cookie,
             merge,
             parser,
+            commands,
         })
     }
 }
@@ -139,5 +143,11 @@ pub fn b2m() -> App<'static, 'static> {
                 .long("parser")
                 .takes_value(true)
                 .possible_values(&["annie", "youget", "nfinata"]),
+        )
+        .arg(
+            Arg::with_name("mpv-args")
+                .help("args to pass to mpv, may have some limitations")
+                .takes_value(true)
+                .raw(true),
         )
 }
