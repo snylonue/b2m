@@ -49,5 +49,10 @@ ARGS:
 - [annie](https://github.com/iawia002/annie)  
 - [mpv](https://mpv.io)  
 
+### ToDo
+- [ ] 支持播放列表
+- [ ] 支持(toml)配置文件
+- [ ] 减少对 you-get, annie 的依赖
+- [ ] 重构解析器
 
 **思路**: [Linux下用mpv在B站看番（二）：you-get](https://fspark.me/archives/Linux-mpv-bilibili-bangumi-you-get.html)  
