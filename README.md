@@ -4,7 +4,9 @@
 使用 mpv 播放 bilibili (以及 youtube, iqiqyi)视频  
 you-get 本身支持调用播放器播放，但不完善
 
-### 安装(使用 cargo)
+### 安装
+
+#### cargo
 ```
 cargo install b2m
 b2m -h
@@ -12,7 +14,11 @@ b2m -h
 
 使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，详见 [Cargo.toml](Cargo.toml)
 
-或者 [Python 版(不再维护)](src/b2m.py)
+#### [AUR](https://aur.archlinux.org/packages/b2m/  )
+
+感谢 @MrAru 打包
+
+#### [Python 版(不再维护)](src/b2m.py)
 
 ### 用法
 ```
