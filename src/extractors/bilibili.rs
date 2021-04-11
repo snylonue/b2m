@@ -3,20 +3,21 @@ use super::Extractor;
 use crate::parsers::Parser;
 use crate::parsers::Url;
 use crate::Config;
-#[cfg(feature = "nfinata")]
-use finata::website::bilibili::Video;
-#[cfg(feature = "nfinata")]
-use finata::Config as _;
-#[cfg(feature = "nfinata")]
-use finata::ExtractSync;
-#[cfg(feature = "nfinata")]
-use netscape_cookie::parse;
 use serde_json::Value;
-#[cfg(feature = "nfinata")]
-use std::fs::File;
-#[cfg(feature = "nfinata")]
-use std::io::Read;
 use std::iter::FromIterator;
+
+#[cfg(feature = "nfinata")]
+mod fina {
+    pub use finata::website::bilibili::Video;
+    pub use finata::Config as _;
+    pub use finata::ExtractSync;
+    pub use netscape_cookie::parse;
+    pub use std::fs::File;
+    pub use std::io::Read;
+}
+
+#[cfg(feature = "nfinata")]
+use fina::*;
 
 pub struct YouGet;
 pub struct Annie;
