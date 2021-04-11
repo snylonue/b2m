@@ -22,11 +22,11 @@ b2m -h
 
 ### 用法
 ```
-b2m 0.23.0
+b2m 0.24.0
 Play bilibili or other videos with mpv
 
 USAGE:
-    b2m [FLAGS] [OPTIONS] <url>
+    b2m [FLAGS] [OPTIONS] <url> [-- <mpv-args>...]
 
 FLAGS:
         --check        Check if all dependencies are installed
@@ -40,12 +40,13 @@ FLAGS:
     -V, --version      Prints version information
 
 OPTIONS:
-    -c, --cookie <cookie>    Set cookie [env: B2M_COOKIES=]
+    -c, --cookie <cookie>    Load cookie [env: B2M_COOKIES=]
         --parser <parser>    Choose a parser [possible values: annie, youget, nfinata]
-    -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: http://127.0.0.1:10809]
+    -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: http://127.0.0.1:1080]
 
 ARGS:
-    <url>    Video url
+    <url>            Video url
+    <mpv-args>...    args to pass to mpv, may have some limitations
 ```
 
 从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端
