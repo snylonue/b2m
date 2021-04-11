@@ -4,13 +4,11 @@ use crate::parsers::Parser;
 use crate::parsers::Url;
 use crate::Config;
 #[cfg(feature = "nfinata")]
-use finata::website::bilibili::Bilibili;
+use finata::website::bilibili::Video;
 #[cfg(feature = "nfinata")]
-use finata::Extract;
+use finata::Config as _;
 #[cfg(feature = "nfinata")]
 use finata::ExtractSync;
-#[cfg(feature = "nfinata")]
-use finata::Origin;
 #[cfg(feature = "nfinata")]
 use netscape_cookie::parse;
 use serde_json::Value;
@@ -102,7 +100,7 @@ impl Extractor for Finata {
         None
     }
     fn extract(url: &str, conf: &Config) -> crate::ResultInfo {
-        let mut extor = Bilibili::new(url)?;
+        let mut extor = Video::new(url)?;
         if let Some(path) = conf.cookie {
             let mut cookie_file = File::open(path)?;
             let mut buf = Vec::new();
@@ -114,15 +112,15 @@ impl Extractor for Finata {
             extor.client_mut().push_cookie(&cookies.join(";"))?;
         }
         let info = extor.extract_sync()?;
-        let mut single_video = info.raws().iter();
         let (mut video, mut audio) = (vec![], vec![]);
-        video.extend(single_video.next());
-        audio.extend(single_video.next());
-        let to_string = |ori: &&Origin| ori.url.to_string();
-        let url = Url::new(
-            video.iter().map(to_string).collect(),
-            audio.iter().map(to_string).collect(),
-        );
+        for track in &info.raws()[0].tracks {
+            match track {
+                finata::Track::Audio(url) => audio.push(url.to_string()),
+                finata::Track::Video(url) => video.push(url.to_string()),
+                _ => {}
+            }
+        }
+        let url = Url::new(video, audio);
         Ok(crate::MediaInfo::new(
             url,
             Some(info.into_title()),

@@ -5,7 +5,6 @@ use crate::MediaInfo;
 use crate::ResultInfo;
 use finata::website::netease_music::Song;
 use finata::ExtractSync;
-use finata::Origin;
 use netscape_cookie::parse;
 use std::fs::File;
 use std::io::Read;
@@ -34,9 +33,10 @@ impl Extractor for Finata {
         let info = song.extract_sync()?;
         let url = Url::new(
             vec![],
-            info.raws()
+            info.raws()[0]
+                .tracks
                 .iter()
-                .map(|&Origin { ref url, .. }| url.to_string())
+                .map(|track| track.as_url().to_string())
                 .collect(),
         );
         Ok(MediaInfo::new(url, Some(info.into_title()), None))
