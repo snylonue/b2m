@@ -13,7 +13,7 @@ pub struct Finata;
 
 impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
-        matched!(url, r"(?:https?://)?music.163.com/#/song\?id=\d")
+        matched!(url, r"(https?://)?music.163.com/#/song\?id=\d")
     }
     fn real_url(_: &serde_json::Value) -> Option<Url> {
         None

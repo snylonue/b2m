@@ -12,7 +12,7 @@ impl YouGet {
 }
 impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
-        matched!(url, r"(?:https?://)?(?:www\.)?iqiyi\.com/.")
+        matched!(url, r"(https?://)?(www\.)?iqiyi\.com/.")
     }
     fn real_url(value: &Value) -> Option<Url> {
         let (_, stream) = super::search_by_keys(value, &Self::DISPLAYS)?;
@@ -30,7 +30,7 @@ impl Extractor for YouGet {
 }
 impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
-        matched!(url, r"(?:https?://)?(?:www\.)?iqiyi\.com/.")
+        matched!(url, r"(https?://)?(www\.)?iqiyi\.com/.")
     }
     fn real_url(value: &Value) -> Option<Url> {
         let stream = value["streams"].as_object()?.values().last()?;

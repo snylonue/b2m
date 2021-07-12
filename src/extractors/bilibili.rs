@@ -40,8 +40,8 @@ impl Extractor for YouGet {
     fn is_support(url: &str) -> bool {
         matched!(
             url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/[AaBb][Vv]|bangumi/play/(?:ep|ss)).",
-            r"(?:https://)?live\.bilibili\.com/\d"
+            r"(https://)?(www\.)?bilibili\.com/(video/[AaBb][Vv]|bangumi/play/(ep|ss)).",
+            r"(https://)?live\.bilibili\.com/\d"
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
@@ -73,8 +73,8 @@ impl Extractor for Annie {
     fn is_support(url: &str) -> bool {
         matched!(
             url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:(?:video/)?[AaBb][Vv]|bangumi/play/(?:ep|ss)).",
-            r"(?:[AaBb][Vv]|ep)."
+            r"(https://)?(www\.)?bilibili\.com/((video/)?[AaBb][Vv]|bangumi/play/(ep|ss)).",
+            r"([AaBb][Vv]|ep)."
         )
     }
     fn real_url(value: &Value) -> Option<Url> {
@@ -94,7 +94,7 @@ impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
         matched!(
             url,
-            r"(?:https://)?(?:www\.)?bilibili\.com/(?:video/)?[AaBb][Vv]."
+            r"(https://)?(www\.)?bilibili\.com/(video/)?[AaBb][Vv]."
         )
     }
     fn real_url(_: &serde_json::Value) -> Option<Url> {
