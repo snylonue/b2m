@@ -35,7 +35,7 @@ pub mod proxy;
 use crate::cli::Config;
 use crate::parsers::Url;
 use anyhow::Result;
-use finata::{Finata, Track};
+use finata::{Finata, Origin, Track};
 use std::io::Result as IoResult;
 use std::process::Command;
 
@@ -125,15 +125,14 @@ impl MediaInfo {
     }
 }
 
-pub fn spwan_command(playlist: Finata, config: &Config) -> Command {
-    let mut cmd = Command::new("mpv");
-    let orig = &playlist.raws()[0];
-    let videos: Vec<_> = orig
+fn push_media(media: &Origin, cmd: &mut Command, config: &Config) {
+    cmd.arg("--{");
+    let videos: Vec<_> = media
         .tracks
         .iter()
         .filter(|t| matches!(t, Track::Video(_)))
         .collect();
-    let audios = orig.tracks.iter().filter(|t| matches!(t, Track::Audio(_)));
+    let audios = media.tracks.iter().filter(|t| matches!(t, Track::Audio(_)));
     match videos.len() {
         0 => cmd.args(audios.map(|a| a.as_url().to_string())),
         1 => cmd
@@ -148,7 +147,14 @@ pub fn spwan_command(playlist: Finata, config: &Config) -> Command {
                 &[]
             }),
     };
-    cmd.arg(playlist.title()).arg("--no-ytdl");
+    cmd.arg(format!("--referrer={}", config.url)).arg("--}");
+}
+pub fn spwan_command(playlist: Finata, config: &Config) -> Command {
+    let mut cmd = Command::new("mpv");
+    for media in playlist.raws() {
+        push_media(media, &mut cmd, config);
+    }
+    cmd.arg(format!("--title={}", playlist.title())).arg("--no-ytdl");
     if config.no_audio {
         cmd.args(&["--ao=null", "--no-audio"]);
     }
