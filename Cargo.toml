@@ -16,11 +16,4 @@ clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
 regex = "1"
-finata = { git = "https://github.com/snylonue/finata/", rev = "1ef7a091", optional = true }
-netscape-cookie = { version = "0.1.1", optional = true }
-
-[features]
-default = ["annie", "youget"]
-annie = []
-youget = []
-nfinata = ["finata", "netscape-cookie"]
+finata = { git = "https://github.com/snylonue/finata/", rev = "e126191e" }

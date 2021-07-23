@@ -1,12 +1,3 @@
-#[allow(unused_macros)]
-macro_rules! features {
-    ($($feature: tt),*) => {
-        println!("features enabled:");
-        $(#[cfg(feature = $feature)]
-        println!(concat!("  ", $feature));)*
-    };
-}
-
 mod check;
 
 use anyhow::Result;
@@ -20,9 +11,6 @@ use finata::website::pixiv::Pixiv;
 use finata::Config;
 use finata::Extract;
 use finata::ExtractSync;
-use netscape_cookie::parse;
-use std::fs::File;
-use std::io::Read;
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
@@ -33,14 +21,7 @@ fn main() -> Result<()> {
     }
     let mut extractor = find_extractor(config.url)?;
     if let Some(path) = config.cookie {
-        let mut cookie_file = File::open(path)?;
-        let mut buf = Vec::new();
-        cookie_file.read_to_end(&mut buf)?;
-        let cookies: Vec<_> = parse(&buf)?
-            .iter()
-            .map(|cookie| format!("{}={}", cookie.name, cookie.value))
-            .collect();
-        extractor.client_mut().push_cookie(&cookies.join(";"))?;
+        extractor.client_mut().load_netscape_cookie(path)?;
     }
     let res = extractor.extract_sync()?;
     spwan_command(res, &config).spawn()?;
@@ -67,10 +48,10 @@ fn find_extractor(url: &str) -> Result<Box<dyn Extractor>> {
     if let Ok(extr) = Bangumi::new(url) {
         return Ok(Box::new(extr));
     }
-    if let Ok(extr) = Song::new(url.parse()?) {
+    if let Ok(extr) = Song::new(url) {
         return Ok(Box::new(extr));
     }
-    if let Ok(extr) = PlayList::new(url.parse()?) {
+    if let Ok(extr) = PlayList::new(url) {
         return Ok(Box::new(extr));
     }
     if let Ok(extr) = Pixiv::new(url) {

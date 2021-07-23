@@ -13,7 +13,7 @@ pub fn check_mpv() -> bool {
                 let version = stdout
                     .split(' ')
                     .nth(1)
-                    .unwrap_or(&UNKNOWN)
+                    .unwrap_or(UNKNOWN)
                     .trim_end_matches(',');
                 println!("mpv version: {}\n", version);
                 println!("Stdout:\n{}", stdout.trim_end());
