@@ -1,31 +1,3 @@
-#[macro_export]
-macro_rules! value_to_string {
-    ($v: expr) => {
-        match $v {
-            serde_json::Value::String(ref s) => Some(s.to_owned()),
-            _ => None,
-        }
-    };
-    ($v: expr, $($or: expr),+) => {
-        match $v {
-            serde_json::Value::String(ref s) => Some(s.to_owned()),
-            _ => $crate::value_to_string!($($or),+),
-        }
-    };
-}
-#[macro_export]
-macro_rules! get {
-    ($v: expr) => {
-        $v
-    };
-    ($v: expr, $($vn: expr),+) => {
-        match $v {
-            serde_json::Value::Null => $crate::get!($($vn),+),
-            _ => $v,
-        }
-    }
-}
-
 pub mod cli;
 pub mod command;
 pub mod proxy;
