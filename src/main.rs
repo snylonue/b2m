@@ -1,6 +1,7 @@
 mod check;
 
 use anyhow::Result;
+use b2m::extractors::qq;
 use b2m::*;
 use finata::website::bilibili::Bangumi;
 use finata::website::bilibili::Video;
@@ -8,9 +9,6 @@ use finata::website::netease_music::PlayList;
 use finata::website::netease_music::Song;
 use finata::website::pixiv::Collection;
 use finata::website::pixiv::Pixiv;
-use finata::Config;
-use finata::Extract;
-use finata::ExtractSync;
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
@@ -21,9 +19,9 @@ fn main() -> Result<()> {
     }
     let mut extractor = find_extractor(config.url)?;
     if let Some(path) = config.cookie {
-        extractor.client_mut().load_netscape_cookie(path)?;
+        extractor.load_netscape_cookie(path.as_ref())?;
     }
-    let res = extractor.extract_sync()?;
+    let res = extractor.extract()?;
     spwan_command(res, &config).spawn()?;
     Ok(())
 }
@@ -37,11 +35,11 @@ fn check(conf: &cli::Config) {
         println!("\nmpv check failed");
     }
 }
-trait Extractor: Extract + Config {}
+trait _Extractor: Extractor + Backend {}
 
-impl<T: Extract + Config> Extractor for T {}
+impl<T: Extractor + Backend> _Extractor for T {}
 
-fn find_extractor(url: &str) -> Result<Box<dyn Extractor>> {
+fn find_extractor(url: &str) -> Result<Box<dyn _Extractor>> {
     if let Ok(extr) = Video::new(url) {
         return Ok(Box::new(extr));
     }
@@ -55,10 +53,19 @@ fn find_extractor(url: &str) -> Result<Box<dyn Extractor>> {
         return Ok(Box::new(extr));
     }
     if let Ok(extr) = Pixiv::new(url) {
-        return Ok(Box::new(extr));
+        if url.contains("pixiv") {
+            return Ok(Box::new(extr));
+        }
     }
     if let Ok(extr) = Collection::new(url) {
-        return Ok(Box::new(extr));
+        if url.contains("pixiv") {
+            return Ok(Box::new(extr));
+        }
+    }
+    if let Ok(extr) = qq::Video::new(url) {
+        if url.contains("qq") {
+            return Ok(Box::new(extr));
+        }
     }
     Err(anyhow::anyhow!("Unsupported url"))
 }

@@ -1,5 +1,6 @@
 pub mod cli;
 pub mod command;
+pub mod extractors;
 pub mod parsers;
 pub mod proxy;
 
