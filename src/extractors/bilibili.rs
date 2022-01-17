@@ -21,6 +21,7 @@ use fina::*;
 
 pub struct YouGet;
 pub struct Annie;
+pub struct Lux;
 #[cfg(feature = "nfinata")]
 pub struct Finata;
 
@@ -89,6 +90,30 @@ impl Extractor for Annie {
         crate::parsers::annie::Annie::parse(url, Self::real_url, setting)
     }
 }
+impl Lux {
+    const DISPLAYS: [&'static str; 13] = ["125", "120", "116", "112", "80-12", "80-7", "80", "74", "64-12", "64-7", "64", "32", "16"];
+}
+impl Extractor for Lux {
+    fn is_support(url: &str) -> bool {
+        matched!(
+            url,
+            r"(https://)?(www\.)?bilibili\.com/((video/)?[AaBb][Vv]|bangumi/play/(ep|ss)).",
+            r"([AaBb][Vv]|ep)."
+        )
+    }
+    fn real_url(value: &Value) -> Option<Url> {
+        let (_, stream) = search_by_keys(&value["streams"], &Self::DISPLAYS)?;
+        let urls = get!(&stream["parts"], &stream["urls"]);
+        let videos = Vec::from_iter(value_to_string!(urls[0]["url"]));
+        let audios = Vec::from_iter(value_to_string!(urls[1]["url"]));
+        Some(Url::new(videos, audios))
+    }
+    #[inline]
+    fn extract(url: &str, setting: &Config) -> crate::ResultInfo {
+        crate::parsers::annie::Lux::parse(url, Self::real_url, setting)
+    }
+}
+
 #[cfg(feature = "nfinata")]
 impl Extractor for Finata {
     fn is_support(url: &str) -> bool {
@@ -122,7 +147,7 @@ impl Extractor for Finata {
             }
         }
         let url = Url::new(video, audio);
-        Ok(crate::MediaInfo::new(
+        Ok(crate::MediaInfo::default_ua(
             url,
             Some(info.into_title()),
             Some("https://www.bilibili.com".to_owned()),

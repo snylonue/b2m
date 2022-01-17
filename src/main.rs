@@ -5,6 +5,9 @@ macro_rules! find_parser {
             $(#[cfg(feature = $extractor_name)]
             if $setting.parser.map(|p| p == $extractor_name).unwrap_or(true)
                 && $crate::extractors::$site::$extractor::is_support($url) {
+                if stringify!($extractor) == "Annie" {
+                    eprintln!("Warning: annie has been renamed to lux and will be replaced by lux in the future");
+                }
                 match $crate::extractors::$site::$extractor::extract($url, $setting) {
                     res @ Ok(_) => return res,
                     Err(e) => {
@@ -97,6 +100,7 @@ pub fn parse(url: &str, setting: &cli::Config) -> Result<MediaInfo> {
     find_parser!(
         url, setting,
         bilibili, "nfinata", Finata,
+        bilibili, "annie", Lux,
         bilibili, "annie", Annie,
         bilibili, "youget", YouGet,
         youtube, "annie", Annie,
