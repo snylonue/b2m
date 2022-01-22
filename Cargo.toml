@@ -16,4 +16,7 @@ clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
 regex = "1"
-finata = { git = "https://github.com/snylonue/finata/", rev = "e126191e" }
+finata = { git = "https://github.com/snylonue/finata/", rev = "31d59c3b" }
+
+[features]
+fina = []

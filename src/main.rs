@@ -1,7 +1,6 @@
 mod check;
 
 use anyhow::Result;
-use b2m::extractors::qq;
 use b2m::*;
 use finata::website::bilibili::Bangumi;
 use finata::website::bilibili::Video;
@@ -35,37 +34,36 @@ fn check(conf: &cli::Config) {
         println!("\nmpv check failed");
     }
 }
-trait _Extractor: Extractor + Backend {}
 
-impl<T: Extractor + Backend> _Extractor for T {}
-
-fn find_extractor(url: &str) -> Result<Box<dyn _Extractor>> {
+fn find_extractor(url: &str) -> Result<Box<dyn Extractor>> {
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Video::new(url) {
         return Ok(Box::new(extr));
     }
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Bangumi::new(url) {
         return Ok(Box::new(extr));
     }
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Song::new(url) {
         return Ok(Box::new(extr));
     }
+    #[cfg(feature = "fina")]
     if let Ok(extr) = PlayList::new(url) {
         return Ok(Box::new(extr));
     }
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Pixiv::new(url) {
         if url.contains("pixiv") {
             return Ok(Box::new(extr));
         }
     }
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Collection::new(url) {
         if url.contains("pixiv") {
             return Ok(Box::new(extr));
         }
     }
-    if let Ok(extr) = qq::Video::new(url) {
-        if url.contains("qq") {
-            return Ok(Box::new(extr));
-        }
-    }
-    Err(anyhow::anyhow!("Unsupported url"))
+    // todo: check whether lux supports this url
+    Ok(Box::new(b2m::parsers::lux::Lux::new(url)))
 }

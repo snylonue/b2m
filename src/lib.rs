@@ -1,6 +1,5 @@
 pub mod cli;
 pub mod command;
-pub mod extractors;
 pub mod parsers;
 pub mod proxy;
 
@@ -11,17 +10,13 @@ use std::{path::Path, process::Command};
 
 pub trait Extractor {
     fn extract(&mut self) -> Result<Finata>;
-}
-pub trait Backend {
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()>;
 }
 
-impl<T: finata::ExtractSync> Extractor for T {
+impl<T: finata::ExtractSync + finata::Config> Extractor for T {
     fn extract(&mut self) -> Result<Finata> {
         Ok(self.extract_sync()?)
     }
-}
-impl<T: finata::Config> Backend for T {
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
         Ok(self.client_mut().load_netscape_cookie(cookie)?)
     }
