@@ -17,7 +17,15 @@ fn main() -> Result<()> {
         extractor.load_netscape_cookie(path.as_ref())?;
     }
     let res = extractor.extract()?;
-    spwan_command(res, &config).spawn()?;
+    if config.info {
+        if config.json {
+            todo!();
+        } else {
+            dbg!(res);
+        }
+    } else {
+        spwan_command(res, &config).spawn()?;
+    }
     Ok(())
 }
 fn check(conf: &cli::Config) {
