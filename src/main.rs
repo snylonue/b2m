@@ -2,12 +2,17 @@ mod check;
 
 use anyhow::Result;
 use b2m::*;
-use finata::website::bilibili::Bangumi;
-use finata::website::bilibili::Video;
-use finata::website::netease_music::PlayList;
-use finata::website::netease_music::Song;
-use finata::website::pixiv::Collection;
-use finata::website::pixiv::Pixiv;
+#[cfg(feature = "fina")]
+mod fina {
+    pub use finata::website::bilibili::Bangumi;
+    pub use finata::website::bilibili::Video;
+    pub use finata::website::netease_music::PlayList;
+    pub use finata::website::netease_music::Song;
+    pub use finata::website::pixiv::Collection;
+    pub use finata::website::pixiv::Pixiv;
+}
+#[cfg(feature = "fina")]
+use fina::*;
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();

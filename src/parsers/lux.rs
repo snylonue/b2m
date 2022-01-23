@@ -1,7 +1,7 @@
 use crate::command;
 use crate::Extractor;
-use anyhow::Result;
 use anyhow::anyhow;
+use anyhow::Result;
 use finata::Finata;
 use finata::Origin;
 use finata::Track;
@@ -19,7 +19,10 @@ pub struct Lux {
 
 impl Lux {
     pub fn new(url: &str) -> Self {
-        Self { url: url.to_owned(), ..Default::default() }
+        Self {
+            url: url.to_owned(),
+            ..Default::default()
+        }
     }
     pub fn run(&self) -> Result<Value> {
         let mut cmd = process::Command::new("lux");
@@ -60,7 +63,10 @@ impl Extractor for Lux {
         }
         let title = res["url"].as_str();
         let origin = Origin::new(tracks, String::new());
-        Ok(Finata::new(vec![origin], title.unwrap_or_default().to_owned()))
+        Ok(Finata::new(
+            vec![origin],
+            title.unwrap_or_default().to_owned(),
+        ))
     }
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
         self.cookie = Some(cookie.to_owned());
@@ -68,7 +74,11 @@ impl Extractor for Lux {
     }
 }
 
-fn search_highest_quality<'a>(object: &'a Value) -> Option<&'a Vec<Value>> {
+fn search_highest_quality(object: &Value) -> Option<&Vec<Value>> {
     let object = object.as_object()?;
-    dbg!(object.iter().max_by_key(|(_, v)| v["size"].as_u64()).map(|(_, v)| v))?["parts"].as_array()
+    object
+        .iter()
+        .max_by_key(|(_, v)| v["size"].as_u64())
+        .map(|(_, v)| v)?["parts"]
+        .as_array()
 }
