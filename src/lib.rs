@@ -39,6 +39,7 @@ fn push_media(media: &Origin, cmd: &mut Command, config: &Config) {
             .args(videos.iter().map(|v| v.as_url().to_string()))
             .args(audios.map(|a| format!("--audio-file={}", a.as_url().to_string())))
             .args::<&[&str], _>(if config.merge {
+                // currently doesn't work due to https://github.com/mpv-player/mpv/issues/9522
                 &["--merge-files"]
             } else {
                 &[]
@@ -51,7 +52,7 @@ pub fn spwan_command(playlist: Finata, config: &Config) -> Command {
     for media in playlist.raws() {
         push_media(media, &mut cmd, config);
     }
-    cmd.arg(format!("--title={}", playlist.title()))
+    cmd.arg(format!("--force-media-title={}", playlist.title()))
         .arg("--no-ytdl");
     if config.no_audio {
         cmd.args(&["--ao=null", "--no-audio"]);
