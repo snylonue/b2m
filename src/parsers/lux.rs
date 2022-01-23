@@ -45,7 +45,7 @@ impl Lux {
 
 impl Extractor for Lux {
     fn extract(&mut self) -> Result<finata::Finata> {
-        let res = dbg!(self.run()?);
+        let res = self.run()?;
         let stream = match search_highest_quality(&res["streams"]) {
             Some(s) => s,
             None => return Err(anyhow!("fails to find stream")),
@@ -61,7 +61,7 @@ impl Extractor for Lux {
                 _ => tracks.push(Track::Video(url)),
             }
         }
-        let title = res["url"].as_str();
+        let title = res["title"].as_str();
         let origin = Origin::new(tracks, String::new());
         Ok(Finata::new(
             vec![origin],
