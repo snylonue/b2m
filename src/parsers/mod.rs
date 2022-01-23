@@ -18,5 +18,7 @@ macro_rules! get {
     }
 }
 
+#[cfg(feature = "fina")]
+pub mod fina;
 pub mod lux;
 // pub mod youget;
