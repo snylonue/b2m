@@ -142,7 +142,7 @@ pub fn b2m() -> App<'static, 'static> {
                 .help("Choose a parser")
                 .long("parser")
                 .takes_value(true)
-                .possible_values(&["annie", "youget", "nfinata"]),
+                .possible_values(&["lux", "fina"]),
         )
         .arg(
             Arg::with_name("mpv-args")

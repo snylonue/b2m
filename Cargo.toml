@@ -15,12 +15,7 @@ homepage = "https://github.com/snylonue/b2m"
 clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
-regex = "1"
-finata = { version = "0.2", optional = true }
-netscape-cookie = { version = "0.1.1", optional = true }
+finata = "0.3"
 
 [features]
-default = ["annie", "youget"]
-annie = []
-youget = []
-nfinata = ["finata", "netscape-cookie"]
+fina = []
