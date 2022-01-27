@@ -5,7 +5,7 @@ pub mod proxy;
 
 use crate::cli::Config;
 use anyhow::Result;
-use finata::{Finata, Origin, Track};
+use finata::{ExtractSync, Finata, Origin, Track};
 use std::{path::Path, process::Command};
 
 pub trait Extractor {
@@ -13,7 +13,7 @@ pub trait Extractor {
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()>;
 }
 
-impl<T: finata::ExtractSync + finata::Config> Extractor for T {
+impl Extractor for Box<dyn finata::website::Extractor> {
     fn extract(&mut self) -> Result<Finata> {
         Ok(self.extract_sync()?)
     }

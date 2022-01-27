@@ -15,8 +15,7 @@ homepage = "https://github.com/snylonue/b2m"
 clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
-regex = "1"
-finata = { git = "https://github.com/snylonue/finata/", rev = "31d59c3b" }
+finata = "0.3"
 
 [features]
 fina = []

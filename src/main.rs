@@ -41,6 +41,7 @@ fn check(conf: &cli::Config) {
 
 fn find_extractor(conf: &cli::Config) -> Result<Box<dyn Extractor>> {
     let url = conf.url;
+    #[cfg(feature = "fina")]
     if let Ok(extr) = Fina::new(url) {
         return Ok(Box::new(extr));
     }
