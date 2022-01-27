@@ -22,11 +22,11 @@ b2m -h
 
 ### 用法
 ```
-b2m 0.24.0
+b2m 0.25.0
 Play bilibili or other videos with mpv
 
 USAGE:
-    b2m [FLAGS] [OPTIONS] <url> [-- <mpv-args>...]
+    b2m.exe [FLAGS] [OPTIONS] <url> [-- <mpv-args>...]
 
 FLAGS:
         --check        Check if all dependencies are installed
@@ -41,25 +41,29 @@ FLAGS:
 
 OPTIONS:
     -c, --cookie <cookie>    Load cookie [env: B2M_COOKIES=]
-        --parser <parser>    Choose a parser [possible values: annie, youget, nfinata]
-    -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: http://127.0.0.1:1080]
+        --parser <parser>    Choose a parser [possible values: lux, fina]
+    -p, --proxy <proxy>      Set proxy address [env: HTTP_PROXY=]  [default: 127.0.0.1:1080]
+
+ARGS:
+    <url>            Video url
+    <mpv-args>...    args to pass to mpv, may have some limitations
 
 ARGS:
     <url>            Video url
     <mpv-args>...    args to pass to mpv, may have some limitations
 ```
 
-从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端
+从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端(暂时不可用)
 
 ### 依赖
-- [you-get](https://github.com/soimort/you-get)  
-- [annie](https://github.com/iawia002/annie)  
+- ~~[you-get](https://github.com/soimort/you-get)~~  
+- [lux](https://github.com/iawia002/annie)  
 - [mpv](https://mpv.io)  
 
 ### ToDo
 - [ ] 支持播放列表
 - [ ] 支持(toml)配置文件
-- [ ] 减少对 you-get, annie 的依赖
-- [ ] 重构解析器
+- [ ] 减少对 you-get, lux 的依赖
+- [x] 重构解析器
 
 **思路**: [Linux下用mpv在B站看番（二）：you-get](https://fspark.me/archives/Linux-mpv-bilibili-bangumi-you-get.html)  
