@@ -1,18 +1,23 @@
 # b2m
+
+lux 12.0 无法以 json 输出结果 ([iawia002/lux#996](https://github.com/iawia002/lux/issues/996)), 请用 `go install github.com/iawia002/lux@HEAD` 或从 github actions ([iawia002/lux#912](https://github.com/iawia002/lux/issues/912)) 获取最新版本
+
 **mpv 自带 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 解析，使用体验好很多**
 
 使用 mpv 播放 bilibili (以及 youtube, iqiqyi)视频  
-you-get 本身支持调用播放器播放，但不完善
 
 ### 安装
 
 #### cargo
+
 ```
 cargo install b2m
 b2m -h
 ```
 
-使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的解析器，详见 [Cargo.toml](Cargo.toml)
+使用命令行选项 `--no-default-features --features <NAME>` 可以选用特定的后端，详见 [Cargo.toml](Cargo.toml)
+
+使用 `cargo install b2m --all-features`  可启用所有后端，并默认使用 [finata](https://github.com/snylonue/finata) (无需 mpv 以外的依赖)
 
 #### [AUR](https://aur.archlinux.org/packages/b2m/  )
 
@@ -21,6 +26,7 @@ b2m -h
 #### [Python 版(不再维护)](src/b2m.py)
 
 ### 用法
+
 ```
 b2m 0.25.0
 Play bilibili or other videos with mpv
@@ -56,11 +62,13 @@ ARGS:
 从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端(暂时不可用)
 
 ### 依赖
+
 - ~~[you-get](https://github.com/soimort/you-get)~~  
 - [lux](https://github.com/iawia002/annie)  
 - [mpv](https://mpv.io)  
 
 ### ToDo
+
 - [ ] 支持播放列表
 - [ ] 支持(toml)配置文件
 - [ ] 减少对 you-get, lux 的依赖
