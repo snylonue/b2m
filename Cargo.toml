@@ -1,6 +1,6 @@
 [package]
 name = "b2m"
-version = "0.25.0"
+version = "0.25.1"
 authors = ["snylonue <snylonue@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/snylonue/b2m"
@@ -15,7 +15,7 @@ homepage = "https://github.com/snylonue/b2m"
 clap = "2.33"
 serde_json = "1.0"
 anyhow = "1"
-finata = "0.3"
+finata = "0.3.1"
 
 [features]
 fina = []

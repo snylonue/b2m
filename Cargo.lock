@@ -66,7 +66,7 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 
 [[package]]
 name = "b2m"
-version = "0.25.0"
+version = "0.25.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -207,9 +207,9 @@ dependencies = [
 
 [[package]]
 name = "finata"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cd7055cfece21f070f21f16378907e0ba60f03049d6137ce5686073e2d077518"
+checksum = "2af9c363164081ac4eec1081bd2a4ea1761bd0ad11e101c878becc1e0af4e910"
 dependencies = [
  "async-trait",
  "lazy_static",
