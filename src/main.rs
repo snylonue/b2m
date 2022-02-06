@@ -45,11 +45,15 @@ fn find_extractor(conf: &cli::Config) -> Result<Box<dyn Extractor>> {
     let url = conf.url;
     let mut extractors: Vec<Box<dyn Extractor>> = Vec::new();
     #[cfg(feature = "fina")]
-    match Fina::new(url) {
-        Ok(ex) => extractors.push(Box::new(ex)),
-        Err(e) => eprintln!("Error(finata): {}", e),
+    if matches!(conf.parser, Some("fina") | None) {
+        match Fina::new(url) {
+            Ok(ex) => extractors.push(Box::new(ex)),
+            Err(e) => eprintln!("Error(finata): {}", e),
+        }
     }
     // todo: check whether lux supports this url
-    extractors.push(Box::new(Lux::new(url)));
+    if matches!(conf.parser, Some("lux") | None) {
+        extractors.push(Box::new(Lux::new(url)));
+    }
     Ok(Box::new(extractors))
 }

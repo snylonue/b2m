@@ -53,7 +53,7 @@ ARGS:
     <mpv-args>...    args to pass to mpv, may have some limitations
 ```
 
-从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端(暂时不可用)
+从`0.23.0`起，可以使用 `--parser` 选项选择特定的后端
 
 ### 依赖
 - ~~[you-get](https://github.com/soimort/you-get)~~  
