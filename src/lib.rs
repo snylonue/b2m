@@ -4,7 +4,7 @@ pub mod parsers;
 pub mod proxy;
 
 use crate::cli::Config;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use finata::{ExtractSync, Finata, Origin, Track};
 use std::{path::Path, process::Command};
 
@@ -19,6 +19,27 @@ impl Extractor for Box<dyn finata::website::Extractor> {
     }
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
         Ok(self.client_mut().load_netscape_cookie(cookie)?)
+    }
+}
+
+impl Extractor for Vec<Box<dyn Extractor>> {
+    fn extract(&mut self) -> Result<Finata> {
+        let mut res = None;
+        for ex in self {
+            res = Some(ex.extract());
+            if let Some(Ok(_)) = res {
+                return res.unwrap();
+            }
+        }
+        res.unwrap_or(Err(anyhow!("No extractor")))
+    }
+
+    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
+        let mut res = Ok(());
+        for ex in self {
+            res = ex.load_netscape_cookie(cookie);
+        }
+        res
     }
 }
 

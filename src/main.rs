@@ -1,9 +1,11 @@
 mod check;
 
 use anyhow::Result;
-#[cfg(feature = "fina")]
-use b2m::parsers::fina::Fina;
 use b2m::*;
+#[cfg(feature = "fina")]
+use parsers::fina::Fina;
+use parsers::lux::Lux;
+
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
@@ -41,10 +43,13 @@ fn check(conf: &cli::Config) {
 
 fn find_extractor(conf: &cli::Config) -> Result<Box<dyn Extractor>> {
     let url = conf.url;
+    let mut extractors: Vec<Box<dyn Extractor>> = Vec::new();
     #[cfg(feature = "fina")]
-    if let Ok(extr) = Fina::new(url) {
-        return Ok(Box::new(extr));
+    match Fina::new(url) {
+        Ok(ex) => extractors.push(Box::new(ex)),
+        Err(e) => eprintln!("Error(finata): {}", e),
     }
     // todo: check whether lux supports this url
-    Ok(Box::new(b2m::parsers::lux::Lux::new(url)))
+    extractors.push(Box::new(Lux::new(url)));
+    Ok(Box::new(extractors))
 }
