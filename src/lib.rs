@@ -34,11 +34,13 @@ impl Extractor for Vec<Box<dyn Extractor>> {
     }
 
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
-        let mut res = Ok(());
         for ex in self {
-            res = ex.load_netscape_cookie(cookie);
+            match ex.load_netscape_cookie(cookie) {
+                Err(e) => eprintln!("Fails to load cookie({}): {}", ex.name(), e),
+                _ => {}
+            }
         }
-        res
+        Ok(())
     }
 }
 
