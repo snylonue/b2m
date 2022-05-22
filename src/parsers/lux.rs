@@ -71,7 +71,7 @@ impl Extractor for Lux {
             title.unwrap_or_default().to_owned(),
         ))
     }
-    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
+    fn load_cookie(&mut self, cookie: &Path) -> Result<()> {
         self.cookie = Some(cookie.to_owned());
         Ok(())
     }

@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     }
     let mut extractor = find_extractor(&config)?;
     if let Some(path) = config.cookie {
-        extractor.load_netscape_cookie(path.as_ref())?;
+        extractor.load_cookie(path.as_ref())?;
     }
     let res = extractor.extract()?;
     if config.info {

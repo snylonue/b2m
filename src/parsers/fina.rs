@@ -24,7 +24,7 @@ impl Extractor for Fina {
     fn extract(&mut self) -> Result<Finata> {
         Ok(self.extractor.extract_sync()?)
     }
-    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
+    fn load_cookie(&mut self, cookie: &Path) -> Result<()> {
         Ok(self.extractor.client_mut().load_netscape_cookie(cookie)?)
     }
 }

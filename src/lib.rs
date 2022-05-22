@@ -13,7 +13,7 @@ pub trait Extractor {
         "unknown"
     }
     fn extract(&mut self) -> Result<Finata>;
-    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()>;
+    fn load_cookie(&mut self, cookie: &Path) -> Result<()>;
 }
 
 impl Extractor for Vec<Box<dyn Extractor>> {
@@ -33,9 +33,9 @@ impl Extractor for Vec<Box<dyn Extractor>> {
         res.unwrap_or_else(|| Err(anyhow!("No extractor")))
     }
 
-    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
+    fn load_cookie(&mut self, cookie: &Path) -> Result<()> {
         for ex in self {
-            match ex.load_netscape_cookie(cookie) {
+            match ex.load_cookie(cookie) {
                 Err(e) => eprintln!("Fails to load cookie({}): {}", ex.name(), e),
                 _ => {}
             }
