@@ -6,7 +6,6 @@ use b2m::*;
 use parsers::fina::Fina;
 use parsers::lux::Lux;
 
-
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
     let config = cli::Config::new(&matches)?;

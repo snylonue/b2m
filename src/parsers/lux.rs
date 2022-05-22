@@ -44,6 +44,9 @@ impl Lux {
 }
 
 impl Extractor for Lux {
+    fn name(&self) -> &'static str {
+        "lux"
+    }
     fn extract(&mut self) -> Result<finata::Finata> {
         let res = self.run()?;
         let stream = match search_highest_quality(&res["streams"]) {

@@ -1,4 +1,6 @@
 use anyhow::Result;
+use finata::{ExtractSync, Finata};
+use std::path::Path;
 
 use crate::Extractor;
 
@@ -15,11 +17,14 @@ impl Fina {
 }
 
 impl Extractor for Fina {
-    fn extract(&mut self) -> anyhow::Result<finata::Finata> {
-        self.extractor.extract()
+    fn name(&self) -> &'static str {
+        "finata"
     }
 
-    fn load_netscape_cookie(&mut self, cookie: &std::path::Path) -> anyhow::Result<()> {
-        self.extractor.load_netscape_cookie(cookie)
+    fn extract(&mut self) -> Result<Finata> {
+        Ok(self.extractor.extract_sync()?)
+    }
+    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
+        Ok(self.extractor.client_mut().load_netscape_cookie(cookie)?)
     }
 }

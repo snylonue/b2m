@@ -4,34 +4,33 @@ pub mod parsers;
 pub mod proxy;
 
 use crate::cli::Config;
-use anyhow::{Result, anyhow};
-use finata::{ExtractSync, Finata, Origin, Track};
+use anyhow::{anyhow, Result};
+use finata::{Finata, Origin, Track};
 use std::{path::Path, process::Command};
 
 pub trait Extractor {
+    fn name(&self) -> &'static str {
+        "unknown"
+    }
     fn extract(&mut self) -> Result<Finata>;
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()>;
 }
 
-impl Extractor for Box<dyn finata::website::Extractor> {
-    fn extract(&mut self) -> Result<Finata> {
-        Ok(self.extract_sync()?)
-    }
-    fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
-        Ok(self.client_mut().load_netscape_cookie(cookie)?)
-    }
-}
-
 impl Extractor for Vec<Box<dyn Extractor>> {
+    fn name(&self) -> &'static str {
+        "finata"
+    }
     fn extract(&mut self) -> Result<Finata> {
         let mut res = None;
         for ex in self {
             res = Some(ex.extract());
-            if let Some(Ok(_)) = res {
-                return res.unwrap();
+            match res {
+                Some(r @ Ok(_)) => return r,
+                Some(Err(ref e)) => eprintln!("Extractor error({}): {}", ex.name(), e),
+                _ => {}
             }
         }
-        res.unwrap_or(Err(anyhow!("No extractor")))
+        res.unwrap_or_else(|| Err(anyhow!("No extractor")))
     }
 
     fn load_netscape_cookie(&mut self, cookie: &Path) -> Result<()> {
@@ -55,10 +54,10 @@ fn push_media(media: &Origin, cmd: &mut Command, config: &Config) {
         0 => cmd.args(audios.map(|a| a.as_url().to_string())),
         1 => cmd
             .arg(videos[0].as_url().to_string())
-            .args(audios.map(|a| format!("--audio-file={}", a.as_url().to_string()))),
+            .args(audios.map(|a| format!("--audio-file={}", a.as_url()))),
         _ => cmd
             .args(videos.iter().map(|v| v.as_url().to_string()))
-            .args(audios.map(|a| format!("--audio-file={}", a.as_url().to_string())))
+            .args(audios.map(|a| format!("--audio-file={}", a.as_url())))
             .args::<&[&str], _>(if config.merge {
                 // currently doesn't work due to https://github.com/mpv-player/mpv/issues/9522
                 &["--merge-files"]
