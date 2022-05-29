@@ -10,27 +10,21 @@ use std::{path::Path, process::Command};
 
 pub trait Extractor {
     fn name(&self) -> &'static str {
-        "unknown"
+        std::any::type_name::<Self>()
     }
     fn extract(&mut self) -> Result<Finata>;
     fn load_cookie(&mut self, cookie: &Path) -> Result<()>;
 }
 
 impl Extractor for Vec<Box<dyn Extractor>> {
-    fn name(&self) -> &'static str {
-        "finata"
-    }
     fn extract(&mut self) -> Result<Finata> {
-        let mut res = None;
         for ex in self {
-            res = Some(ex.extract());
-            match res {
-                Some(r @ Ok(_)) => return r,
-                Some(Err(ref e)) => eprintln!("Extractor error({}): {}", ex.name(), e),
-                _ => {}
+            match ex.extract() {
+                r @ Ok(_) => return r,
+                Err(e) => eprintln!("Extractor error({}): {}", ex.name(), e),
             }
         }
-        res.unwrap_or_else(|| Err(anyhow!("No extractor")))
+        Err(anyhow!("No extractor executed successfully"))
     }
 
     fn load_cookie(&mut self, cookie: &Path) -> Result<()> {
@@ -69,6 +63,7 @@ fn push_media(media: &Origin, cmd: &mut Command, config: &Config) {
     };
     cmd.arg(format!("--referrer={}", config.url)).arg("--}");
 }
+
 pub fn spwan_command(playlist: Finata, config: &Config) -> Command {
     let mut cmd = Command::new("mpv");
     for media in playlist.raws() {
