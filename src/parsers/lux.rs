@@ -71,8 +71,14 @@ impl Extractor for Lux {
             title.unwrap_or_default().to_owned(),
         ))
     }
+
     fn load_cookie(&mut self, cookie: &Path) -> Result<()> {
         self.cookie = Some(cookie.to_owned());
+        Ok(())
+    }
+
+    fn set_proxy(&mut self, proxy: crate::proxy::ProxyAddr) -> Result<()> {
+        self.proxy = Some(proxy.to_string());
         Ok(())
     }
 }

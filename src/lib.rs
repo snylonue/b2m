@@ -6,6 +6,7 @@ pub mod proxy;
 use crate::cli::Config;
 use anyhow::{anyhow, Result};
 use finata::{Finata, Origin, Track};
+use crate::proxy::ProxyAddr;
 use std::{path::Path, process::Command};
 
 pub trait Extractor {
@@ -14,6 +15,9 @@ pub trait Extractor {
     }
     fn extract(&mut self) -> Result<Finata>;
     fn load_cookie(&mut self, cookie: &Path) -> Result<()>;
+    fn set_proxy(&mut self, _proxy: ProxyAddr) -> Result<()> {
+        Err(anyhow!("unimplenmented"))
+    }
 }
 
 impl Extractor for Vec<Box<dyn Extractor>> {
@@ -33,6 +37,13 @@ impl Extractor for Vec<Box<dyn Extractor>> {
                 Err(e) => eprintln!("Fails to load cookie({}): {}", ex.name(), e),
                 _ => {}
             }
+        }
+        Ok(())
+    }
+
+    fn set_proxy(&mut self, proxy: ProxyAddr) -> Result<()> {
+        for ex in self {
+            let _ = ex.set_proxy(proxy.clone());
         }
         Ok(())
     }

@@ -71,6 +71,7 @@ dependencies = [
  "anyhow",
  "clap",
  "finata",
+ "reqwest",
  "serde_json",
 ]
 
