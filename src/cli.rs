@@ -1,9 +1,12 @@
+use std::str::FromStr;
+
 use crate::proxy::ProxyAddr;
 use anyhow::Result;
-use clap::App;
+use clap::parser::ValuesRef;
 use clap::Arg;
+use clap::ArgAction;
 use clap::ArgMatches;
-use clap::Values;
+use clap::Command;
 
 pub const NAME: &str = env!("CARGO_PKG_NAME");
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -19,33 +22,35 @@ pub struct Config<'a> {
     pub no_video: bool,
     pub info: bool,
     pub json: bool,
-    pub proxy: Option<ProxyAddr>,
+    pub proxy: Option<&'a ProxyAddr>,
     pub cookie: Option<&'a str>,
     pub merge: bool,
     pub parser: Option<&'a str>,
-    pub commands: Option<Values<'a>>,
+    pub commands: Option<ValuesRef<'a, String>>,
 }
 
 impl<'a> Config<'a> {
     pub fn new(args: &'a ArgMatches) -> Result<Self> {
-        let check = args.is_present("check");
-        let url = args.value_of("url").unwrap_or_default();
-        let json = args.is_present("json");
-        let info = json || args.is_present("info-only");
-        let no_audio = args.is_present("no-audio");
-        let no_video = args.is_present("no-video");
-        let proxy = match args.value_of("proxy") {
-            Some(p) if args.occurrences_of("proxy") == 1 => Some(p.parse()?),
-            _ => None,
-        };
-        let cookie = if !args.is_present("no-cookie") {
-            args.value_of("cookie").or(DEFAULT_COOKIES)
+        let check = args.get_flag("check");
+        let url = args
+            .get_one::<String>("url")
+            .map(|s| s.as_str())
+            .unwrap_or_default();
+        let json = args.get_flag("json");
+        let info = json || args.get_flag("info-only");
+        let no_audio = args.get_flag("no-audio");
+        let no_video = args.get_flag("no-video");
+        let proxy = args.get_one::<ProxyAddr>("proxy");
+        let cookie = if !args.get_flag("no-cookie") {
+            args.get_one::<String>("cookie")
+                .map(|s| s.as_str())
+                .or(DEFAULT_COOKIES)
         } else {
             None
         };
-        let commands = args.values_of("mpv-args");
-        let parser = args.value_of("parser");
-        let merge = !args.is_present("no-merging");
+        let commands = args.get_many::<String>("mpv-args");
+        let parser = args.get_one::<String>("parser").map(|s| s.as_str());
+        let merge = !args.get_flag("no-merging");
         Ok(Self {
             url,
             check,
@@ -63,91 +68,92 @@ impl<'a> Config<'a> {
 }
 
 #[inline]
-pub fn b2m() -> App<'static, 'static> {
-    App::new(NAME)
+pub fn b2m() -> Command {
+    Command::new(NAME)
         .version(VERSION)
         .about(DESCRIPTION)
         .arg(
-            Arg::with_name("url")
+            Arg::new("url")
                 .help("Video url")
-                .index(1)
-                .required_unless("check"),
+                .num_args(1)
+                .required_unless_present("check"),
         )
         .arg(
-            Arg::with_name("check")
+            Arg::new("check")
                 .help("Check if all dependencies are installed")
                 .long("check")
-                .multiple(true),
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("no-audio")
+            Arg::new("no-audio")
                 .help("Play without audio output")
                 .long("an")
                 .alias("no-audio")
-                .alias("vo")
-                .multiple(true),
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("no-video")
+            Arg::new("no-video")
                 .help("Play without video output")
                 .long("vn")
                 .alias("no-video")
-                .alias("ao")
-                .multiple(true),
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("info-only")
+            Arg::new("info-only")
                 .help("Print information only")
                 .long("info")
-                .short("i")
-                .multiple(true),
+                .short('i')
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("json")
+            Arg::new("json")
                 .help("Print information with json")
                 .long("json")
-                .short("j")
-                .multiple(true),
+                .short('j')
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("proxy")
+            Arg::new("proxy")
                 .help("Set proxy address")
                 .long("proxy")
-                .short("p")
-                .default_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080"))
-                .env("HTTP_PROXY"),
+                .short('p')
+                .num_args(0..=1)
+                .default_missing_value(DEFAULT_PROXY.unwrap_or("127.0.0.1:1080"))
+                .env("HTTP_PROXY")
+                .value_parser(ProxyAddr::from_str),
         )
         .arg(
-            Arg::with_name("cookie")
+            Arg::new("cookie")
                 .help("Load cookie")
                 .long("cookie")
-                .short("c")
-                .takes_value(true)
+                .short('c')
+                .num_args(1)
                 .env("B2M_COOKIES"),
         )
         .arg(
-            Arg::with_name("no-cookie")
+            Arg::new("no-cookie")
                 .help("Don't use any cookie")
                 .long("no-cookie")
-                .alias("nc"),
+                .alias("nc")
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("no-merging")
+            Arg::new("no-merging")
                 .help("Don't pass --merge-files to mpv")
                 .long("no-merge")
-                .alias("nm"),
+                .alias("nm")
+                .action(ArgAction::SetTrue),
         )
         .arg(
-            Arg::with_name("parser")
+            Arg::new("parser")
                 .help("Choose a parser")
                 .long("parser")
-                .takes_value(true)
-                .possible_values(&["lux", "fina"]),
+                .num_args(1)
+                .value_parser(["fina", "lux"]),
         )
         .arg(
-            Arg::with_name("mpv-args")
+            Arg::new("mpv-args")
                 .help("args to pass to mpv, may have some limitations")
-                .takes_value(true)
                 .raw(true),
         )
 }
