@@ -5,6 +5,7 @@ use b2m::*;
 #[cfg(feature = "fina")]
 use parsers::fina::Fina;
 use parsers::lux::Lux;
+use std::os::unix::process::CommandExt;
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
@@ -25,7 +26,12 @@ fn main() -> Result<()> {
             dbg!(res);
         }
     } else {
-        spwan_command(res, &config).spawn()?.wait()?;
+        let mut command = spwan_command(res, &config);
+        if cfg!(windows) {
+            command.spawn()?.wait()?;
+        } else {
+            command.exec();
+        }
     }
     Ok(())
 }
