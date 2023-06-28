@@ -5,7 +5,19 @@ use b2m::*;
 #[cfg(feature = "fina")]
 use parsers::fina::Fina;
 use parsers::lux::Lux;
+#[cfg(not(windows))]
 use std::os::unix::process::CommandExt;
+
+#[cfg(windows)]
+fn exec_command(mut command: std::process::Command) {
+    command.spawn().expect("failed to execute command")
+        .wait().expect("failed to wait on child process");
+}
+
+#[cfg(not(windows))]
+fn exec_command(mut command: std::process::Command) {
+    command.exec();
+}
 
 fn main() -> Result<()> {
     let matches = cli::b2m().get_matches();
@@ -26,12 +38,7 @@ fn main() -> Result<()> {
             dbg!(res);
         }
     } else {
-        let mut command = spwan_command(res, &config);
-        if cfg!(windows) {
-            command.spawn()?.wait()?;
-        } else {
-            command.exec();
-        }
+        exec_command(spwan_command(res, &config));
     }
     Ok(())
 }
