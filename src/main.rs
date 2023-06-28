@@ -25,7 +25,7 @@ fn main() -> Result<()> {
             dbg!(res);
         }
     } else {
-        spwan_command(res, &config).spawn()?;
+        spwan_command(res, &config).spawn()?.wait()?;
     }
     Ok(())
 }
